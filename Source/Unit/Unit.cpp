@@ -9,7 +9,7 @@
 #include "Math\MathUtility.h"
 
 #include "Component\Box2D\CircleColliderB2.h"
-#include "Component\Prototype\UnitObject.h"
+#include "Unit\UnitObject.h"
 
 //TODO:回転を二次元座標用に変える
 
@@ -96,7 +96,7 @@ void Unit::init(int unitCount, float spacePerObject, int teamID, UnitStats* pUni
 
 	m_pInstancedRenderer = getUser().getComponent<InstancedRenderer<UnitInstanceInfo>>();
 
-	int xSize = m_UnitCount / 2;
+	int xSize = m_UnitCount / 5;
 	int zSize = m_UnitCount / xSize;
 
 	Vec3 basePos(-m_SpacePerObject * (float)xSize * 0.5f, -10.0f, m_SpacePerObject * (float)zSize * 0.5f);
@@ -120,7 +120,7 @@ void Unit::init(int unitCount, float spacePerObject, int teamID, UnitStats* pUni
 			auto& tr = pObj->getTransform();
 			Vec3 position = Vec3(m_SpacePerObject * x, 0.0f, m_SpacePerObject * z) + basePos;
 			tr.setLocalPosition(position);
-			tr.setLocalScale(Vec3(1.0f));
+			tr.setLocalScale(Vec3(0.5f, 0.5f, 1.0f));
 
 			pUnitObject->setDestination(position);
 		}
@@ -165,7 +165,8 @@ void Unit::setDestination(const Vec3& destination, float angle)
 
 void Unit::setTarget(Unit* pTarget)
 {
-	if (m_pTargetUnit != nullptr) return;
+	//同じものが既に設定済みなら設定しない
+	if (m_pTargetUnit == pTarget) return;
 
 	//ステートロック開始
 	m_StateLockTimer.reset();
@@ -211,7 +212,7 @@ void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& dest
 {
 	DirectX::XMMATRIX rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0.0f, radian, 0.0f);
 
-	int xSize = m_UnitCount / 2;
+	int xSize = m_UnitCount / 5;
 	int zSize = m_UnitCount / xSize;
 
 	results.reserve(m_UnitCount);

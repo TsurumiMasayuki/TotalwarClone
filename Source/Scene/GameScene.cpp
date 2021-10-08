@@ -8,10 +8,12 @@
 #include "AI\ValueMap.h"
 #include "AI\ValueMapRenderer.h"
 
-#include "Component\Prototype\Unit.h"
+#include "Unit\Unit.h"
 #include "Component\Box2D\PhysicsManagerB2.h"
 
 #include "Graphics\DX12\Material\DefaultMaterials.h"
+
+#include "Player\AIPlayer\AIPlayer.h"
 
 #include "UnitInfo\UnitStats.h"
 
@@ -71,14 +73,28 @@ void GameScene::start()
 	pObj1->getChildren().at(0)->getTransform().setLocalPosition(Vec3(-50.0f, 0.0f, 0.0f));
 	pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit1->init(2, 3.0f, 0, &g_UnitStats1, &m_ValueMap);
+	g_pUnit1->init(50, 3.0f, 0, &g_UnitStats1, &m_ValueMap);
 	g_pUnit1->setPosition(Vec3(-50.0f, 0.0f, 0.0f), 90.0f);
 
 	pObj2->getChildren().at(0)->getTransform().setLocalPosition(Vec3(50.0f, 0.0f, 0.0f));
 	pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit2->init(2, 3.0f, 1, &g_UnitStats2, &m_ValueMap);
+	g_pUnit2->init(50, 3.0f, 0, &g_UnitStats2, &m_ValueMap);
 	g_pUnit2->setPosition(Vec3(50.0f, 0.0f, 0.0f), -90.0f);
+
+	//AIプレイヤー1の生成
+	auto pPlayer1Obj = new GameObject(this);
+	auto pPlayer1 = pPlayer1Obj->addComponent<AIPlayer>();
+
+	//AIプレイヤー2の生成
+	auto pPlayer2Obj = new GameObject(this);
+	auto pPlayer2 = pPlayer2Obj->addComponent<AIPlayer>();
+
+	pPlayer1->init(0, pPlayer2);
+	pPlayer1->addUnit(g_pUnit1);
+	
+	pPlayer2->init(1, pPlayer1);
+	pPlayer2->addUnit(g_pUnit2);
 
 	//情報マップ描画の生成
 	auto pValueMapRendererObj = new GameObject(this);

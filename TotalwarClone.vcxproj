@@ -156,25 +156,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DX12Main.cpp" />
+    <ClCompile Include="Source\Player\AIPlayer\AIPlayer.cpp" />
     <ClCompile Include="Source\AI\ValueMap.cpp" />
     <ClCompile Include="Source\Component\Box2D\AbstractColliderB2.cpp" />
     <ClCompile Include="Source\Component\Box2D\CircleColliderB2.cpp" />
     <ClCompile Include="Source\Component\Box2D\ContactListenerB2.cpp" />
-    <ClCompile Include="Source\Component\Prototype\Unit.cpp" />
-    <ClCompile Include="Source\Component\Prototype\UnitObject.cpp" />
+    <ClCompile Include="Source\Unit\Unit.cpp" />
+    <ClCompile Include="Source\Unit\UnitObject.cpp" />
     <ClCompile Include="Source\Component\Box2D\PhysicsManagerB2.cpp" />
     <ClCompile Include="Source\Graphics\Material\ValueMapMaterial.cpp" />
     <ClCompile Include="Source\Scene\GameScene.cpp" />
     <ClCompile Include="Source\TotalwarCloneGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Player\AIPlayer\AIPlayer.h" />
     <ClInclude Include="Source\AI\ValueMap.h" />
     <ClInclude Include="Source\AI\ValueMapRenderer.h" />
     <ClInclude Include="Source\Component\Box2D\AbstractColliderB2.h" />
     <ClInclude Include="Source\Component\Box2D\CircleColliderB2.h" />
     <ClInclude Include="Source\Component\Box2D\ContactListenerB2.h" />
-    <ClInclude Include="Source\Component\Prototype\Unit.h" />
-    <ClInclude Include="Source\Component\Prototype\UnitObject.h" />
+    <ClInclude Include="Source\Player\IPlayer.h" />
+    <ClInclude Include="Source\Unit\Unit.h" />
+    <ClInclude Include="Source\Unit\UnitObject.h" />
     <ClInclude Include="Source\Component\Box2D\PhysicsManagerB2.h" />
     <ClInclude Include="Source\Graphics\Material\ValueMapMaterial.h" />
     <ClInclude Include="Source\Scene\GameScene.h" />

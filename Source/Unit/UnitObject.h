@@ -15,9 +15,7 @@ public:
 		StandBy,//待機(通常)
 		Move,	//通常移動
 		Charge,	//突撃
-		Combat, //戦闘
-		CombatStandBy,	//待機(戦闘)
-		Blown,	//吹っ飛ばされた
+		Attack, //戦闘
 		Dead,	//死亡
 	};
 
@@ -49,8 +47,6 @@ private:
 	void stateTransition();
 	void attack();
 	void trySetTargetObject(UnitObject* pTargetObject, const State& nextState);
-	void trySetPredecessor(UnitObject* pPredecessor);
-	void tryTakeOverTarget();
 
 	void setState(const State& newState);
 
@@ -67,11 +63,6 @@ private:
 
 	//ターゲットオブジェクト
 	UnitObject* m_pTargetObject;
-
-	//戦闘の前任(前任が戦闘不能になった場合、自分が引き継ぐ)
-	UnitObject* m_pPredecessor;
-	//戦闘の後任(自身が戦闘不能になった場合、後任が引き継ぐ)
-	UnitObject* m_pSuccessor;
 
 	ValueMap* m_pValueMap;
 

@@ -6,7 +6,7 @@
 #include "AI\ValueMap.h"
 
 #include "Component\Utility\Transform.h"
-#include "Component\Prototype\Unit.h"
+#include "Unit\Unit.h"
 #include "Component\Box2D\CircleColliderB2.h"
 
 #include "Device\GameDevice.h"
@@ -46,13 +46,12 @@ void UnitObject::onUpdate()
 
 	//待機中でない、かつ戦闘中でないなら移動処理
 	if (m_State != State::StandBy &&
-		m_State != State::Combat &&
-		m_State != State::CombatStandBy)
+		m_State != State::Attack)
 		move();
 	else
 		m_pCollider->setVelocity(0.0f, 0.0f);
 
-	if (m_State == State::Combat &&
+	if (m_State == State::Attack &&
 		m_pTargetObject != nullptr)
 		attack();
 }
@@ -121,12 +120,12 @@ void UnitObject::onCollisionStay(UnitObject* pUnitObject)
 
 	if (pUnitObject == m_pTargetObject)
 	{
-		setState(State::Combat);
+		setState(State::Attack);
 		//ユニットに通知
 		m_pUnit->onEnterCombat(m_pTargetObject->m_pUnit);
 	}
 
-	trySetTargetObject(pUnitObject, State::Combat);
+	trySetTargetObject(pUnitObject, State::Attack);
 }
 
 void UnitObject::onCollisionExit(UnitObject* pUnitObject)
@@ -141,12 +140,8 @@ void UnitObject::onTriggerStay(UnitObject* pUnitObject)
 {
 	//自分が死んでいたら何も行わない
 	if (m_State == State::Dead) return;
-	//戦闘待機中なら何も行わない
-	if (m_State == State::CombatStandBy) return;
 
 	trySetTargetObject(pUnitObject, State::Charge);
-
-	trySetPredecessor(pUnitObject);
 }
 
 void UnitObject::onTriggerExit(UnitObject* pUnitObject)
@@ -181,9 +176,6 @@ void UnitObject::stateTransition()
 	setState(State::Dead);
 
 	getUser().setActive(false);
-
-	//引継ぎ処理
-	tryTakeOverTarget();
 }
 
 void UnitObject::attack()
@@ -221,47 +213,11 @@ void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& next
 	//ステート変更
 	setState(nextState);
 
-	if (nextState == State::Combat)
+	if (nextState == State::Attack)
 	{
 		//ユニットに通知
 		m_pUnit->onEnterCombat(m_pTargetObject->m_pUnit);
 	}
-}
-
-void UnitObject::trySetPredecessor(UnitObject* pPredecessor)
-{
-	//前任が設定されているなら実行しない
-	if (m_pPredecessor != nullptr) return;
-
-	const State& predState = pPredecessor->getState();
-
-	//自分が戦闘中または突撃中なら実行しない
-	if (m_State == State::Combat || m_State == State::Charge) return;
-
-	//前任候補が戦闘中、または戦闘待機中で前任者がいるなら実行する
-	if (predState == State::Combat ||
-		(predState == State::CombatStandBy && pPredecessor->m_pPredecessor != nullptr))
-	{
-		//前任を設定
-		m_pPredecessor = pPredecessor;
-		//前任の後任を自分に設定
-		m_pPredecessor->m_pSuccessor = this;
-
-		//戦闘待機状態に移行
-		setState(State::CombatStandBy);
-	}
-}
-
-void UnitObject::tryTakeOverTarget()
-{
-	//後任がいないならreturn
-	if (m_pSuccessor == nullptr || m_pTargetObject == nullptr) return;
-
-	//後任に引継ぎ
-	m_pSuccessor->trySetTargetObject(m_pTargetObject, State::Charge);
-
-	//前任(自分)を登録解除
-	m_pSuccessor->m_pPredecessor = nullptr;
 }
 
 void UnitObject::setState(const State& newState)
@@ -274,7 +230,7 @@ void UnitObject::setState(const State& newState)
 	//if (newState != State::Move && newState != State::Dead) return;
 
 	//戦闘以外のステートに移行したら前任と後任を解除する
-	//if (newState != State::Combat)
+	//if (newState != State::Attack)
 	//{
 	//	m_pSuccessor = nullptr;
 	//	m_pPredecessor = nullptr;

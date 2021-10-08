@@ -4,7 +4,7 @@
 #include "Math\MathUtility.h"
 
 #include "Component\Box2D\PhysicsManagerB2.h"
-#include "Component\Prototype\UnitObject.h"
+#include "Unit\UnitObject.h"
 
 AbstractColliderB2::AbstractColliderB2()
 {

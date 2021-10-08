@@ -24,13 +24,13 @@
     <ClCompile Include="Source\Scene\GameScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Component\Prototype\Unit.cpp">
+    <ClCompile Include="Source\Unit\Unit.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\Component\Box2D\PhysicsManagerB2.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Component\Prototype\UnitObject.cpp">
+    <ClCompile Include="Source\Unit\UnitObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\Component\Box2D\AbstractColliderB2.cpp">
@@ -48,6 +48,9 @@
     <ClCompile Include="Source\AI\ValueMap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Player\AIPlayer\AIPlayer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\TotalwarCloneGame.h">
@@ -56,13 +59,13 @@
     <ClInclude Include="Source\Scene\GameScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Component\Prototype\Unit.h">
+    <ClInclude Include="Source\Unit\Unit.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Component\Box2D\PhysicsManagerB2.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Component\Prototype\UnitObject.h">
+    <ClInclude Include="Source\Unit\UnitObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Component\Box2D\CircleColliderB2.h">
@@ -84,6 +87,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Graphics\Material\ValueMapMaterial.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\AIPlayer\AIPlayer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player\IPlayer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
