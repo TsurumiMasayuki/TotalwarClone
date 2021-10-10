@@ -27,7 +27,7 @@ void UnitObject::onUpdate()
 		return;
 
 	//ヘルスの値を書き込む
-	m_pValueMap->writeMap(ValueTypes::Health, Value(getTransform().getLocalPosition(), 2.0f, m_Health));
+	m_pValueMap->writeMap(UnitStatsValues::Health, Value(getTransform().getLocalPosition(), 25.0f, m_Health));
 
 	m_AttackTimer.update();
 
@@ -160,6 +160,11 @@ void UnitObject::takeDamage(float damage)
 	float damageCut = armor / 100.0f;
 	//ダメージを受ける
 	m_Health -= damage * std::fmaxf((1.0f - damageCut), 0.0f);
+}
+
+float UnitObject::getHealth() const
+{
+	return m_Health;
 }
 
 const UnitObject::State& UnitObject::getState() const

@@ -1,5 +1,13 @@
 #pragma once
 
+enum class UnitStatsValues
+{
+	Health,
+	Shield,
+	Armor,
+	DefencePower,
+};
+
 struct UnitStats
 {
 	//オブジェクトごとのHPの最大値

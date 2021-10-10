@@ -3,6 +3,7 @@
 #include "AI\ValueMap.h"
 #include "Component\Base\AbstractComponent.h"
 #include "Player\IPlayer.h"
+#include "Unit\UnitContainer.h"
 
 class AIPlayer
 	: public AbstractComponent, public IPlayer
@@ -15,17 +16,17 @@ public:
 	virtual void onUpdate() override;
 
 	virtual void addUnit(Unit* pUnit) override;
-	virtual const std::vector<Unit*>& getUnits() override;
+	virtual UnitContainer* getUnits() override;
 
-	virtual void init(int teamNum, IPlayer* pOpponentPlayer) override;
+	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
 
 private:
 	//情報マップ
 	ValueMap* m_pValueMap;
 	//対戦相手
 	IPlayer* m_pOpponentPlayer;
-	//ユニットリスト。後でユニット専用コンテナに差し替える
-	std::vector<Unit*> m_Units;
+	//ユニットリスト
+	UnitContainer m_Units;
 
 	int m_TeamNum;
 };

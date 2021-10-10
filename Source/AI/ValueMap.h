@@ -3,16 +3,9 @@
 #include <unordered_map>
 #include <numeric>
 #include "Math\Vec3.h"
+#include "UnitInfo\UnitStats.h"
 
 //情報マップに書き込む数値の種類
-enum class ValueTypes
-{
-	Health,
-	Shield,
-	Armor,
-	DefencePower,
-};
-
 struct Value
 {
 	Value(const Vec3& center, float size, float value) 
@@ -33,13 +26,13 @@ class ValueMap
 public:
 	ValueMap();
 
-	void writeMap(ValueTypes type, const Value& value);
-	float readMap(ValueTypes type, const Vec3& readPosition);
-	void clear(ValueTypes type);
+	void writeMap(UnitStatsValues type, const Value& value);
+	float readMap(UnitStatsValues type, const Vec3& readPosition);
+	void clear(UnitStatsValues type);
 	void clearAll();
 
-	const std::unordered_map<ValueTypes, std::vector<Value>>& getValueMaps() const;
+	const std::unordered_map<UnitStatsValues, std::vector<Value>>& getValueMaps() const;
 
 private:
-	std::unordered_map<ValueTypes, std::vector<Value>> m_ValueMaps;
+	std::unordered_map<UnitStatsValues, std::vector<Value>> m_ValueMaps;
 };

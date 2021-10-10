@@ -1,6 +1,5 @@
 #pragma once
-#include <Component\Base\AbstractComponent.h>
-
+#include "Component\Base\AbstractComponent.h"
 #include "Component\Box2D\ContactListenerB2.h"
 
 class AbstactColliderB2;

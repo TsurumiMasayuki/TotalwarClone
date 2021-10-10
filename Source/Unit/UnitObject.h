@@ -42,6 +42,7 @@ public:
 	int getTeamID() const;
 
 	void takeDamage(float damage);
+	float getHealth() const;
 
 private:
 	void stateTransition();

@@ -52,10 +52,8 @@ void Unit::onUpdate()
 		int i = 0;
 		for (int i = 0; i < m_UnitCount; i++)
 		{
-			{
-				if (m_UnitObjects.at(i)->getState() == UnitObject::State::Move)
-					m_UnitObjects.at(i)->setDestination(newPositions.at(i), false);
-			}
+			if (m_UnitObjects.at(i)->getState() == UnitObject::State::Move)
+				m_UnitObjects.at(i)->setDestination(newPositions.at(i), false);
 		}
 	}
 
@@ -141,6 +139,8 @@ void Unit::setPosition(const Vec3& position, float angle)
 			m_UnitObjects.at(i)->setDestination(newPositions.at(i));
 		}
 	}
+
+	m_Angle = angle;
 }
 
 void Unit::setDestination(const Vec3& destination, float angle)
@@ -161,6 +161,13 @@ void Unit::setDestination(const Vec3& destination, float angle)
 
 	//ステートロック開始
 	m_StateLockTimer.reset();
+
+	m_Angle = angle;
+}
+
+float Unit::getAngle() const
+{
+	return m_Angle;
 }
 
 void Unit::setTarget(Unit* pTarget)
@@ -184,6 +191,18 @@ void Unit::setTarget(Unit* pTarget)
 Unit* Unit::getTarget()
 {
 	return m_pTargetUnit;
+}
+
+float Unit::getHealth() const
+{
+	//オブジェクトからHPを取得して合計する
+	float healthSum = 0.0f;
+	for (UnitObject* pObj : m_UnitObjects)
+	{
+		healthSum += pObj->getHealth();
+	}
+
+	return healthSum;
 }
 
 const UnitStats* Unit::getUnitStats() const

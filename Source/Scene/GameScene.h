@@ -18,7 +18,9 @@ public:
 	void lateUpdate();
 
 private:
-	ValueMap m_ValueMap;
+	ValueMap m_ValueMap1;
+	ValueMap m_ValueMap2;
+
 	InstancingMaterial* m_pInstancingMaterial;
 	InstancingMaterial* m_pValueMapMaterial;
 };

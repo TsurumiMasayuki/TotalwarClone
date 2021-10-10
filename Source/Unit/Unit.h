@@ -26,9 +26,12 @@ public:
 	void setPosition(const Vec3& position, float angle);
 	void setDestination(const Vec3& destination, float angle);
 
+	float getAngle() const;
+
 	void setTarget(Unit* pTarget);
 	Unit* getTarget();
 
+	float getHealth() const;
 	const UnitStats* getUnitStats() const;
 
 	int getTeamID() const;
@@ -47,6 +50,7 @@ private:
 
 	int m_UnitCount;
 	float m_SpacePerObject;
+	float m_Angle;
 	int m_TeamID;
 
 	Timer m_StateLockTimer;

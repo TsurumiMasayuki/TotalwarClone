@@ -2,15 +2,15 @@
 
 ValueMap::ValueMap()
 {
-	m_ValueMaps.emplace(ValueTypes::Health, std::vector<Value>());
+	m_ValueMaps.emplace(UnitStatsValues::Health, std::vector<Value>());
 }
 
-void ValueMap::writeMap(ValueTypes type, const Value& value)
+void ValueMap::writeMap(UnitStatsValues type, const Value& value)
 {
 	m_ValueMaps.at(type).emplace_back(value);
 }
 
-float ValueMap::readMap(ValueTypes type, const Vec3& readPosition)
+float ValueMap::readMap(UnitStatsValues type, const Vec3& readPosition)
 {
 	float sum = 0.0f;
 	for (auto& value : m_ValueMaps.at(type))
@@ -25,7 +25,7 @@ float ValueMap::readMap(ValueTypes type, const Vec3& readPosition)
 	return sum;
 }
 
-void ValueMap::clear(ValueTypes type)
+void ValueMap::clear(UnitStatsValues type)
 {
 	m_ValueMaps.at(type).clear();
 }
@@ -38,7 +38,7 @@ void ValueMap::clearAll()
 	}
 }
 
-const std::unordered_map<ValueTypes, std::vector<Value>>& ValueMap::getValueMaps() const
+const std::unordered_map<UnitStatsValues, std::vector<Value>>& ValueMap::getValueMaps() const
 {
 	return m_ValueMaps;
 }

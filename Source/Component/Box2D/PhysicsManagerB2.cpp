@@ -1,6 +1,6 @@
 #include "PhysicsManagerB2.h"
 #include <cassert>
-#include <Device\GameDevice.h>
+#include "Device\GameDevice.h"
 
 PhysicsManagerB2* PhysicsManagerB2::pInstance = nullptr;
 

@@ -17,7 +17,7 @@ struct ValueMapInstance
 	DirectX::XMFLOAT4 instanceColor;
 };
 
-template <ValueTypes T> class ValueMapRenderer
+template <UnitStatsValues T> class ValueMapRenderer
 	: public AbstractComponent
 {
 public:
@@ -49,8 +49,15 @@ public:
 
 			//行列を適用
 			DirectX::XMStoreFloat4x4(&instance.instanceMat, instanceMat);
+
+			float hoge = value.m_Value;
+			Color color(m_Color.r * hoge / 100.0f,
+				m_Color.g * hoge / 100.0f,
+				m_Color.b * hoge / 100.0f,
+				1.0f);
+
 			//色を適用
-			DirectX::XMStoreFloat4(&instance.instanceColor, m_Color.toXMVECTOR());
+			DirectX::XMStoreFloat4(&instance.instanceColor, color.toXMVECTOR());
 		}
 
 		//インスタンス情報を適用
@@ -65,7 +72,7 @@ private:
 	Color m_Color;
 };
 
-template<ValueTypes T>
+template<UnitStatsValues T>
 inline void ValueMapRenderer<T>::init(ValueMap* pValueMap, InstancingMaterial* pMaterial, const Color& color)
 {
 	m_pValueMap = pValueMap;
