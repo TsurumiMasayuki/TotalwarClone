@@ -68,6 +68,7 @@ private:
 	ValueMap* m_pValueMap;
 
 	float m_Health;
+	float m_DesiredAngle;
 
 	State m_State;
 

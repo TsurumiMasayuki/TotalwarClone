@@ -12,6 +12,7 @@
 #include "Device\GameDevice.h"
 
 #include "UnitInfo\UnitStats.h"
+#include "Math\MathUtility.h"
 
 void UnitObject::onStart()
 {
@@ -107,6 +108,11 @@ void UnitObject::move()
 	//ˆÚ“®
 	Vec3 moveDir = diff.normalized();
 	m_pCollider->setVelocity(moveDir.x * 10.0f, moveDir.z * 10.0f);
+
+	//–Ú“I’n‚ÉŒü‚¯‚Ä‰ñ“]
+	m_DesiredAngle = MathUtility::toDegree(std::atan2f(moveDir.z, moveDir.x));
+	float curAngle = getTransform().getLocalAngles().y;
+	getTransform().setLocalAngles(Vec3(0.0f, MathUtility::lerp(curAngle, m_DesiredAngle, GameDevice::getGameTime().getDeltaTime() * 2.0f)));
 }
 
 void UnitObject::onCollisionEnter(UnitObject* pUnitObject)

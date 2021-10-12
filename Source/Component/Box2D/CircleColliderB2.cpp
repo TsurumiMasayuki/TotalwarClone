@@ -35,6 +35,7 @@ void CircleColliderB2::init()
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(pos.x, pos.z);
+	bodyDef.fixedRotation = true;	//•¨—‹““®‚É‚æ‚é‰ñ“]‚ğ§ŒÀ
 	m_pBody = PhysicsManagerB2::getInstance()->createBody(bodyDef, this);
 
 	//‰~‚ÌŒ`ó‚ğw’è

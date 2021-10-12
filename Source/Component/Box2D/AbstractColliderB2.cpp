@@ -29,8 +29,8 @@ void AbstractColliderB2::onUpdate()
 	//2ŽŸŒ³•½–Êã‚ÌÀ•W‚ð3ŽŸŒ³‚É”½‰f
 	getTransform().setLocalPosition(getPositionB2());
 
-	float angle = m_pBody->GetAngle();
-	getTransform().setLocalAngles(Vec3(0.0f, MathUtility::toDegree(angle), 0.0f));
+	//float angle = m_pBody->GetAngle();
+	//getTransform().setLocalAngles(Vec3(0.0f, MathUtility::toDegree(angle), 0.0f));
 }
 
 void AbstractColliderB2::onDestroy()
