@@ -4,6 +4,7 @@
 
 class GameObject;
 class InstancingMaterial;
+class ValueMapMaterial;
 
 class GameScene
 	: public AbstractScene
@@ -22,5 +23,5 @@ private:
 	ValueMap m_ValueMap2;
 
 	InstancingMaterial* m_pInstancingMaterial;
-	InstancingMaterial* m_pValueMapMaterial;
+	ValueMapMaterial* m_pValueMapMaterial;
 };

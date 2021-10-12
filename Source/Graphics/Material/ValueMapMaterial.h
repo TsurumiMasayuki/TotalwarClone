@@ -14,8 +14,14 @@ public:
 	virtual void initShaders() override;
 	virtual void initPipelineState(ID3D12Device* pDevice) override;
 	virtual void initDescriptorHeap(ID3D12Device* pDevice) override;
+	virtual D3D12_RENDER_TARGET_BLEND_DESC createBlendDesc() override;
 
 	void setMainTexture(DX12Texture2D* pMainTexture);
+
+private:
+	void createPipeline(ID3D12Device* pDevice,
+		Microsoft::WRL::ComPtr<ID3D12RootSignature>& pRootSignature,
+		Microsoft::WRL::ComPtr<ID3D12PipelineState>& pPipeline);
 
 public:
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pDescriptorHeap;

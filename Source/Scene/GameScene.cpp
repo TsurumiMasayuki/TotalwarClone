@@ -12,6 +12,7 @@
 #include "Component\Box2D\PhysicsManagerB2.h"
 
 #include "Graphics\DX12\Material\DefaultMaterials.h"
+#include "Graphics\Material\ValueMapMaterial.h"
 
 #include "Player\AIPlayer\AIPlayer.h"
 
@@ -22,6 +23,8 @@ Unit* g_pUnit2;
 
 UnitStats g_UnitStats1;
 UnitStats g_UnitStats2;
+
+AIPlayer* pPlayer1;
 
 std::string GameScene::nextScene()
 {
@@ -40,7 +43,7 @@ void GameScene::start()
 	m_pInstancingMaterial->init(DX12GraphicsCore::g_pDevice.Get());
 
 	//マテリアルの生成
-	m_pValueMapMaterial = new InstancingMaterial();
+	m_pValueMapMaterial = new ValueMapMaterial();
 	m_pValueMapMaterial->init(DX12GraphicsCore::g_pDevice.Get());
 
 	//物理マネージャーの生成
@@ -91,7 +94,8 @@ void GameScene::start()
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
-	auto pPlayer1 = pPlayer1Obj->addComponent<AIPlayer>();
+	pPlayer1 = pPlayer1Obj->addComponent<AIPlayer>();
+	pPlayer1->setActive(false);
 
 	//AIプレイヤー2の生成
 	auto pPlayer2Obj = new GameObject(this);
@@ -115,8 +119,7 @@ void GameScene::update()
 {
 	if (GameDevice::getInput().isKeyDown(DIK_1))
 	{
-		g_pUnit1->setDestination(Vec3(50.0f, 0.0f, 0.0f),  0.0f);
-		g_pUnit2->setDestination(Vec3(-50.0f, 0.0f, 0.0f), 0.0f);
+		pPlayer1->setActive(true);
 	}
 
 	if (GameDevice::getInput().isKeyDown(DIK_2))
@@ -135,6 +138,7 @@ void GameScene::shutdown()
 {
 	//マテリアルの削除
 	delete m_pInstancingMaterial;
+	delete m_pValueMapMaterial;
 }
 
 void GameScene::lateUpdate()

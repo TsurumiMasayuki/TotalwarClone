@@ -5,7 +5,7 @@
 #include "AI\ValueMap.h"
 #include "Component\Base\AbstractComponent.h"
 #include "Component\Graphics\InstancedRenderer.h"
-#include "Graphics\DX12\Material\DefaultMaterials.h"
+#include "Graphics\Material\ValueMapMaterial.h"
 #include "Utility\Color.h"
 #include "Utility\ModelGameObjectHelper.h"
 
@@ -54,7 +54,7 @@ public:
 			Color color(m_Color.r * hoge / 100.0f,
 				m_Color.g * hoge / 100.0f,
 				m_Color.b * hoge / 100.0f,
-				1.0f);
+				m_Color.a);
 
 			//F‚ð“K—p
 			DirectX::XMStoreFloat4(&instance.instanceColor, color.toXMVECTOR());
@@ -64,7 +64,7 @@ public:
 		m_pInstancedRenderer->setInstanceInfo(valueMapInstances);
 	}
 
-	void init(ValueMap* pValueMap, InstancingMaterial* pMaterial, const Color& color);
+	void init(ValueMap* pValueMap, ValueMapMaterial* pMaterial, const Color& color);
 
 private:
 	InstancedRenderer<ValueMapInstance>* m_pInstancedRenderer;
@@ -73,7 +73,7 @@ private:
 };
 
 template<UnitStatsValues T>
-inline void ValueMapRenderer<T>::init(ValueMap* pValueMap, InstancingMaterial* pMaterial, const Color& color)
+inline void ValueMapRenderer<T>::init(ValueMap* pValueMap, ValueMapMaterial* pMaterial, const Color& color)
 {
 	m_pValueMap = pValueMap;
 
@@ -88,5 +88,5 @@ inline void ValueMapRenderer<T>::init(ValueMap* pValueMap, InstancingMaterial* p
 	pMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("CircleFill"));
 
 	m_Color = color;
-	m_Color.a = 0.6f;
+	m_Color.a = 1.0f;
 }
