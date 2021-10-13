@@ -156,6 +156,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DX12Main.cpp" />
+    <ClCompile Include="Source\Component\Cursor.cpp" />
+    <ClCompile Include="Source\Component\UnitSelector.cpp" />
     <ClCompile Include="Source\Player\AIPlayer\AIPlayer.cpp" />
     <ClCompile Include="Source\AI\ValueMap.cpp" />
     <ClCompile Include="Source\Component\Box2D\AbstractColliderB2.cpp" />
@@ -170,6 +172,8 @@
     <ClCompile Include="Source\TotalwarCloneGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Component\Cursor.h" />
+    <ClInclude Include="Source\Component\UnitSelector.h" />
     <ClInclude Include="Source\Player\AIPlayer\AIPlayer.h" />
     <ClInclude Include="Source\AI\ValueMap.h" />
     <ClInclude Include="Source\AI\ValueMapRenderer.h" />

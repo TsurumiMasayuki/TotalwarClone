@@ -1,7 +1,7 @@
 #pragma once
 #include <Component\Base\AbstractComponent.h>
+#include "box2d\b2_body.h"
 
-class b2Body;
 class UnitObject;
 
 class AbstractColliderB2
@@ -21,6 +21,8 @@ public:
 
 	void setTrigger(bool isTrigger);
 	bool getTrigger() const;
+
+	void setBodyType(const b2BodyType& bodyType);
 
 	virtual void onLocalPositionChanged(const Vec3& newPosition) override;
 	virtual void onLocalScaleChanged(const Vec3& newScale) override;
@@ -44,4 +46,5 @@ protected:
 	bool m_IsTrigger;
 	b2Body* m_pBody;
 	UnitObject* m_pUnitObject;
+	b2BodyType m_BodyType;
 };

@@ -44,6 +44,8 @@ public:
 	void takeDamage(float damage);
 	float getHealth() const;
 
+	Unit* getUnit();
+
 private:
 	void stateTransition();
 	void attack();

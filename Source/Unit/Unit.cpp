@@ -47,7 +47,7 @@ void Unit::onUpdate()
 		float radian = std::atan2f(destination.y - pos.y, destination.x - pos.x) + MathUtility::toRadian(90.0f);
 
 		std::vector<Vec3> newPositions;
-		this->calculateObjectPositions(newPositions, destination, radian);
+		this->calculateObjectPositions(newPositions, destination, radian, m_UnitWidth);
 
 		int i = 0;
 		for (int i = 0; i < m_UnitCount; i++)
@@ -125,44 +125,45 @@ void Unit::init(int unitCount, float spacePerObject, int teamID, UnitStats* pUni
 	}
 }
 
-void Unit::setPosition(const Vec3& position, float angle)
+void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 {
 	std::vector<Vec3> newPositions;
-	this->calculateObjectPositions(newPositions, position, MathUtility::toRadian(angle));
+	this->calculateObjectPositions(newPositions, position, MathUtility::toRadian(angle), unitWidth);
 
 	int i = 0;
 	for (int i = 0; i < m_UnitCount; i++)
 	{
-		{
-			auto& tr = m_UnitObjects.at(i)->getTransform();
-			tr.setLocalPosition(newPositions.at(i));
-			m_UnitObjects.at(i)->setDestination(newPositions.at(i));
-		}
+		auto& tr = m_UnitObjects.at(i)->getTransform();
+		tr.setLocalPosition(newPositions.at(i));
+		m_UnitObjects.at(i)->setDestination(newPositions.at(i));
 	}
 
 	m_Angle = angle;
 }
 
-void Unit::setDestination(const Vec3& destination, float angle)
+void Unit::setDestination(const Vec3& destination, float angle, int unitWidth)
 {
 	//移動指示が入ったので攻撃目標はクリアする
 	m_pTargetUnit = nullptr;
 
 	std::vector<Vec3> newPositions;
-	this->calculateObjectPositions(newPositions, destination, MathUtility::toRadian(angle));
+	this->calculateObjectPositions(newPositions, destination, MathUtility::toRadian(angle), unitWidth);
 
 	int i = 0;
 	for (int i = 0; i < m_UnitCount; i++)
 	{
-		{
-			m_UnitObjects.at(i)->setDestination(newPositions.at(i));
-		}
+		m_UnitObjects.at(i)->setDestination(newPositions.at(i));
 	}
 
 	//ステートロック開始
 	m_StateLockTimer.reset();
 
 	m_Angle = angle;
+}
+
+float Unit::getSpacePerObject() const
+{
+	return m_SpacePerObject;
 }
 
 float Unit::getAngle() const
@@ -227,12 +228,19 @@ void Unit::onEnterCombat(Unit* pEnemyUnit)
 	setTarget(pEnemyUnit);
 }
 
-void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& destination, float radian)
+void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& destination, float radian, int unitWidth)
 {
 	DirectX::XMMATRIX rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0.0f, radian, 0.0f);
 
-	int xSize = m_UnitCount / 5;
-	int zSize = m_UnitCount / xSize;
+	//指定された列の数を割って行の数を求める(列の数はユニットの数に収まるように制限)
+	m_UnitWidth = MathUtility::clamp(unitWidth, 1, m_UnitCount);
+	//切り上げ用に割る
+	float div = (float)m_UnitCount / (float)m_UnitWidth;
+	//切り上げ
+	div = std::ceil(div);
+
+	int xSize = m_UnitWidth;
+	int zSize = (int)div;
 
 	results.reserve(m_UnitCount);
 

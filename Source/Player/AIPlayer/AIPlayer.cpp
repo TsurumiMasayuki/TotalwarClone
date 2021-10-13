@@ -67,7 +67,7 @@ void AIPlayer::onUpdate()
 		pMyUnit->setTarget(pTarget);
 	else
 		//áŠQ•¨‚ª‚ ‚Á‚½‚ç‰I‰ñ
-		pMyUnit->setDestination(destinationCandidate, angle);
+		pMyUnit->setDestination(destinationCandidate, angle, 10);
 }
 
 void AIPlayer::addUnit(Unit* pUnit)

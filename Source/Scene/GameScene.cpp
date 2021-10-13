@@ -9,7 +9,10 @@
 #include "AI\ValueMapRenderer.h"
 
 #include "Unit\Unit.h"
+#include "Component\Cursor.h"
+#include "Component\UnitSelector.h"
 #include "Component\Box2D\PhysicsManagerB2.h"
+#include "Component\Physics\BoxColliderBt.h"
 
 #include "Graphics\DX12\Material\DefaultMaterials.h"
 #include "Graphics\Material\ValueMapMaterial.h"
@@ -25,6 +28,11 @@ UnitStats g_UnitStats1;
 UnitStats g_UnitStats2;
 
 AIPlayer* pPlayer1;
+
+Cursor* g_pCursor;
+
+int g_TeamID1 = 0;
+int g_TeamID2 = 1;
 
 std::string GameScene::nextScene()
 {
@@ -77,20 +85,20 @@ void GameScene::start()
 	pObj1->getChildren().at(0)->getTransform().setLocalPosition(Vec3(-50.0f, 0.0f, 0.0f));
 	pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit1->init(25, 3.0f, 0, &g_UnitStats1, &m_ValueMap1);
-	g_pUnit1->setPosition(Vec3(-50.0f, 0.0f, 0.0f), 90.0f);
+	g_pUnit1->init(25, 3.0f, g_TeamID1, &g_UnitStats1, &m_ValueMap1);
+	g_pUnit1->setPosition(Vec3(-50.0f, 0.0f, 0.0f), 90.0f, 10);
 
 	pObj2->getChildren().at(0)->getTransform().setLocalPosition(Vec3(100.0f, 0.0f, 0.0f));
 	pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit2->init(25, 3.0f, 1, &g_UnitStats2, &m_ValueMap2);
-	g_pUnit2->setPosition(Vec3(100.0f, 0.0f, 0.0f), -90.0f);
+	g_pUnit2->init(25, 3.0f, g_TeamID2, &g_UnitStats2, &m_ValueMap2);
+	g_pUnit2->setPosition(Vec3(100.0f, 0.0f, 0.0f), -90.0f, 10);
 
 	pObj3->getChildren().at(0)->getTransform().setLocalPosition(Vec3(50.0f, 0.0f, 0.0f));
 	pObj3->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	auto pUnit3 = pObj3->getChildren().at(0)->addComponent<Unit>();
-	pUnit3->init(25, 3.0f, 1, &g_UnitStats1, &m_ValueMap2);
-	pUnit3->setPosition(Vec3(50.0f, 0.0f, 0.0f), -90.0f);
+	pUnit3->init(25, 3.0f, g_TeamID2, &g_UnitStats1, &m_ValueMap2);
+	pUnit3->setPosition(Vec3(50.0f, 0.0f, 0.0f), -90.0f, 10);
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
@@ -102,7 +110,7 @@ void GameScene::start()
 	auto pPlayer2 = pPlayer2Obj->addComponent<AIPlayer>();
 	pPlayer2->setActive(false);
 
-	pPlayer1->init(0, pPlayer2, &m_ValueMap2);
+	pPlayer1->init(g_TeamID1, pPlayer2, &m_ValueMap2);
 	pPlayer1->addUnit(g_pUnit1);
 	
 	pPlayer2->init(1, pPlayer1, &m_ValueMap1);
@@ -113,6 +121,26 @@ void GameScene::start()
 	auto pValueMapRendererObj = new GameObject(this);
 	auto pValueMapRenderer = pValueMapRendererObj->addComponent<ValueMapRenderer<UnitStatsValues::Health>>();
 	pValueMapRenderer->init(&m_ValueMap2, m_pValueMapMaterial, Color(DirectX::Colors::LightGreen));
+
+	//レイキャスト判定用平面オブジェクト
+	{
+		auto pPlaneObj = new GameObject(this);
+		pPlaneObj->getTransform().setLocalScale(Vec3(500.0f, 0.1f, 500.0f));
+		auto pCollider = pPlaneObj->addComponent<BoxColiiderBt>();
+		pCollider->setMass(0.0f);
+	}
+
+	//カーソル用オブジェクト
+	{
+		auto pCursorObj = ModelGameObjectHelper::instantiateModel<int>(this, GameDevice::getModelManager().getModel("Sphere"));
+		pCursorObj->getTransform().setLocalScale(Vec3(0.1f));
+
+		g_pCursor = pCursorObj->addComponent<Cursor>();
+		g_pCursor->init(m_pDefaultCamera);
+
+		UnitSelector* pSelector = pCursorObj->addComponent<UnitSelector>();
+		pSelector->init(g_pCursor, g_TeamID1);
+	}
 }
 
 void GameScene::update()
@@ -125,12 +153,6 @@ void GameScene::update()
 	if (GameDevice::getInput().isKeyDown(DIK_2))
 	{
 		g_pUnit1->setTarget(g_pUnit2);
-	}
-
-	if (GameDevice::getInput().isKeyDown(DIK_3))
-	{
-		g_pUnit1->setDestination(Vec3(-50.0f, 0.0f, 0.0f), 90.0f);
-		g_pUnit2->setDestination(Vec3(50.0f, 0.0f, 0.0f), -90.0f);
 	}
 }
 

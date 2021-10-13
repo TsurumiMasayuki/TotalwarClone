@@ -21,6 +21,7 @@ PhysicsManagerB2::~PhysicsManagerB2()
 
 void PhysicsManagerB2::onStart()
 {
+	m_World.SetAllowSleeping(false);
 }
 
 void PhysicsManagerB2::onUpdate()

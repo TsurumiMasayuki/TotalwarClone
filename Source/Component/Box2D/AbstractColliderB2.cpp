@@ -7,6 +7,7 @@
 #include "Unit\UnitObject.h"
 
 AbstractColliderB2::AbstractColliderB2()
+	: m_BodyType(b2_dynamicBody)
 {
 }
 
@@ -54,6 +55,11 @@ void AbstractColliderB2::setTrigger(bool isTrigger)
 bool AbstractColliderB2::getTrigger() const
 {
 	return m_IsTrigger;
+}
+
+void AbstractColliderB2::setBodyType(const b2BodyType& bodyType)
+{
+	m_BodyType = bodyType;
 }
 
 void AbstractColliderB2::onLocalPositionChanged(const Vec3& newPosition)

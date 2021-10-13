@@ -23,8 +23,10 @@ public:
 	virtual void onUpdate() override;
 
 	void init(int unitCount, float spacePerObject, int teamID, UnitStats* pUnitStats, ValueMap* pValueMap);
-	void setPosition(const Vec3& position, float angle);
-	void setDestination(const Vec3& destination, float angle);
+	void setPosition(const Vec3& position, float angle, int unitWidth);
+	void setDestination(const Vec3& destination, float angle, int unitWidth);
+
+	float getSpacePerObject() const;
 
 	float getAngle() const;
 
@@ -40,7 +42,7 @@ public:
 
 	void onEnterCombat(Unit* pEnemyUnit);
 
-	void calculateObjectPositions(std::vector<Vec3>& results, const Vec3& destination, float radian);
+	void calculateObjectPositions(std::vector<Vec3>& results, const Vec3& destination, float radian, int unitWidth);
 
 private:
 	std::vector<GameObject*> m_GameObjects;
@@ -49,6 +51,7 @@ private:
 	Unit* m_pTargetUnit;
 
 	int m_UnitCount;
+	int m_UnitWidth;
 	float m_SpacePerObject;
 	float m_Angle;
 	int m_TeamID;
