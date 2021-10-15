@@ -158,6 +158,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DX12Main.cpp" />
+    <ClCompile Include="Source\Blockbench\BlockbenchLoader.cpp" />
+    <ClCompile Include="Source\Blockbench\BlockbenchModel.cpp" />
     <ClCompile Include="Source\Component\Cursor.cpp" />
     <ClCompile Include="Source\Component\UnitSelector.cpp" />
     <ClCompile Include="Source\Player\AIPlayer\AIPlayer.cpp" />
@@ -174,6 +176,8 @@
     <ClCompile Include="Source\TotalwarCloneGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Blockbench\BlockbenchLoader.h" />
+    <ClInclude Include="Source\Blockbench\BlockbenchModel.h" />
     <ClInclude Include="Source\Component\Cursor.h" />
     <ClInclude Include="Source\Component\UnitSelector.h" />
     <ClInclude Include="Source\Player\AIPlayer\AIPlayer.h" />
