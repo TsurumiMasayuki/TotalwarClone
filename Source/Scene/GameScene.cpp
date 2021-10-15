@@ -21,6 +21,9 @@
 
 #include "UnitInfo\UnitStats.h"
 
+#include <fstream>
+#include "json.hpp"
+
 Unit* g_pUnit1;
 Unit* g_pUnit2;
 
@@ -33,6 +36,13 @@ Cursor* g_pCursor;
 
 int g_TeamID1 = 0;
 int g_TeamID2 = 1;
+
+struct BlockBenchCube
+{
+	Vec3 position;
+	Vec3 scale;
+	Vec3 rotation;
+};
 
 std::string GameScene::nextScene()
 {
@@ -140,6 +150,53 @@ void GameScene::start()
 
 		UnitSelector* pSelector = pCursorObj->addComponent<UnitSelector>();
 		pSelector->init(g_pCursor, g_TeamID1);
+	}
+
+	{
+		std::string fileName = "Resources/Test.json";
+		std::fstream hogeStream;
+		hogeStream.open(fileName.c_str());
+		nlohmann::json hoge;
+		hogeStream >> hoge;
+	
+		std::vector<BlockBenchCube> blockbenchCubes;
+
+		auto& cubes = hoge["minecraft:geometry"][0]["bones"][0]["cubes"];
+		for (auto& cube : cubes)
+		{
+			blockbenchCubes.emplace_back();
+			auto& bbCube = blockbenchCubes.back();
+
+			auto& origin = cube["origin"];
+			auto& size = cube["size"];
+			auto& rotation = cube["rotation"];
+
+			bbCube.position = Vec3(origin[0], origin[1], origin[2]);
+			bbCube.scale = Vec3(size[0] * 0.02f, size[1] * 0.02f, size[2] * 0.02f);
+			bbCube.rotation = Vec3(MathUtility::toRadian(rotation[0]),
+				MathUtility::toRadian(rotation[1]),
+				MathUtility::toRadian(rotation[2])
+			);
+		}
+
+		std::vector<UnitInstanceInfo> instances;
+		for (auto& cube : blockbenchCubes)
+		{
+			instances.emplace_back();
+			auto& instance = instances.back();
+
+			DirectX::XMMATRIX translation = DirectX::XMMatrixTranslationFromVector(cube.position.toXMVector());
+			DirectX::XMMATRIX scaling = DirectX::XMMatrixScalingFromVector(cube.scale.toXMVector());
+			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYawFromVector(cube.rotation.toXMVector());
+			DirectX::XMMATRIX world = DirectX::XMMatrixTranspose(rotation * scaling * translation);
+			DirectX::XMStoreFloat4x4(&instance.instanceMat, world);
+			instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		}
+
+		auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
+		auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
+		pInstancedRenderer->setMaterial(m_pInstancingMaterial);
+		pInstancedRenderer->setInstanceInfo(instances);
 	}
 }
 

@@ -47,7 +47,7 @@ void Unit::onUpdate()
 		float radian = std::atan2f(destination.y - pos.y, destination.x - pos.x) + MathUtility::toRadian(90.0f);
 
 		std::vector<Vec3> newPositions;
-		this->calculateObjectPositions(newPositions, destination, radian, m_UnitWidth);
+		calculateObjectPositions(newPositions, destination, radian, m_UnitWidth);
 
 		int i = 0;
 		for (int i = 0; i < m_UnitCount; i++)
@@ -128,7 +128,7 @@ void Unit::init(int unitCount, float spacePerObject, int teamID, UnitStats* pUni
 void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 {
 	std::vector<Vec3> newPositions;
-	this->calculateObjectPositions(newPositions, position, MathUtility::toRadian(angle), unitWidth);
+	calculateObjectPositions(newPositions, position, MathUtility::toRadian(angle), unitWidth);
 
 	int i = 0;
 	for (int i = 0; i < m_UnitCount; i++)
@@ -147,7 +147,7 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth)
 	m_pTargetUnit = nullptr;
 
 	std::vector<Vec3> newPositions;
-	this->calculateObjectPositions(newPositions, destination, MathUtility::toRadian(angle), unitWidth);
+	calculateObjectPositions(newPositions, destination, MathUtility::toRadian(angle), unitWidth);
 
 	int i = 0;
 	for (int i = 0; i < m_UnitCount; i++)

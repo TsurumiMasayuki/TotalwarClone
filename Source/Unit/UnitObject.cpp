@@ -6,11 +6,11 @@
 #include "AI\ValueMap.h"
 
 #include "Component\Utility\Transform.h"
-#include "Unit\Unit.h"
 #include "Component\Box2D\CircleColliderB2.h"
 
 #include "Device\GameDevice.h"
 
+#include "Unit\Unit.h"
 #include "UnitInfo\UnitStats.h"
 #include "Math\MathUtility.h"
 
