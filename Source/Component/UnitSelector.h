@@ -22,6 +22,7 @@ private:
 	int m_TeamID;
 	Unit* m_pTargetUnit;
 	Unit* m_pSelectedUnit;
+	Unit* m_pAttackTargetUnit;
 	CircleColliderB2* m_pCollider;
 
 	Vec3 m_UnitPlacePosBegin;

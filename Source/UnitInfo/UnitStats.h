@@ -13,6 +13,9 @@ struct UnitStats
 	//オブジェクトごとのHPの最大値
 	float m_MaxHealthPerObject;
 
+	//オブジェクト数
+	int m_UnitCount;
+
 	//アーマー
 	float m_Armor;
 

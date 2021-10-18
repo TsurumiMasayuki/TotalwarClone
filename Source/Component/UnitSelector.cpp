@@ -17,23 +17,30 @@ void UnitSelector::onUpdate()
 	const Vec3& cursorPoint = m_pCursor->getCursorPoint();
 	getTransform().setLocalPosition(cursorPoint);
 
-	//左クリックしたら選択(ターゲットがいないなら選択解除)
+	//中クリックしたら選択(ターゲットがいないなら選択解除)
 	if (GameDevice::getInput().isMouseButtonDown(2) &&
 		m_pTargetUnit != nullptr)
 	{
 		m_pSelectedUnit = m_pTargetUnit;
 	}
 
-	//右クリックしたら移動
+	//左クリックしたら移動または攻撃
 	if (GameDevice::getInput().isMouseButtonDown(0) &&
 		m_pSelectedUnit != nullptr)
 	{
+		if (m_pAttackTargetUnit != nullptr)
+		{
+			m_pSelectedUnit->setTarget(m_pAttackTargetUnit);
+		}
+
 		//ユニット配置の記録開始
 		m_UnitPlacePosBegin = cursorPoint;
 	}
 
+	//攻撃中でないなら移動処理終了
 	if (GameDevice::getInput().isMouseButtonUp(0) &&
-		m_pSelectedUnit != nullptr)
+		m_pSelectedUnit != nullptr &&
+		m_pAttackTargetUnit == nullptr)
 	{
 		//ユニット配置の記録終了
 		Vec3 unitPlacePosEnd = cursorPoint;
@@ -50,8 +57,12 @@ void UnitSelector::onTriggerStay(GameObject* pHit)
 {
 	auto pUnitObject = pHit->getComponent<UnitObject>();
 	if (pUnitObject == nullptr) return;
-	if (pUnitObject->getTeamID() != m_TeamID) return;
-
+	if (pUnitObject->getTeamID() != m_TeamID)
+	{
+		//違うチームなら攻撃対象候補にする
+		m_pAttackTargetUnit = pUnitObject->getUnit();
+		return;
+	}
 	m_pTargetUnit = pUnitObject->getUnit();
 }
 
@@ -60,9 +71,18 @@ void UnitSelector::onTriggerExit(GameObject* pHit)
 	auto pUnitObject = pHit->getComponent<UnitObject>();
 	if (pUnitObject == nullptr) return;
 	if (pUnitObject->getTeamID() == m_TeamID) return;
-	if (pUnitObject->getUnit() != m_pTargetUnit) return;
 
-	m_pTargetUnit = nullptr;
+	//ターゲット解除
+	if (pUnitObject->getUnit() == m_pTargetUnit)
+	{
+		m_pTargetUnit = nullptr;
+	}
+
+	//攻撃対象解除
+	if (pUnitObject->getUnit() == m_pAttackTargetUnit)
+	{
+		m_pAttackTargetUnit = nullptr;
+	}
 }
 
 void UnitSelector::init(Cursor* pCursor, int teamID)

@@ -32,7 +32,7 @@ void BlockbenchLoader::loadModel(const std::string& filePath, const std::string&
 		//ボーン内の立方体リストを取得
 		json cubes;
 		if (!safeGet(bone, cubes, "cubes"))
-			break;
+			continue;
 
 		//ボーンの情報を取得
 		json boneName;
@@ -54,11 +54,11 @@ void BlockbenchLoader::loadModel(const std::string& filePath, const std::string&
 		XMMATRIX bonePivotMat = XMMatrixIdentity();
 		if (safeGet(bone, bonePivot, "pivot"))
 		{
-			bonePivotMat = XMMatrixTranslation(bonePivot[0], bonePivot[1], bonePivot[2]);
+			bonePivotMat = XMMatrixTranslation(-(float)(bonePivot[0] - 1.0f) * 0.5f, -(float)(bonePivot[1]), (float)(bonePivot[2]));
 		}
 
 		//行列を合成
-		XMMATRIX boneMat = boneRotationMat * bonePivotMat;
+		XMMATRIX boneMat = bonePivotMat * boneRotationMat;
 
 		//親の名前を読み取って親の行列を合成する
 		json parentName = "";
@@ -106,11 +106,14 @@ void BlockbenchLoader::loadModel(const std::string& filePath, const std::string&
 			XMMATRIX pivotMat = XMMatrixIdentity();
 			if (safeGet(cube, pivot, "pivot"))
 			{
-				pivotMat = XMMatrixTranslation(pivot[0], pivot[1], pivot[2]);
+				pivotMat = XMMatrixTranslation(pivot[0] - 0.5f, pivot[1], pivot[2]);
 			}
 
+			//スケールの1/2分ずらす
+			XMMATRIX offsetMat = XMMatrixTranslation(size[0] / 2, size[1] / 2, size[2] / 2);
+
 			//行列を全て合成
-			XMMATRIX world = scaling * parentMatrix * pivotMat * rotationMat * translation;
+			XMMATRIX world = scaling * parentMatrix * rotationMat * pivotMat * translation * offsetMat;
 			resultMatrices.emplace_back(world);
 		}
 	}

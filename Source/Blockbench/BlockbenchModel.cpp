@@ -9,11 +9,11 @@ BlockbenchModel::BlockbenchModel(const std::vector<DirectX::XMMATRIX>& cubeMatri
 	for (auto& matrix : cubeMatrices)
 	{
 		m_CubeMatrices.emplace_back();
-		DirectX::XMStoreFloat4x4(&m_CubeMatrices.back(), DirectX::XMMatrixTranspose(matrix));
+		m_CubeMatrices.back() = matrix;
 	}
 }
 
-const std::vector<DirectX::XMFLOAT4X4>& BlockbenchModel::getCubeMatrices() const
+const std::vector<DirectX::XMMATRIX>& BlockbenchModel::getCubeMatrices() const
 {
 	return m_CubeMatrices;
 }

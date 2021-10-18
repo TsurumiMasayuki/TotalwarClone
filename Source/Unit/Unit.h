@@ -22,7 +22,7 @@ public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
 
-	void init(int unitCount, float spacePerObject, int teamID, UnitStats* pUnitStats, ValueMap* pValueMap);
+	void init(float spacePerObject, int teamID, UnitStats* pUnitStats, ValueMap* pValueMap);
 	void setPosition(const Vec3& position, float angle, int unitWidth);
 	void setDestination(const Vec3& destination, float angle, int unitWidth);
 
