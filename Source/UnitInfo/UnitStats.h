@@ -1,4 +1,5 @@
 #pragma once
+#include "Math\Vec3.h"
 
 enum class UnitStatsValues
 {
@@ -13,6 +14,9 @@ struct UnitStats
 {
 	//オブジェクト数
 	int m_ObjectCount;
+
+	//オブジェクトの大きさ
+	Vec3 m_ObjectSize;
 
 	//オブジェクト毎の間隔
 	float m_SpacePerObject;

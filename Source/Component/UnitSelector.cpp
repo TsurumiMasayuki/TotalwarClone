@@ -47,7 +47,7 @@ void UnitSelector::onUpdate()
 		Vec3 diff = unitPlacePosEnd - m_UnitPlacePosBegin;
 		Vec3 placePos = m_UnitPlacePosBegin + diff.normalized() * diff.length() * 0.5f;
 		m_pSelectedUnit->setDestination(placePos,
-			MathUtility::toDegree(std::atan2f(diff.y, diff.x)) + 90.0f,
+			MathUtility::toDegree(std::atan2f(diff.y, diff.x)),
 			diff.length() / m_pSelectedUnit->getSpacePerObject()
 		);
 	}

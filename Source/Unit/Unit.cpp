@@ -43,8 +43,10 @@ void Unit::onUpdate()
 	{
 		const Vec3& pos = getTransform().getLocalPosition();
 		const Vec3& destination = m_pTargetUnit->getTransform().getLocalPosition();
+		Vec3 diff = destination - pos;
+		diff.y = 0.0f;
 		//ターゲットとの角度を求める
-		float radian = std::atan2f(destination.y - pos.y, destination.x - pos.x) + MathUtility::toRadian(90.0f);;
+		float radian = Vec3::dot(diff, Vec3(0.0f, 0.0f, 1.0f));
 
 		int i = 0;
 		for (int i = 0; i < m_ObjectCount; i++)
@@ -114,7 +116,7 @@ void Unit::init(int teamID, UnitStats* pUnitStats, ValueMap* pValueMap)
 			auto& tr = pObj->getTransform();
 			Vec3 position = Vec3(m_SpacePerObject * x, 0.0f, m_SpacePerObject * z) + basePos;
 			tr.setLocalPosition(position);
-			tr.setLocalScale(Vec3(0.5f, 0.5f, 1.0f));
+			tr.setLocalScale(m_pUnitStats->m_ObjectSize);
 
 			pUnitObject->setDestination(position);
 		}

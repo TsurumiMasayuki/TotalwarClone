@@ -41,6 +41,11 @@ void UnitObject::onUpdate()
 			setState(State::Move);
 		}
 
+	if (m_pTargetObject == nullptr && m_State == State::Attack)
+	{
+		setState(State::Move);
+	}
+
 	//突撃中なら目的地を更新
 	if (m_State == State::Charge &&
 		m_pTargetObject != nullptr)
@@ -55,12 +60,34 @@ void UnitObject::onUpdate()
 
 	if (m_State == State::Attack &&
 		m_pTargetObject != nullptr)
-		m_pAttack->update();
+	{
+		//メイン攻撃を更新
+		for (auto pAttack : m_MainAttacks)
+		{
+			pAttack->update();
+		}
+
+		//サブ攻撃を更新
+		for (auto pAttack : m_SubAttacks)
+		{
+			pAttack->update();
+		}
+	}
 }
 
 void UnitObject::onDestroy()
 {
-	delete m_pAttack;
+	//メイン攻撃のインスタンスを削除
+	for (auto pAttack : m_MainAttacks)
+	{
+		delete pAttack;
+	}
+
+	//サブ攻撃のインスタンスを削除
+	for (auto pAttack : m_SubAttacks)
+	{
+		delete pAttack;
+	}
 }
 
 void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
@@ -79,20 +106,22 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();
 	m_pTrigger->setTrigger(true);
-	m_pTrigger->setRadius(15.0f);
+	m_pTrigger->setRadius(10.0f);
 
 	m_pValueMap = pValueMap;
 
 	//攻撃クラス生成
-	m_pAttack = new Attack(
-		10.0f,
-		0.5f,
-		10.0f,
-		10.0f,
-		true,
-		100,
-		false,
-		this
+	m_MainAttacks.emplace_back(
+		new Attack(
+			10.0f,
+			0.5f,
+			10.0f,
+			10.0f,
+			true,
+			100,
+			false,
+			this
+		)
 	);
 }
 
@@ -222,7 +251,7 @@ void UnitObject::stateTransition()
 void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& nextState)
 {
 	//ターゲットが設定済みなら実行しない
-	if (m_pTargetObject != nullptr) 
+	if (m_pTargetObject != nullptr)
 		return;
 
 	//同じチームなら処理を行わない
@@ -230,10 +259,14 @@ void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& next
 
 	//ターゲット設定
 	m_pTargetObject = pTargetObject;
-	m_pAttack->setTarget(m_pTargetObject);
 
 	//射程距離
-	float range = m_pAttack->getAttackRange();
+	float range = m_MainAttacks.at(0)->getAttackRange();
+	for (auto pAttack : m_MainAttacks)
+	{
+		pAttack->setTarget(m_pTargetObject);
+	}
+
 	//自身の座標
 	const Vec3& myPos = getTransform().getLocalPosition();
 	//ターゲットの座標

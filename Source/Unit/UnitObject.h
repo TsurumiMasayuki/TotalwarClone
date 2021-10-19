@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "Component\Base\AbstractComponent.h"
 
 class Unit;
@@ -75,6 +76,9 @@ private:
 
 	State m_State;
 
-	//攻撃クラス
-	Attack* m_pAttack;
+	//攻撃クラス(メイン)
+	std::vector<Attack*> m_MainAttacks;
+
+	//攻撃クラス(サブ)
+	std::vector<Attack*> m_SubAttacks;
 };
