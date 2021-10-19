@@ -10,6 +10,7 @@
 
 #include "Device\GameDevice.h"
 
+#include "Unit\Attack\Attack.h"
 #include "Unit\Unit.h"
 #include "UnitInfo\UnitStats.h"
 #include "Math\MathUtility.h"
@@ -30,14 +31,14 @@ void UnitObject::onUpdate()
 	//ヘルスの値を書き込む
 	m_pValueMap->writeMap(UnitStatsValues::Health, Value(getTransform().getLocalPosition(), 25.0f, m_Health));
 
-	m_AttackTimer.update();
+	rotate();
 
 	//ターゲットが死亡していたらターゲット解除
 	if (m_pTargetObject != nullptr)
 		if (m_pTargetObject->m_State == State::Dead)
 		{
 			m_pTargetObject = nullptr;
-			setState(State::StandBy);
+			setState(State::Move);
 		}
 
 	//突撃中なら目的地を更新
@@ -54,7 +55,12 @@ void UnitObject::onUpdate()
 
 	if (m_State == State::Attack &&
 		m_pTargetObject != nullptr)
-		attack();
+		m_pAttack->update();
+}
+
+void UnitObject::onDestroy()
+{
+	delete m_pAttack;
 }
 
 void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
@@ -73,16 +79,28 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();
 	m_pTrigger->setTrigger(true);
-	m_pTrigger->setRadius(1.5f);
-
-	//攻撃間隔を設定
-	m_AttackTimer.setMaxTime(pUnitStats->m_AttackInterval);
+	m_pTrigger->setRadius(15.0f);
 
 	m_pValueMap = pValueMap;
+
+	//攻撃クラス生成
+	m_pAttack = new Attack(
+		10.0f,
+		0.5f,
+		10.0f,
+		10.0f,
+		true,
+		100,
+		false,
+		this
+	);
 }
 
 void UnitObject::setDestination(const Vec3& destination, bool moveCommand)
 {
+	//ターゲットがいて移動命令でないならreturn
+	if (m_pTargetObject != nullptr && !moveCommand) return;
+
 	m_Destination = destination;
 
 	if (moveCommand)
@@ -107,10 +125,19 @@ void UnitObject::move()
 
 	//移動
 	Vec3 moveDir = diff.normalized();
-	m_pCollider->setVelocity(moveDir.x * 10.0f, moveDir.z * 10.0f);
+	m_pCollider->setVelocity(moveDir.x * m_pUnit->getUnitStats()->m_Speed, moveDir.z * m_pUnit->getUnitStats()->m_Speed);
+}
+
+void UnitObject::rotate()
+{
+	Vec3 diff = m_Destination - getTransform().getLocalPosition();
+	diff.y = 0.0f;
+
+	//移動
+	Vec3 rotateDir = diff.normalized();
 
 	//目的地に向けて回転
-	m_DesiredAngle = MathUtility::toDegree(std::atan2f(moveDir.z, moveDir.x)) + 90.0f;
+	m_DesiredAngle = MathUtility::toDegree(std::atan2f(rotateDir.z, rotateDir.x)) + 90.0f;
 	float curAngle = getTransform().getLocalAngles().y;
 	getTransform().setLocalAngles(Vec3(0.0f, MathUtility::lerp(curAngle, m_DesiredAngle, GameDevice::getGameTime().getDeltaTime() * 2.0f)));
 }
@@ -152,6 +179,7 @@ void UnitObject::onTriggerStay(UnitObject* pUnitObject)
 
 void UnitObject::onTriggerExit(UnitObject* pUnitObject)
 {
+	m_pTargetObject = nullptr;
 }
 
 int UnitObject::getTeamID() const
@@ -161,11 +189,8 @@ int UnitObject::getTeamID() const
 
 void UnitObject::takeDamage(float damage)
 {
-	float armor = m_pUnit->getUnitStats()->m_Armor;
-	//ダメージカット率計算
-	float damageCut = armor / 100.0f;
 	//ダメージを受ける
-	m_Health -= damage * std::fmaxf((1.0f - damageCut), 0.0f);
+	m_Health -= damage;
 }
 
 float UnitObject::getHealth() const
@@ -194,26 +219,6 @@ void UnitObject::stateTransition()
 	getUser().setActive(false);
 }
 
-void UnitObject::attack()
-{
-	if (!m_AttackTimer.isTime()) return;
-
-	const UnitStats* pUnitStats = m_pUnit->getUnitStats();
-	const UnitStats* pTargetUnitStats = m_pTargetObject->m_pUnit->getUnitStats();
-	Random& random = GameDevice::getRandom();
-
-	//防御確立と命中確立の差
-	int diff = 35 + pTargetUnitStats->m_MeleeAttack - pUnitStats->m_MeleeDefence;
-	//命中するか判定
-	bool isHit = random.getRandom(0, 100) <= diff;
-
-	//命中していたらダメージ
-	if (isHit)
-		m_pTargetObject->takeDamage(pUnitStats->m_MeleeDamage);
-
-	m_AttackTimer.reset();
-}
-
 void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& nextState)
 {
 	//ターゲットが設定済みなら実行しない
@@ -225,6 +230,18 @@ void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& next
 
 	//ターゲット設定
 	m_pTargetObject = pTargetObject;
+	m_pAttack->setTarget(m_pTargetObject);
+
+	//射程距離
+	float range = m_pAttack->getAttackRange();
+	//自身の座標
+	const Vec3& myPos = getTransform().getLocalPosition();
+	//ターゲットの座標
+	const Vec3& targetPos = pTargetObject->getTransform().getLocalPosition();
+
+	//自身の座標とターゲットの座標から攻撃が当たる最も近い座標を算出して目的地にする
+	Vec3 diff = targetPos - myPos;
+	m_Destination = myPos + diff.normalized() * range;
 
 	//ステート変更
 	setState(nextState);

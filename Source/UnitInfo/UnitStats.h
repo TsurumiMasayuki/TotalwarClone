@@ -4,29 +4,28 @@ enum class UnitStatsValues
 {
 	Health,
 	Shield,
-	Armor,
-	DefencePower,
+	UnitCount,
+	Speed,
+	RotationSpeed
 };
 
 struct UnitStats
 {
+	//オブジェクト数
+	int m_ObjectCount;
+
+	//オブジェクト毎の間隔
+	float m_SpacePerObject;
+
 	//オブジェクトごとのHPの最大値
 	float m_MaxHealthPerObject;
 
-	//オブジェクト数
-	int m_UnitCount;
+	//オブジェクトごとのシールドの最大値
+	float m_MaxShieldPerObject;
 
-	//アーマー
-	float m_Armor;
+	//スピード
+	float m_Speed;
 
-	//近接攻撃命中率
-	int m_MeleeAttack;
-	//近接防御確率
-	int m_MeleeDefence;
-
-	//近接攻撃ダメージ
-	float m_MeleeDamage;
-
-	//攻撃間隔
-	float m_AttackInterval;
+	//回転スピード
+	float m_RotationSpeed;
 };

@@ -44,16 +44,12 @@ void Unit::onUpdate()
 		const Vec3& pos = getTransform().getLocalPosition();
 		const Vec3& destination = m_pTargetUnit->getTransform().getLocalPosition();
 		//ターゲットとの角度を求める
-		float radian = std::atan2f(destination.y - pos.y, destination.x - pos.x) + MathUtility::toRadian(90.0f);
-
-		std::vector<Vec3> newPositions;
-		calculateObjectPositions(newPositions, destination, radian, m_UnitWidth);
+		float radian = std::atan2f(destination.y - pos.y, destination.x - pos.x) + MathUtility::toRadian(90.0f);;
 
 		int i = 0;
-		for (int i = 0; i < m_UnitCount; i++)
+		for (int i = 0; i < m_ObjectCount; i++)
 		{
-			if (m_UnitObjects.at(i)->getState() == UnitObject::State::Move)
-				m_UnitObjects.at(i)->setDestination(newPositions.at(i), false);
+			m_UnitObjects.at(i)->setDestination(destination, false);
 		}
 	}
 
@@ -81,10 +77,10 @@ void Unit::onUpdate()
 	m_pInstancedRenderer->setInstanceInfo(instanceInfo);
 }
 
-void Unit::init(float spacePerObject, int teamID, UnitStats* pUnitStats, ValueMap* pValueMap)
+void Unit::init(int teamID, UnitStats* pUnitStats, ValueMap* pValueMap)
 {
-	m_UnitCount = pUnitStats->m_UnitCount;
-	m_SpacePerObject = spacePerObject;
+	m_ObjectCount = pUnitStats->m_ObjectCount;
+	m_SpacePerObject = pUnitStats->m_SpacePerObject;
 	m_TeamID = teamID;
 	m_pUnitStats = pUnitStats;
 	m_pValueMap = pValueMap;
@@ -94,8 +90,8 @@ void Unit::init(float spacePerObject, int teamID, UnitStats* pUnitStats, ValueMa
 
 	m_pInstancedRenderer = getUser().getComponent<InstancedRenderer<UnitInstanceInfo>>();
 
-	int xSize = m_UnitCount / 5;
-	int zSize = m_UnitCount / xSize;
+	int xSize = m_ObjectCount / 5;
+	int zSize = m_ObjectCount / xSize;
 
 	Vec3 basePos(-m_SpacePerObject * (float)xSize * 0.5f, -10.0f, m_SpacePerObject * (float)zSize * 0.5f);
 
@@ -131,7 +127,7 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 	calculateObjectPositions(newPositions, position, MathUtility::toRadian(angle), unitWidth);
 
 	int i = 0;
-	for (int i = 0; i < m_UnitCount; i++)
+	for (int i = 0; i < m_ObjectCount; i++)
 	{
 		auto& tr = m_UnitObjects.at(i)->getTransform();
 		tr.setLocalPosition(newPositions.at(i));
@@ -150,7 +146,7 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth)
 	calculateObjectPositions(newPositions, destination, MathUtility::toRadian(angle), unitWidth);
 
 	int i = 0;
-	for (int i = 0; i < m_UnitCount; i++)
+	for (int i = 0; i < m_ObjectCount; i++)
 	{
 		m_UnitObjects.at(i)->setDestination(newPositions.at(i));
 	}
@@ -232,20 +228,23 @@ void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& dest
 {
 	DirectX::XMMATRIX rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0.0f, radian, 0.0f);
 
-	//指定された列の数を割って行の数を求める(列の数はユニットの数に収まるように制限)
-	m_UnitWidth = MathUtility::clamp(unitWidth, 1, m_UnitCount);
+	//列の数はユニットの数と0除算にならない範囲に収まるように制限
+	m_UnitWidth = MathUtility::clamp(unitWidth, 1, m_ObjectCount);
 	//切り上げ用に割る
-	float div = (float)m_UnitCount / (float)m_UnitWidth;
-	//切り上げ
+	float div = (float)m_ObjectCount / (float)m_UnitWidth;
+	//切り上げて行の数を求める
 	div = std::ceil(div);
 
 	int xSize = m_UnitWidth;
 	int zSize = (int)div;
 
-	results.reserve(m_UnitCount);
+	//オブジェクトの数の分だけvectorのサイズ確保
+	results.reserve(m_ObjectCount);
 
+	//ベースの座標を計算
 	Vec3 basePos(-m_SpacePerObject * (float)(xSize - 1) * 0.5f, -10.0f, m_SpacePerObject * (float)(zSize - 1) * 0.5f);
 
+	//オブジェクトごとの座標計算
 	for (int z = 0; z < zSize; z++)
 	{
 		for (int x = 0; x < xSize; x++)

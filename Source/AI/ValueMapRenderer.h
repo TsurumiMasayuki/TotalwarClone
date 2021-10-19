@@ -17,6 +17,7 @@ struct ValueMapInstance
 	DirectX::XMFLOAT4 instanceColor;
 };
 
+//デバッグ用にValueMapを表示するクラス
 template <UnitStatsValues T> class ValueMapRenderer
 	: public AbstractComponent
 {
@@ -77,16 +78,19 @@ inline void ValueMapRenderer<T>::init(ValueMap* pValueMap, ValueMapMaterial* pMa
 {
 	m_pValueMap = pValueMap;
 
+	//描画用InstancedRendererオブジェクト生成
 	auto pObj = ModelGameObjectHelper::instantiateModel<ValueMapInstance>(
 		getUser().getGameMediator(),
 		GameDevice::getModelManager().getModel("Cube"),
 		true);
 
+	//InstancedRendererの各種設定
 	pObj->setParent(&getUser());
 	m_pInstancedRenderer = pObj->getChildren().at(0)->getComponent<InstancedRenderer<ValueMapInstance>>();
 	m_pInstancedRenderer->setMaterial(pMaterial);
 	pMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("CircleFill"));
 
+	//色設定
 	m_Color = color;
 	m_Color.a = 1.0f;
 }

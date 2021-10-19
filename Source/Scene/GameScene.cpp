@@ -63,24 +63,22 @@ void GameScene::start()
 
 	g_UnitStats1 =
 	{
-		100.0f,	//HP
-		30,		//アーマー
-		25,		//近接命中確率
-		30,		//近接防御確率
-		25,		//ユニット数
-		25.0f,	//近接ダメージ
-		1.0f	//攻撃間隔
+		25,			//数
+		3.0f,		//ユニットごとの間隔
+		100.0f,		//体力
+		0.0f,		//シールド
+		10.0f,		//速度
+		10.0f,		//回転速度
 	};
 
 	g_UnitStats2 =
 	{
-		50.0f,	//HP
-		30,		//アーマー
-		25,		//近接命中確率
-		30,		//近接防御確率
-		25,		//ユニット数
-		25.0f,	//近接ダメージ
-		1.0f	//攻撃間隔
+		25,			//数
+		3.0f,		//ユニットごとの間隔
+		50.0f,		//体力
+		0.0f,		//シールド
+		10.0f,		//速度
+		10.0f,		//回転速度
 	};
 
 	auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
@@ -90,19 +88,19 @@ void GameScene::start()
 	pObj1->getChildren().at(0)->getTransform().setLocalPosition(Vec3(-50.0f, 0.0f, 0.0f));
 	pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit1->init(3.0f, g_TeamID1, &g_UnitStats1, &m_ValueMap1);
+	g_pUnit1->init(g_TeamID1, &g_UnitStats1, &m_ValueMap1);
 	g_pUnit1->setPosition(Vec3(-50.0f, 0.0f, 0.0f), 90.0f, 10);
 
 	pObj2->getChildren().at(0)->getTransform().setLocalPosition(Vec3(100.0f, 0.0f, 0.0f));
 	pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit2->init(3.0f, g_TeamID2, &g_UnitStats2, &m_ValueMap2);
+	g_pUnit2->init(g_TeamID2, &g_UnitStats2, &m_ValueMap2);
 	g_pUnit2->setPosition(Vec3(100.0f, 0.0f, 0.0f), -90.0f, 10);
 
 	pObj3->getChildren().at(0)->getTransform().setLocalPosition(Vec3(50.0f, 0.0f, 0.0f));
 	pObj3->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	auto pUnit3 = pObj3->getChildren().at(0)->addComponent<Unit>();
-	pUnit3->init(3.0f, g_TeamID2, &g_UnitStats1, &m_ValueMap2);
+	pUnit3->init(g_TeamID2, &g_UnitStats1, &m_ValueMap2);
 	pUnit3->setPosition(Vec3(50.0f, 0.0f, 0.0f), -90.0f, 10);
 
 	//AIプレイヤー1の生成

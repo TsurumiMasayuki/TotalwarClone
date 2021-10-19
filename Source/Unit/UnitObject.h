@@ -1,8 +1,8 @@
 #pragma once
 #include "Component\Base\AbstractComponent.h"
-#include "Utility\Timer.h"
 
 class Unit;
+class Attack;
 class CircleColliderB2;
 class ValueMap;
 
@@ -14,7 +14,7 @@ public:
 	{
 		StandBy,//待機(通常)
 		Move,	//通常移動
-		Charge,	//突撃
+		Charge,	//突撃(攻撃する位置まで移動)
 		Attack, //戦闘
 		Dead,	//死亡
 	};
@@ -22,12 +22,14 @@ public:
 public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
+	virtual void onDestroy() override;
 
 	void init(Unit* pUnit, ValueMap* pValueMap);
 
 	//目的地を設定
 	void setDestination(const Vec3& destination, bool moveCommand = true);
 	void move();
+	void rotate();
 
 	void onCollisionEnter(UnitObject* pUnitObject);
 	void onCollisionStay(UnitObject* pUnitObject);
@@ -48,7 +50,6 @@ public:
 
 private:
 	void stateTransition();
-	void attack();
 	void trySetTargetObject(UnitObject* pTargetObject, const State& nextState);
 
 	void setState(const State& newState);
@@ -74,5 +75,6 @@ private:
 
 	State m_State;
 
-	Timer m_AttackTimer;
+	//攻撃クラス
+	Attack* m_pAttack;
 };

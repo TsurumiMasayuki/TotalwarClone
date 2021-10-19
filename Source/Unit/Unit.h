@@ -22,7 +22,7 @@ public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
 
-	void init(float spacePerObject, int teamID, UnitStats* pUnitStats, ValueMap* pValueMap);
+	void init(int teamID, UnitStats* pUnitStats, ValueMap* pValueMap);
 	void setPosition(const Vec3& position, float angle, int unitWidth);
 	void setDestination(const Vec3& destination, float angle, int unitWidth);
 
@@ -50,7 +50,7 @@ private:
 
 	Unit* m_pTargetUnit;
 
-	int m_UnitCount;
+	int m_ObjectCount;
 	int m_UnitWidth;
 	float m_SpacePerObject;
 	float m_Angle;
