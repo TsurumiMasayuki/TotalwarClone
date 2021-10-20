@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Component\Base\AbstractComponent.h"
+#include "Utility\Timer.h"
 
 class Unit;
 class Attack;
@@ -55,6 +56,8 @@ private:
 
 	void setState(const State& newState);
 
+	void updateShield();
+
 private:
 	//目的地
 	Vec3 m_Destination;
@@ -72,9 +75,14 @@ private:
 	ValueMap* m_pValueMap;
 
 	float m_Health;
+	float m_Shield;
+
 	float m_DesiredAngle;
 
 	State m_State;
+
+	//シールド回復開始までのタイマー
+	Timer m_ShieldRegenTimer;
 
 	//攻撃クラス(メイン)
 	std::vector<Attack*> m_MainAttacks;

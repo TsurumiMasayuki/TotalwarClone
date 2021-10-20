@@ -57,7 +57,7 @@ void GameScene::start()
 	{
 		auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
 		unitStatsManager.load("NormalCorvette", "Resources/UnitStats/NormalCorvette.json");
-		unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
+		//unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
 	}
 
 	//マテリアルの生成
@@ -74,10 +74,8 @@ void GameScene::start()
 
 	auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
 	auto pObj2 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
-	auto pObj3 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
 
 	const auto pUnitStats1 = &JsonFileManager<UnitStats>::getInstance().get("NormalCorvette");
-	const auto pUnitStats2 = &JsonFileManager<UnitStats>::getInstance().get("NormalBattleship");
 
 	pObj1->getChildren().at(0)->getTransform().setLocalPosition(Vec3(-50.0f, 0.0f, 0.0f));
 	pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
@@ -88,14 +86,8 @@ void GameScene::start()
 	pObj2->getChildren().at(0)->getTransform().setLocalPosition(Vec3(100.0f, 0.0f, 0.0f));
 	pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit2->init(g_TeamID2, pUnitStats2, &m_ValueMap2);
-	g_pUnit2->setPosition(Vec3(100.0f, 0.0f, 0.0f), -90.0f, 10);
-
-	pObj3->getChildren().at(0)->getTransform().setLocalPosition(Vec3(50.0f, 0.0f, 0.0f));
-	pObj3->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
-	auto pUnit3 = pObj3->getChildren().at(0)->addComponent<Unit>();
-	pUnit3->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
-	pUnit3->setPosition(Vec3(50.0f, 0.0f, 0.0f), -90.0f, 10);
+	g_pUnit2->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
+	g_pUnit2->setPosition(Vec3(50.0f, 0.0f, 0.0f), -90.0f, 10);
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
@@ -112,7 +104,6 @@ void GameScene::start()
 	
 	pPlayer2->init(1, pPlayer1, &m_ValueMap1);
 	pPlayer2->addUnit(g_pUnit2);
-	pPlayer2->addUnit(pUnit3);
 
 	//情報マップ描画の生成
 	auto pValueMapRendererObj = new GameObject(this);
@@ -156,11 +147,11 @@ void GameScene::start()
 			instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		}
 
-		auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
-		auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
-		pInstancedRenderer->setMaterial(m_pInstancingMaterial);
-		pInstancedRenderer->setInstanceInfo(instances);
-		loader.unLoadModels();
+		//auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
+		//auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
+		//pInstancedRenderer->setMaterial(m_pInstancingMaterial);
+		//pInstancedRenderer->setInstanceInfo(instances);
+		//loader.unLoadModels();
 	}
 }
 

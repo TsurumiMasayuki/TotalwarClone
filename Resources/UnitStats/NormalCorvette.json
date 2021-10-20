@@ -1,11 +1,26 @@
+
 {
-    "Name" : "NormalCorvette",
-    "DisplayName" : "Normal Corvette",
-    "ObjectCount" : 50,
-    "ObjectSize" : [0.5, 0.5, 1.0],
-    "SpacePerObject" : 3.0,
-    "MaxHealthPerObject" : 100.0,
-    "MaxShieldPerObject" : 0.0,
-    "Speed" : 10.0,
-    "RotationSpeed" : 10.0
+    "UnitStats" :
+    {
+        "Name" : "NormalCorvette",
+        "DisplayName" : "Normal Corvette",
+        "ObjectCount" : 10,
+        "ObjectSize" : [0.5, 0.5, 1.0],
+        "SpacePerObject" : 3.0,
+        "MaxHealthPerObject" : 100.0,
+        "MaxShieldPerObject" : 50.0,
+        "Speed" : 10.0,
+        "RotationSpeed" : 10.0
+    },
+    "MainAttacks" : 
+    [
+        { 
+            "AttackName" : "TestAttack",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        {
+            "AttackName" : "TestAttack",
+            "Position" : [0.0, 0.0, -0.5]
+        }
+    ]
 }

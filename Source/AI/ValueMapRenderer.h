@@ -52,9 +52,9 @@ public:
 			DirectX::XMStoreFloat4x4(&instance.instanceMat, instanceMat);
 
 			float hoge = value.m_Value;
-			Color color(m_Color.r * hoge / 100.0f,
-				m_Color.g * hoge / 100.0f,
-				m_Color.b * hoge / 100.0f,
+			Color color(m_Color.r * hoge / 10000.0f,
+				m_Color.g * hoge / 10000.0f,
+				m_Color.b * hoge / 10000.0f,
 				m_Color.a);
 
 			//êFÇìKóp

@@ -19,6 +19,7 @@
 
 void UnitObject::onStart()
 {
+	m_ShieldRegenTimer.setMaxTime(1.0f);
 }
 
 void UnitObject::onUpdate()
@@ -33,7 +34,35 @@ void UnitObject::onUpdate()
 	//ヘルスの値を書き込む
 	m_pValueMap->writeMap(UnitStatsValues::Health, Value(getTransform().getLocalPosition(), 25.0f, m_Health));
 
+	updateShield();
+
 	rotate();
+
+	switch (m_State)
+	{
+	case UnitObject::State::StandBy:
+		m_pCollider->setVelocity(0.0f, 0.0f);
+		break;
+	case UnitObject::State::Move:
+		move();
+		break;
+	case UnitObject::State::Charge:
+		move();
+		break;
+	case UnitObject::State::Attack:
+		//メイン攻撃を更新
+		for (auto pAttack : m_MainAttacks)
+		{
+			pAttack->update();
+		}
+		//サブ攻撃を更新
+		for (auto pAttack : m_SubAttacks)
+		{
+			pAttack->update();
+		}
+		m_pCollider->setVelocity(0.0f, 0.0f);
+		break;
+	}
 
 	//ターゲットが死亡していたらターゲット解除
 	if (m_pTargetObject != nullptr)
@@ -42,34 +71,6 @@ void UnitObject::onUpdate()
 			m_pTargetObject = nullptr;
 			setState(State::Move);
 		}
-
-	if (m_pTargetObject == nullptr && m_State == State::Attack)
-	{
-		setState(State::Move);
-	}
-
-	//待機中でない、かつ戦闘中でないなら移動処理
-	if (m_State != State::StandBy &&
-		m_State != State::Attack)
-		move();
-	else
-		m_pCollider->setVelocity(0.0f, 0.0f);
-
-	if (m_State == State::Attack &&
-		m_pTargetObject != nullptr)
-	{
-		//メイン攻撃を更新
-		for (auto pAttack : m_MainAttacks)
-		{
-			pAttack->update();
-		}
-
-		//サブ攻撃を更新
-		for (auto pAttack : m_SubAttacks)
-		{
-			pAttack->update();
-		}
-	}
 }
 
 void UnitObject::onDestroy()
@@ -94,6 +95,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 
 	const UnitStats* pUnitStats = m_pUnit->getUnitStats();
 	m_Health = pUnitStats->m_MaxHealthPerObject;
+	m_Shield = pUnitStats->m_MaxShieldPerObject;
 
 	//通常コライダー
 	m_pCollider = getUser().addComponent<CircleColliderB2>();
@@ -108,15 +110,18 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	m_pValueMap = pValueMap;
 
 	//攻撃クラス生成
-	m_MainAttacks.emplace_back(
-		new Attack(this, &JsonFileManager<AttackStats>::getInstance().get("TestAttack"))
-	);
+	for (auto& attacks : m_pUnit->getUnitStats()->getMainAttacks())
+	{
+		m_MainAttacks.emplace_back(
+			new Attack(this, &JsonFileManager<AttackStats>::getInstance().get(attacks.m_AttackName))
+		);
+	}
 }
 
 void UnitObject::setDestination(const Vec3& destination, bool moveCommand)
 {
 	//ターゲットがいて移動命令でないならreturn
-	if (m_pTargetObject != nullptr && !moveCommand) return;
+	if (m_pTargetObject != nullptr && !moveCommand && m_State == State::Attack) return;
 
 	m_Destination = destination;
 
@@ -148,6 +153,8 @@ void UnitObject::move()
 void UnitObject::rotate()
 {
 	Vec3 diff = m_Destination - getTransform().getLocalPosition();
+	if (m_pTargetObject != nullptr)
+		diff = m_pTargetObject->getTransform().getLocalPosition() - getTransform().getLocalPosition();
 	diff.y = 0.0f;
 
 	//移動
@@ -206,8 +213,18 @@ int UnitObject::getTeamID() const
 
 void UnitObject::takeDamage(float damage)
 {
-	//ダメージを受ける
-	m_Health -= damage;
+	//シールドが無かったらHPでダメージを受ける。そうでなければシールドで受ける。
+	if (m_Shield <= 0.0f)
+	{
+		m_Health -= damage;
+	}
+	else
+	{
+		m_Shield -= damage;
+	}
+
+	//シールド回復のタイマーをリセット
+	m_ShieldRegenTimer.reset();
 }
 
 float UnitObject::getHealth() const
@@ -262,7 +279,15 @@ void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& next
 
 	//自身の座標とターゲットの座標から攻撃が当たる最も近い座標を算出して目的地にする
 	Vec3 diff = targetPos - myPos;
-	m_Destination = myPos + diff.normalized() * range;
+
+	if (diff.sqrLength() < range * range)
+	{
+		m_Destination = myPos;
+	}
+	else
+	{
+		m_Destination = myPos + diff.normalized() * range;
+	}
 
 	//ステート変更
 	setState(nextState);
@@ -291,4 +316,17 @@ void UnitObject::setState(const State& newState)
 	//}
 
 	m_State = newState;
+}
+
+void UnitObject::updateShield()
+{
+	m_ShieldRegenTimer.update();
+
+	//シールド回復開始
+	if (m_ShieldRegenTimer.isTime())
+	{
+		//シールドの最大値を超えないように回復
+		m_Shield = std::fminf(m_pUnit->getUnitStats()->m_MaxShieldPerObject,
+			m_Shield + 10.0f * GameDevice::getGameTime().getDeltaTime());
+	}
 }

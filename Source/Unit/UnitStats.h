@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "json.hpp"
 #include "Math\Vec3.h"
 
@@ -12,10 +13,20 @@ enum class UnitStatsValues
 	RotationSpeed
 };
 
+struct AttackInfo
+{
+	AttackInfo(const std::string& attackName, const Vec3& position);
+
+	const std::string m_AttackName;
+	const Vec3 m_Position;
+};
+
 struct UnitStats
 {
 public:
 	UnitStats(nlohmann::json& json);
+
+	const std::vector<AttackInfo>& getMainAttacks() const;
 
 	//管理名
 	const std::string m_Name;
@@ -43,4 +54,9 @@ public:
 
 	//回転スピード
 	const float m_RotationSpeed;
+
+private:
+
+	//攻撃のリスト
+	std::vector<AttackInfo> m_AttackInfoList;
 };
