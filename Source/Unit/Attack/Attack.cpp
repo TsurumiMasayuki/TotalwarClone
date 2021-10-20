@@ -1,23 +1,10 @@
 #include "Attack.h"
 #include "Unit\UnitObject.h"
+#include "Unit\Attack\AttackStats.h"
 
-Attack::Attack(float damage,
-	float attackInterval,
-	float attackRange,
-	float trackSpeed,
-	bool isTrackTarget,
-	int maxAttackCount,
-	bool isInfiniteAttack,
-	UnitObject* pOwner)
-	: m_Damage(damage),
-	m_AttackInterval(attackInterval),
-	m_AttackRange(attackRange),
-	m_TrackSpeed(trackSpeed),
-	m_IsTrackTarget(isTrackTarget),
-	m_MaxAttackCount(maxAttackCount),
-	m_IsInfiniteAttack(isInfiniteAttack),
-	m_pAttackEffect(nullptr),
-	m_AttackTimer(attackInterval),
+Attack::Attack(UnitObject* pOwner, const AttackStats* pAttackStats)
+	: m_pAttackStats(pAttackStats),
+	m_AttackTimer(pAttackStats->m_AttackInterval),
 	m_IsActive(true),
 	m_pOwner(pOwner),
 	m_pTarget(nullptr),
@@ -65,7 +52,7 @@ UnitObject* Attack::getTarget() const
 
 float Attack::getAttackRange() const
 {
-	return m_AttackRange;
+	return m_pAttackStats->m_AttackRange;
 }
 
 void Attack::attackTarget()
@@ -73,7 +60,7 @@ void Attack::attackTarget()
 	if (m_pTarget == nullptr) return;
 
 	//エフェクトの実行などする(予定)
-	m_pTarget->takeDamage(m_Damage);
+	m_pTarget->takeDamage(m_pAttackStats->m_Damage);
 }
 
 void Attack::trackTarget()
@@ -81,7 +68,7 @@ void Attack::trackTarget()
 	//無効化されているならreturn;
 	if (!m_IsActive) return;
 	//追跡しないならreturn
-	if (!m_IsTrackTarget) return;
+	if (!m_pAttackStats->m_IsTrackTarget) return;
 
 
 

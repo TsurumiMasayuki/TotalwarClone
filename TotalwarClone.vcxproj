@@ -168,6 +168,8 @@
     <ClCompile Include="Source\Component\Box2D\CircleColliderB2.cpp" />
     <ClCompile Include="Source\Component\Box2D\ContactListenerB2.cpp" />
     <ClCompile Include="Source\Unit\Attack\Attack.cpp" />
+    <ClCompile Include="Source\Unit\Attack\AttackStats.cpp" />
+    <ClCompile Include="Source\Unit\Attack\AttackStatsManager.cpp" />
     <ClCompile Include="Source\Unit\Unit.cpp" />
     <ClCompile Include="Source\Unit\UnitContainer.cpp" />
     <ClCompile Include="Source\Unit\UnitObject.cpp" />
@@ -189,6 +191,8 @@
     <ClInclude Include="Source\Component\Box2D\ContactListenerB2.h" />
     <ClInclude Include="Source\Player\IPlayer.h" />
     <ClInclude Include="Source\Unit\Attack\Attack.h" />
+    <ClInclude Include="Source\Unit\Attack\AttackStats.h" />
+    <ClInclude Include="Source\Unit\Attack\AttackStatsManager.h" />
     <ClInclude Include="Source\Unit\Unit.h" />
     <ClInclude Include="Source\Unit\UnitContainer.h" />
     <ClInclude Include="Source\Unit\UnitObject.h" />
@@ -196,7 +200,8 @@
     <ClInclude Include="Source\Graphics\Material\ValueMapMaterial.h" />
     <ClInclude Include="Source\Scene\GameScene.h" />
     <ClInclude Include="Source\TotalwarCloneGame.h" />
-    <ClInclude Include="Source\UnitInfo\UnitStats.h" />
+    <ClInclude Include="Source\Unit\UnitStats.h" />
+    <ClInclude Include="Source\Utility\SingletonTemplate.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\AdditivePixelShader.hlsl">

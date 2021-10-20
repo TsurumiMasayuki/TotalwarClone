@@ -6,6 +6,7 @@ class GameObject;
 class InstancingMaterial;
 class ValueMapMaterial;
 class Model;
+class AttackStatsManager;
 
 class GameScene
 	: public AbstractScene

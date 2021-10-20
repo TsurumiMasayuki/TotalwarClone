@@ -10,9 +10,11 @@
 
 #include "Device\GameDevice.h"
 
-#include "Unit\Attack\Attack.h"
 #include "Unit\Unit.h"
-#include "UnitInfo\UnitStats.h"
+#include "Unit\UnitStats.h"
+#include "Unit\Attack\Attack.h"
+#include "Unit\Attack\AttackStatsManager.h"
+
 #include "Math\MathUtility.h"
 
 void UnitObject::onStart()
@@ -45,11 +47,6 @@ void UnitObject::onUpdate()
 	{
 		setState(State::Move);
 	}
-
-	//突撃中なら目的地を更新
-	if (m_State == State::Charge &&
-		m_pTargetObject != nullptr)
-		m_Destination = m_pTargetObject->getTransform().getLocalPosition();
 
 	//待機中でない、かつ戦闘中でないなら移動処理
 	if (m_State != State::StandBy &&
@@ -106,22 +103,13 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();
 	m_pTrigger->setTrigger(true);
-	m_pTrigger->setRadius(10.0f);
+	m_pTrigger->setRadius(25.0f);
 
 	m_pValueMap = pValueMap;
 
 	//攻撃クラス生成
 	m_MainAttacks.emplace_back(
-		new Attack(
-			10.0f,
-			0.5f,
-			10.0f,
-			10.0f,
-			true,
-			100,
-			false,
-			this
-		)
+		new Attack(this, &AttackStatsManager::getInstance().getAttackStats("TestAttack"))
 	);
 }
 

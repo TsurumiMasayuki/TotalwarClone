@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <numeric>
 #include "Math\Vec3.h"
-#include "UnitInfo\UnitStats.h"
+#include "Unit\UnitStats.h"
 
 //情報マップに書き込む数値の種類
 struct Value

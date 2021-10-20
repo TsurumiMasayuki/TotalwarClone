@@ -19,7 +19,8 @@
 
 #include "Player\AIPlayer\AIPlayer.h"
 
-#include "UnitInfo\UnitStats.h"
+#include "Unit\UnitStats.h"
+#include "Unit\Attack\AttackStatsManager.h"
 
 #include "Blockbench\BlockbenchModel.h"
 #include "Blockbench\BlockbenchLoader.h"
@@ -49,6 +50,12 @@ bool GameScene::isEnd()
 
 void GameScene::start()
 {
+	//攻撃ステータスの読み込み
+	{
+		auto& attackStatsManager = AttackStatsManager::getInstance();
+		attackStatsManager.load("TestAttack", "Resources/AttackStats/TestAttack.json");
+	}
+
 	//マテリアルの生成
 	m_pInstancingMaterial = new InstancingMaterial();
 	m_pInstancingMaterial->init(DX12GraphicsCore::g_pDevice.Get());

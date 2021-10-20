@@ -1,0 +1,10 @@
+{
+    "Damage" : 10.0,
+    "AttackInterval" : 0.5,
+    "AttackRange" : 10.0,
+    "TrackSpeed" : 10.0,
+    "IsTrackTarget" : false,
+    "MaxAttackCount" : 0,
+    "IsInfiniteAttack" : true,
+    "EffectFileName" : "Hoge.json"
+}
