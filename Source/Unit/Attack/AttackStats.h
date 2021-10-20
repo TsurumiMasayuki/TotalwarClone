@@ -1,10 +1,12 @@
 #pragma once
+#include "json.hpp"
 
 class IEffect;
 
 class AttackStats
 {
 public:
+	//’¼Ú’l‚ğ“ü‚ê‚é
 	AttackStats(float damage,
 		float attackInterval,
 		float attackRange,
@@ -13,6 +15,10 @@ public:
 		int maxAttackCount,
 		bool isInfiniteAttack);
 
+	//json‚Å‰Šú‰»
+	AttackStats(nlohmann::json& json);
+
+public:
 	//UŒ‚—Í
 	const float m_Damage;
 	//UŒ‚ŠÔŠu

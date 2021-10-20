@@ -18,3 +18,15 @@ AttackStats::AttackStats(
 	m_pAttackEffect(nullptr)
 {
 }
+
+AttackStats::AttackStats(nlohmann::json& json)
+	: m_Damage((float)json["Damage"]),
+	m_AttackInterval((float)json["AttackInterval"]),
+	m_AttackRange((float)json["AttackRange"]),
+	m_TrackSpeed((float)json["TrackSpeed"]),
+	m_IsTrackTarget((bool)json["IsTrackTarget"]),
+	m_MaxAttackCount((int)json["MaxAttackCount"]),
+	m_IsInfiniteAttack((bool)json["IsInfiniteAttack"]),
+	m_pAttackEffect(nullptr)
+{
+}

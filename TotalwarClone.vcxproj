@@ -169,7 +169,6 @@
     <ClCompile Include="Source\Component\Box2D\ContactListenerB2.cpp" />
     <ClCompile Include="Source\Unit\Attack\Attack.cpp" />
     <ClCompile Include="Source\Unit\Attack\AttackStats.cpp" />
-    <ClCompile Include="Source\Unit\Attack\AttackStatsManager.cpp" />
     <ClCompile Include="Source\Unit\Unit.cpp" />
     <ClCompile Include="Source\Unit\UnitContainer.cpp" />
     <ClCompile Include="Source\Unit\UnitObject.cpp" />
@@ -192,7 +191,7 @@
     <ClInclude Include="Source\Player\IPlayer.h" />
     <ClInclude Include="Source\Unit\Attack\Attack.h" />
     <ClInclude Include="Source\Unit\Attack\AttackStats.h" />
-    <ClInclude Include="Source\Unit\Attack\AttackStatsManager.h" />
+    <ClInclude Include="Source\Utility\JsonFileManager.h" />
     <ClInclude Include="Source\Unit\Unit.h" />
     <ClInclude Include="Source\Unit\UnitContainer.h" />
     <ClInclude Include="Source\Unit\UnitObject.h" />

@@ -20,7 +20,7 @@
 #include "Player\AIPlayer\AIPlayer.h"
 
 #include "Unit\UnitStats.h"
-#include "Unit\Attack\AttackStatsManager.h"
+#include "Utility\JsonFileManager.h"
 
 #include "Blockbench\BlockbenchModel.h"
 #include "Blockbench\BlockbenchLoader.h"
@@ -52,7 +52,7 @@ void GameScene::start()
 {
 	//攻撃ステータスの読み込み
 	{
-		auto& attackStatsManager = AttackStatsManager::getInstance();
+		auto& attackStatsManager = JsonFileManager<AttackStats>::getInstance();
 		attackStatsManager.load("TestAttack", "Resources/AttackStats/TestAttack.json");
 	}
 

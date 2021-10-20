@@ -2,7 +2,8 @@
 #pragma once
 
 //シングルトンテンプレート
-template<typename T> class SingletonTemplate
+template<typename T>
+class SingletonTemplate
 {
 public:
 	//インスタンスの取得

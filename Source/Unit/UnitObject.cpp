@@ -13,7 +13,7 @@
 #include "Unit\Unit.h"
 #include "Unit\UnitStats.h"
 #include "Unit\Attack\Attack.h"
-#include "Unit\Attack\AttackStatsManager.h"
+#include "Utility\JsonFileManager.h"
 
 #include "Math\MathUtility.h"
 
@@ -109,7 +109,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 
 	//çUåÇÉNÉâÉXê∂ê¨
 	m_MainAttacks.emplace_back(
-		new Attack(this, &AttackStatsManager::getInstance().getAttackStats("TestAttack"))
+		new Attack(this, &JsonFileManager<AttackStats>::getInstance().get("TestAttack"))
 	);
 }
 

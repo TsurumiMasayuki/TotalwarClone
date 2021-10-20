@@ -24,8 +24,6 @@ public:
 	float getAttackRange() const;
 
 private:
-	//射程距離の判定
-	bool isInRange() const;
 	//ターゲットを攻撃
 	void attackTarget();
 	//ターゲットの追跡
