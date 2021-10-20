@@ -28,9 +28,6 @@
 Unit* g_pUnit1;
 Unit* g_pUnit2;
 
-UnitStats g_UnitStats1;
-UnitStats g_UnitStats2;
-
 AIPlayer* pPlayer1;
 
 Cursor* g_pCursor;
@@ -56,6 +53,13 @@ void GameScene::start()
 		attackStatsManager.load("TestAttack", "Resources/AttackStats/TestAttack.json");
 	}
 
+	//ユニットステータスの読み込み
+	{
+		auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
+		unitStatsManager.load("NormalCorvette", "Resources/UnitStats/NormalCorvette.json");
+		unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
+	}
+
 	//マテリアルの生成
 	m_pInstancingMaterial = new InstancingMaterial();
 	m_pInstancingMaterial->init(DX12GraphicsCore::g_pDevice.Get());
@@ -68,48 +72,29 @@ void GameScene::start()
 	auto pPhysicsManagerObj = new GameObject(this);
 	pPhysicsManagerObj->addComponent<PhysicsManagerB2>();
 
-	g_UnitStats1 =
-	{
-		25,			//数
-		Vec3(0.5f, 0.5f, 1.0f),	//オブジェクトのサイズ
-		3.0f,		//ユニットごとの間隔
-		100.0f,		//体力
-		0.0f,		//シールド
-		10.0f,		//速度
-		10.0f,		//回転速度
-	};
-
-	g_UnitStats2 =
-	{
-		5,			//数
-		Vec3(5.0f, 5.0f, 10.0f),	//オブジェクトのサイズ
-		8.0f,		//ユニットごとの間隔
-		100.0f,		//体力
-		0.0f,		//シールド
-		10.0f,		//速度
-		10.0f,		//回転速度
-	};
-
 	auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
 	auto pObj2 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
 	auto pObj3 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
 
+	const auto pUnitStats1 = &JsonFileManager<UnitStats>::getInstance().get("NormalCorvette");
+	const auto pUnitStats2 = &JsonFileManager<UnitStats>::getInstance().get("NormalBattleship");
+
 	pObj1->getChildren().at(0)->getTransform().setLocalPosition(Vec3(-50.0f, 0.0f, 0.0f));
 	pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit1->init(g_TeamID1, &g_UnitStats1, &m_ValueMap1);
+	g_pUnit1->init(g_TeamID1, pUnitStats1, &m_ValueMap1);
 	g_pUnit1->setPosition(Vec3(-50.0f, 0.0f, 0.0f), 90.0f, 10);
 
 	pObj2->getChildren().at(0)->getTransform().setLocalPosition(Vec3(100.0f, 0.0f, 0.0f));
 	pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit2->init(g_TeamID2, &g_UnitStats2, &m_ValueMap2);
+	g_pUnit2->init(g_TeamID2, pUnitStats2, &m_ValueMap2);
 	g_pUnit2->setPosition(Vec3(100.0f, 0.0f, 0.0f), -90.0f, 10);
 
 	pObj3->getChildren().at(0)->getTransform().setLocalPosition(Vec3(50.0f, 0.0f, 0.0f));
 	pObj3->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	auto pUnit3 = pObj3->getChildren().at(0)->addComponent<Unit>();
-	pUnit3->init(g_TeamID2, &g_UnitStats1, &m_ValueMap2);
+	pUnit3->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
 	pUnit3->setPosition(Vec3(50.0f, 0.0f, 0.0f), -90.0f, 10);
 
 	//AIプレイヤー1の生成

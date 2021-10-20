@@ -176,6 +176,7 @@
     <ClCompile Include="Source\Graphics\Material\ValueMapMaterial.cpp" />
     <ClCompile Include="Source\Scene\GameScene.cpp" />
     <ClCompile Include="Source\TotalwarCloneGame.cpp" />
+    <ClCompile Include="Source\Unit\UnitStats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Blockbench\BlockbenchLoader.h" />

@@ -3,7 +3,7 @@
 
 class IEffect;
 
-class AttackStats
+struct AttackStats
 {
 public:
 	//’¼Ú’l‚ğ“ü‚ê‚é

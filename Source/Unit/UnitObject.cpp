@@ -103,7 +103,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();
 	m_pTrigger->setTrigger(true);
-	m_pTrigger->setRadius(25.0f);
+	m_pTrigger->setRadius(10.0f);
 
 	m_pValueMap = pValueMap;
 

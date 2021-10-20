@@ -79,7 +79,7 @@ void Unit::onUpdate()
 	m_pInstancedRenderer->setInstanceInfo(instanceInfo);
 }
 
-void Unit::init(int teamID, UnitStats* pUnitStats, ValueMap* pValueMap)
+void Unit::init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap)
 {
 	m_ObjectCount = pUnitStats->m_ObjectCount;
 	m_SpacePerObject = pUnitStats->m_SpacePerObject;

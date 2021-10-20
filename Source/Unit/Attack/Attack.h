@@ -3,8 +3,8 @@
 
 //エフェクトクラス(仮)
 class IEffect;
-class AttackStats;
 class UnitObject;
+struct AttackStats;
 
 //攻撃クラス
 class Attack

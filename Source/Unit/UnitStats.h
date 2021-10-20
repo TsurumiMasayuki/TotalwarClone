@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include "json.hpp"
 #include "Math\Vec3.h"
 
 enum class UnitStatsValues
@@ -12,24 +14,33 @@ enum class UnitStatsValues
 
 struct UnitStats
 {
+public:
+	UnitStats(nlohmann::json& json);
+
+	//管理名
+	const std::string m_Name;
+
+	//表示名
+	const std::string m_DisplayName;
+
 	//オブジェクト数
-	int m_ObjectCount;
+	const int m_ObjectCount;
 
 	//オブジェクトの大きさ
-	Vec3 m_ObjectSize;
+	const Vec3 m_ObjectSize;
 
 	//オブジェクト毎の間隔
-	float m_SpacePerObject;
+	const float m_SpacePerObject;
 
 	//オブジェクトごとのHPの最大値
-	float m_MaxHealthPerObject;
+	const float m_MaxHealthPerObject;
 
 	//オブジェクトごとのシールドの最大値
-	float m_MaxShieldPerObject;
+	const float m_MaxShieldPerObject;
 
 	//スピード
-	float m_Speed;
+	const float m_Speed;
 
 	//回転スピード
-	float m_RotationSpeed;
+	const float m_RotationSpeed;
 };
