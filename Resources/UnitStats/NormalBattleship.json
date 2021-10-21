@@ -1,11 +1,29 @@
 {
-    "Name" : "NormalBattleShip",
-    "DisplayName" : "Normal BattleShip",
-    "ObjectCount" : 5,
-    "ObjectSize" : [5.0, 5.0, 10.0],
-    "SpacePerObject" : 8.0,
-    "MaxHealthPerObject" : 10000.0,
-    "MaxShieldPerObject" : 0.0,
-    "Speed" : 2.0,
-    "RotationSpeed" : 10.0
+    "UnitStats" :
+    {
+        "Name" : "NormalBattleship",
+        "DisplayName" : "Normal Battleship",
+        "ObjectCount" : 1,
+        "ObjectSize" : [5.0, 5.0, 10.0],
+        "SpacePerObject" : 20.0,
+        "MaxHealthPerObject" : 50000.0,
+        "MaxShieldPerObject" : 25000.0,
+        "Speed" : 10.0,
+        "RotationSpeed" : 10.0
+    },
+    "MainAttacks" : 
+    [
+        { 
+            "AttackName" : "TestAttack_Strong",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        {
+            "AttackName" : "TestAttack_Strong",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        {
+            "AttackName" : "TestAttack_Strong",
+            "Position" : [0.0, 0.0, 0.0]
+        }
+    ]
 }

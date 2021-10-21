@@ -51,13 +51,14 @@ void GameScene::start()
 	{
 		auto& attackStatsManager = JsonFileManager<AttackStats>::getInstance();
 		attackStatsManager.load("TestAttack", "Resources/AttackStats/TestAttack.json");
+		attackStatsManager.load("TestAttack_Strong", "Resources/AttackStats/TestAttack_Strong.json");
 	}
 
 	//ユニットステータスの読み込み
 	{
 		auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
 		unitStatsManager.load("NormalCorvette", "Resources/UnitStats/NormalCorvette.json");
-		//unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
+		unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
 	}
 
 	//マテリアルの生成
@@ -76,18 +77,17 @@ void GameScene::start()
 	auto pObj2 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
 
 	const auto pUnitStats1 = &JsonFileManager<UnitStats>::getInstance().get("NormalCorvette");
+	const auto pUnitStats2 = &JsonFileManager<UnitStats>::getInstance().get("NormalBattleship");
 
-	pObj1->getChildren().at(0)->getTransform().setLocalPosition(Vec3(-50.0f, 0.0f, 0.0f));
 	pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit1->init(g_TeamID1, pUnitStats1, &m_ValueMap1);
-	g_pUnit1->setPosition(Vec3(-50.0f, 0.0f, 0.0f), 90.0f, 10);
+	g_pUnit1->init(g_TeamID1, pUnitStats2, &m_ValueMap1);
+	g_pUnit1->setPosition(Vec3(0.0f, 0.0f, 0.0f), 180.0f, 10);
 
-	pObj2->getChildren().at(0)->getTransform().setLocalPosition(Vec3(100.0f, 0.0f, 0.0f));
 	pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 	g_pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
 	g_pUnit2->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
-	g_pUnit2->setPosition(Vec3(50.0f, 0.0f, 0.0f), -90.0f, 10);
+	g_pUnit2->setPosition(Vec3(0.0f, 0.0f, 200.0f), 0.0f, 10);
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);

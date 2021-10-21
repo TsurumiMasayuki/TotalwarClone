@@ -77,8 +77,6 @@ private:
 	float m_Health;
 	float m_Shield;
 
-	float m_DesiredAngle;
-
 	State m_State;
 
 	//シールド回復開始までのタイマー

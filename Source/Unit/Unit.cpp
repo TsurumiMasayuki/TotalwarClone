@@ -55,6 +55,17 @@ void Unit::onUpdate()
 		}
 	}
 
+	DirectX::XMVECTOR color = DirectX::Colors::White;
+	//デバッグ用色分け処理
+	if (m_pUnitStats->m_Name == "NormalCorvette")
+	{
+		color = DirectX::Colors::White;
+	}
+	if (m_pUnitStats->m_Name == "NormalBattleship")
+	{
+		color = DirectX::Colors::Blue;
+	}
+
 	//InstancedRendererに情報を送る
 	std::vector<UnitInstanceInfo> instanceInfo;
 	for (int i = 0; i < (int)m_UnitObjects.size(); i++)
@@ -73,7 +84,7 @@ void Unit::onUpdate()
 				0.0f, 0.0f, 0.0f, 0.0f);
 
 		DirectX::XMStoreFloat4x4(&instance.instanceMat, instanceMat);
-		DirectX::XMStoreFloat4(&instance.instanceColor, DirectX::Colors::White);
+		DirectX::XMStoreFloat4(&instance.instanceColor, color);
 	}
 
 	m_pInstancedRenderer->setInstanceInfo(instanceInfo);
@@ -92,7 +103,7 @@ void Unit::init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap)
 
 	m_pInstancedRenderer = getUser().getComponent<InstancedRenderer<UnitInstanceInfo>>();
 
-	int xSize = m_ObjectCount / 5;
+	int xSize = m_ObjectCount / 1;
 	int zSize = m_ObjectCount / xSize;
 
 	Vec3 basePos(-m_SpacePerObject * (float)xSize * 0.5f, -10.0f, m_SpacePerObject * (float)zSize * 0.5f);
