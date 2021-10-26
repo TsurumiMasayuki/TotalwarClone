@@ -146,17 +146,33 @@ void GameScene::start()
 			auto pUnitCard = pUnitCardObj->addComponent<UIUnitCard>();
 			pUnitCard->init(pUnit1);
 
+			auto pHealthObj = new GameObject(this);
+			pHealthObj->setParent(pStatsDisplayObj);
+			pHealthObj->getTransform().setLocalPosition(Vec3(0.0f, 64.0f + 16.0f, 1.0f));
+			pHealthObj->getTransform().setLocalScale(Vec3(96.0f, 32.0f, 1.0f));
+
 			//ユニットの体力表示
-			auto pSliderObj = new GameObject(this);
-			pSliderObj->setParent(pStatsDisplayObj);
-			pSliderObj->getTransform().setLocalPosition(Vec3(0.0f, 64.0f + 16.0f));
-			pSliderObj->getTransform().setLocalScale(Vec3(96.0f, 32.0f, 1.0f));
-			m_pHealthSlider = pSliderObj->addComponent<UISlider>();
+			m_pHealthSlider = pHealthObj->addComponent<UISlider>();
 			m_pHealthSlider->setWidth(1.0f);
 			m_pHealthSlider->setDirection(UISlider::Direction::RIGHT);
+			m_pHealthSlider->setColor(Color(DirectX::Colors::Green));
 			m_pHealthSlider->setCurrentValue(pUnit1->getHealth());
 			m_pHealthSlider->setMaxValue(pUnit1->getHealth());
 			m_pHealthSlider->setTextureByName("BoxFill");
+
+			auto pShieldObj = new GameObject(this);
+			pShieldObj->setParent(pStatsDisplayObj);
+			pShieldObj->getTransform().setLocalPosition(Vec3(0.0f, 64.0f + 16.0f));
+			pShieldObj->getTransform().setLocalScale(Vec3(96.0f, 32.0f, 1.0f));
+
+			//ユニットのシールド表示(最大値をHPとして設定)
+			m_pShieldSlider = pShieldObj->addComponent<UISlider>();
+			m_pShieldSlider->setWidth(1.0f);
+			m_pShieldSlider->setDirection(UISlider::Direction::RIGHT);
+			m_pShieldSlider->setColor(Color(DirectX::Colors::Cyan));
+			m_pShieldSlider->setCurrentValue(pUnit1->getShield());
+			m_pShieldSlider->setMaxValue(pUnit1->getHealth());
+			m_pShieldSlider->setTextureByName("BoxFill");
 		}
 	}
 
@@ -241,6 +257,7 @@ void GameScene::update()
 	}
 
 	m_pHealthSlider->setCurrentValue(m_pUnit1->getHealth());
+	m_pShieldSlider->setCurrentValue(m_pUnit1->getShield());
 }
 
 void GameScene::shutdown()

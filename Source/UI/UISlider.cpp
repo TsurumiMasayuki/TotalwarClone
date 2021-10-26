@@ -88,6 +88,13 @@ void UISlider::setDirection(const Direction& direction)
 	m_SliderDirection = direction;
 }
 
+void UISlider::setColor(const Color& color)
+{
+	tryInitRenderer();
+
+	m_pRenderer->setColor(color);
+}
+
 void UISlider::tryInitRenderer()
 {
 	//Renderer‚ªŠù‚É¶¬‚³‚ê‚Ä‚¢‚é‚È‚çreturn

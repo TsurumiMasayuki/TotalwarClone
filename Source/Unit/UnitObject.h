@@ -47,6 +47,7 @@ public:
 
 	void takeDamage(float damage);
 	float getHealth() const;
+	float getShield() const;
 
 	Unit* getUnit();
 

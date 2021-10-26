@@ -206,6 +206,18 @@ float Unit::getHealth() const
 	return healthSum;
 }
 
+float Unit::getShield() const
+{
+	//オブジェクトからシールドのHPを取得して合計する
+	float shieldSum = 0.0f;
+	for (UnitObject* pObj : m_UnitObjects)
+	{
+		shieldSum += pObj->getShield();
+	}
+
+	return shieldSum;
+}
+
 const UnitStats* Unit::getUnitStats() const
 {
 	return m_pUnitStats;

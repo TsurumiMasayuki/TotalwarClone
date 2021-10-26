@@ -249,10 +249,12 @@ void UnitObject::takeDamage(float damage)
 	if (m_Shield <= 0.0f)
 	{
 		m_Health -= damage;
+		m_Health = std::fmaxf(0.0f, m_Health);
 	}
 	else
 	{
 		m_Shield -= damage;
+		m_Shield = std::fmaxf(0.0f, m_Shield);
 	}
 
 	//シールド回復のタイマーをリセット
@@ -265,6 +267,11 @@ void UnitObject::takeDamage(float damage)
 float UnitObject::getHealth() const
 {
 	return m_Health;
+}
+
+float UnitObject::getShield() const
+{
+	return m_Shield;
 }
 
 Unit* UnitObject::getUnit()
@@ -296,7 +303,6 @@ void UnitObject::stateTransition()
 	//死亡処理
 	if (m_Health > 0.0f) return;
 
-	m_Health = 0.0f;
 	setState(State::Dead);
 
 	getUser().setActive(false);

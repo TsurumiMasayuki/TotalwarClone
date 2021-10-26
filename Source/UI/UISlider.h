@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Component\Base\AbstractComponent.h"
+#include "Utility\Color.h"
 
 class GUISpriteRenderer;
 
@@ -32,8 +33,8 @@ public:
 	float getWidth() const;
 
 	void setTextureByName(const std::string& textureName);
-
 	void setDirection(const Direction& direction);
+	void setColor(const Color& color);
 
 private:
 	void tryInitRenderer();

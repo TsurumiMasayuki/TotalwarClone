@@ -40,6 +40,7 @@ public:
 	Unit* getTarget();
 
 	float getHealth() const;
+	float getShield() const;
 	const UnitStats* getUnitStats() const;
 
 	int getTeamID() const;
