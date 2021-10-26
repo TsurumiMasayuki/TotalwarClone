@@ -16,6 +16,7 @@
 
 #include "Graphics\DX12\Material\DefaultMaterials.h"
 #include "Graphics\Material\ValueMapMaterial.h"
+#include "Graphics\Material\BBModelMaterial.h"
 
 #include "Player\AIPlayer\AIPlayer.h"
 
@@ -25,8 +26,7 @@
 #include "Blockbench\BlockbenchModel.h"
 #include "Blockbench\BlockbenchLoader.h"
 
-Unit* g_pUnit1;
-Unit* g_pUnit2;
+#include "Component\Graphics\GUI\GUISpriteRenderer.h"
 
 AIPlayer* pPlayer1;
 
@@ -52,6 +52,7 @@ void GameScene::start()
 		auto& attackStatsManager = JsonFileManager<AttackStats>::getInstance();
 		attackStatsManager.load("TestAttack", "Resources/AttackStats/TestAttack.json");
 		attackStatsManager.load("TestAttack_Strong", "Resources/AttackStats/TestAttack_Strong.json");
+		attackStatsManager.load("TestAttack_Snipe", "Resources/AttackStats/TestAttack_Snipe.json");
 	}
 
 	//ユニットステータスの読み込み
@@ -59,6 +60,7 @@ void GameScene::start()
 		auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
 		unitStatsManager.load("NormalCorvette", "Resources/UnitStats/NormalCorvette.json");
 		unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
+		unitStatsManager.load("SniperCruiser", "Resources/UnitStats/SniperCruiser.json");
 	}
 
 	//マテリアルの生成
@@ -69,25 +71,19 @@ void GameScene::start()
 	m_pValueMapMaterial = new ValueMapMaterial();
 	m_pValueMapMaterial->init(DX12GraphicsCore::g_pDevice.Get());
 
+	//マテリアルの生成
+	m_pBBModelMaterial = new BBModelMaterial();
+	m_pBBModelMaterial->init(DX12GraphicsCore::g_pDevice.Get());
+
 	//物理マネージャーの生成
 	auto pPhysicsManagerObj = new GameObject(this);
 	pPhysicsManagerObj->addComponent<PhysicsManagerB2>();
 
-	auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
-	auto pObj2 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Sphere"), true);
+	auto pModel = GameDevice::getModelManager().getModel("Sphere");
 
 	const auto pUnitStats1 = &JsonFileManager<UnitStats>::getInstance().get("NormalCorvette");
 	const auto pUnitStats2 = &JsonFileManager<UnitStats>::getInstance().get("NormalBattleship");
-
-	pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
-	g_pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit1->init(g_TeamID1, pUnitStats2, &m_ValueMap1);
-	g_pUnit1->setPosition(Vec3(0.0f, 0.0f, 0.0f), 180.0f, 10);
-
-	pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
-	g_pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
-	g_pUnit2->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
-	g_pUnit2->setPosition(Vec3(0.0f, 0.0f, 200.0f), 0.0f, 10);
+	const auto pUnitStats3 = &JsonFileManager<UnitStats>::getInstance().get("SniperCruiser");
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
@@ -99,11 +95,46 @@ void GameScene::start()
 	auto pPlayer2 = pPlayer2Obj->addComponent<AIPlayer>();
 	pPlayer2->setActive(false);
 
-	pPlayer1->init(g_TeamID1, pPlayer2, &m_ValueMap2);
-	pPlayer1->addUnit(g_pUnit1);
-	
-	pPlayer2->init(1, pPlayer1, &m_ValueMap1);
-	pPlayer2->addUnit(g_pUnit2);
+	{
+		auto pUIObj = new GameObject(this);
+		pUIObj->getTransform().setLocalPosition(Vec3(0.0f, 0.0f, 1.0f));
+		pUIObj->getTransform().setLocalScale(Vec3(400.0f, 400.0f, 1.0f));
+		pUIObj->setParent(&m_pDefaultCamera->getUser());
+		auto hoge = pUIObj->addComponent<GUISpriteRenderer>();
+		hoge->setTextureByName("BoxFill");
+		hoge->setColor(Color(1, 1, 1, 1));
+
+		auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
+		auto pObj2 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
+
+		//でかいやつ
+		pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
+		auto pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
+		pUnit1->init(g_TeamID1, pUnitStats2, &m_ValueMap1);
+		pUnit1->setPosition(Vec3(0.0f, 0.0f, 0.0f), 0.0f, 1);
+
+		//中ぐらいのやつ
+		pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
+		auto pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
+		pUnit2->init(g_TeamID1, pUnitStats3, &m_ValueMap1);
+		pUnit2->setPosition(Vec3(100.0f, 0.0f, 0.0f), 0.0f, 10);
+
+		//pPlayer1->init(g_TeamID1, pPlayer2, &m_ValueMap2);
+		//pPlayer1->addUnit(pUnit1);
+	}
+
+	{
+		auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
+
+		//小さいやつ
+		pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
+		auto pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
+		pUnit1->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
+		pUnit1->setPosition(Vec3(0.0f, 0.0f, 200.0f), 180.0f, 10);
+
+		//pPlayer2->init(1, pPlayer1, &m_ValueMap1);
+		//pPlayer2->addUnit(pUnit1);
+	}
 
 	//情報マップ描画の生成
 	auto pValueMapRendererObj = new GameObject(this);
@@ -130,29 +161,52 @@ void GameScene::start()
 		pSelector->init(g_pCursor, g_TeamID1);
 	}
 
-	{
-		std::string filePath = "Resources/Hoge.json";
+	//{
+	//	std::string filePath = "Resources/Hoge.json";
+	//	GameDevice::getTextureManager().load("Hoge", L"Resources/Hoge.png");
 
-		BlockbenchLoader loader;
-		loader.loadModel(filePath, "Hoge");
-		auto& matrices = loader.getModel("Hoge")->getCubeMatrices();
+	//	BlockbenchLoader loader;
+	//	loader.load(filePath, "Hoge", "Hoge");
+	//	auto& matrices = loader.getModel("Hoge")->getCubeMatrices();
 
-		std::vector<UnitInstanceInfo> instances;
-		for (auto& matrix : matrices)
-		{
-			instances.emplace_back();
-			auto& instance = instances.back();
+	//	std::vector<UnitInstanceInfo> instances;
+	//	for (auto& matrix : matrices)
+	//	{
+	//		instances.emplace_back();
+	//		auto& instance = instances.back();
 
-			DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(matrix));
-			instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-		}
+	//		DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(matrix));
+	//		instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//	}
 
-		//auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
-		//auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
-		//pInstancedRenderer->setMaterial(m_pInstancingMaterial);
-		//pInstancedRenderer->setInstanceInfo(instances);
-		//loader.unLoadModels();
-	}
+	//	auto& uvOrigins = loader.getModel("Hoge")->getUVOrigins();
+	//	auto& uvSizes = loader.getModel("Hoge")->getUVSizes();
+	//	for (int i = 0; i < (int)instances.size(); i++)
+	//	{
+	//		for (int j = 0; j < BlockbenchModel::cubeFaceCount / 2; j++)
+	//		{
+	//			//原点をセット
+	//			instances[i].instanceUVOrigins.m[j][0] = uvOrigins.at(j).x;
+	//			instances[i].instanceUVOrigins.m[j][1] = uvOrigins.at(j).y;
+	//			instances[i].instanceUVOrigins.m[j][2] = uvOrigins.at(j + 3).x;
+	//			instances[i].instanceUVOrigins.m[j][3] = uvOrigins.at(j + 3).y;
+
+	//			//サイズをセット
+	//			instances[i].instanceUVSizes.m[j][0] = uvSizes.at(j).x;
+	//			instances[i].instanceUVSizes.m[j][1] = uvSizes.at(j).y;
+	//			instances[i].instanceUVSizes.m[j][2] = uvSizes.at(j + 3).x;
+	//			instances[i].instanceUVSizes.m[j][3] = uvSizes.at(j + 3).y;
+	//		}
+	//	}
+
+	//	m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("Hoge"));
+
+	//	auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
+	//	auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
+	//	pInstancedRenderer->setMaterial(m_pBBModelMaterial);
+	//	pInstancedRenderer->setInstanceInfo(instances);
+	//	loader.unLoadModels();
+	//}
 }
 
 void GameScene::update()
@@ -161,11 +215,6 @@ void GameScene::update()
 	{
 		pPlayer1->setActive(true);
 	}
-
-	if (GameDevice::getInput().isKeyDown(DIK_2))
-	{
-		g_pUnit1->setTarget(g_pUnit2);
-	}
 }
 
 void GameScene::shutdown()
@@ -173,6 +222,7 @@ void GameScene::shutdown()
 	//マテリアルの削除
 	delete m_pInstancingMaterial;
 	delete m_pValueMapMaterial;
+	delete m_pBBModelMaterial;
 }
 
 void GameScene::lateUpdate()

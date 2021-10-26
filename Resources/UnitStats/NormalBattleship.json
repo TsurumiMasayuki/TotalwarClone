@@ -9,7 +9,8 @@
         "MaxHealthPerObject" : 50000.0,
         "MaxShieldPerObject" : 25000.0,
         "Speed" : 10.0,
-        "RotationSpeed" : 10.0
+        "RotationSpeed" : 10.0,
+        "DebugColor" : [0.0, 1.0, 0.0]
     },
     "MainAttacks" : 
     [

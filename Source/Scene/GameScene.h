@@ -4,6 +4,7 @@
 
 class GameObject;
 class InstancingMaterial;
+class BBModelMaterial;
 class ValueMapMaterial;
 class Model;
 
@@ -24,6 +25,7 @@ private:
 	ValueMap m_ValueMap2;
 
 	InstancingMaterial* m_pInstancingMaterial;
+	BBModelMaterial* m_pBBModelMaterial;
 	ValueMapMaterial* m_pValueMapMaterial;
 
 	Model* m_pBBCube;

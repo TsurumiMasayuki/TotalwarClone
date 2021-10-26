@@ -3,9 +3,9 @@
 #include <string>
 #include <unordered_map>
 #include "json.hpp"
+#include "Blockbench\BlockbenchModel.h"
 
-class BlockbenchModel;
-
+//Blockbenchのモデル読み込み用クラス
 class BlockbenchLoader
 {
 private:
@@ -19,12 +19,34 @@ private:
 			: parentName(parentName),
 			boneMat(boneMat)
 		{
+		}
+	};
+
+	//面
+	struct Face
+	{
+		//左上のuv
+		UV uvUL;
+		//右上のuv
+		UV uvUR;
+		//右下のuv
+		UV uvDR;
+		//左下のuv
+		UV uvDL;
+
+		//左上のUVから他のUVを計算
+		Face(const UV& uvUL, float width, float height)
+			: uvUL(uvUL),
+			uvUR({ uvUL.x + width	, uvUL.y }),
+			uvDR({ uvUL.x + width	, uvUL.y + height }),
+			uvDL({ uvUL.x			, uvUL.y + height })
+		{
 
 		}
 	};
 
 public:
-	void loadModel(const std::string& filePath, const std::string& key);
+	void load(const std::string& filePath, const std::string& textureName, const std::string& key);
 	void unLoadModels();
 	const BlockbenchModel* getModel(const std::string& key) const;
 

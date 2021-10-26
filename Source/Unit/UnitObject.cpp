@@ -34,9 +34,15 @@ void UnitObject::onUpdate()
 	//ヘルスの値を書き込む
 	m_pValueMap->writeMap(UnitStatsValues::Health, Value(getTransform().getLocalPosition(), 25.0f, m_Health));
 
-	updateShield();
+	updateShield();	
 
-	rotate();
+	//ターゲットが死亡していたらターゲット解除
+	if (m_pTargetObject != nullptr)
+		if (m_pTargetObject->m_State == State::Dead)
+		{
+			m_pTargetObject = nullptr;
+			setState(State::Move);
+		}
 
 	switch (m_State)
 	{
@@ -80,16 +86,11 @@ void UnitObject::onUpdate()
 			pAttack->update();
 		}
 		m_pCollider->setVelocity(0.0f, 0.0f);
+
+		rotate();
+
 		break;
 	}
-
-	//ターゲットが死亡していたらターゲット解除
-	if (m_pTargetObject != nullptr)
-		if (m_pTargetObject->m_State == State::Dead)
-		{
-			m_pTargetObject = nullptr;
-			setState(State::Move);
-		}
 }
 
 void UnitObject::onDestroy()
@@ -178,7 +179,7 @@ void UnitObject::rotate()
 	diff.y = 0.0f;
 
 	//方向を角度に変換
-	float desiredAngle = MathUtility::toDegree(std::atan2f(diff.z, diff.x)) + 90.0f;
+	float desiredAngle = MathUtility::toDegree(std::atan2f(diff.x, diff.z));
 
 	//目的地に向けて回転
 	float curAngle = getTransform().getLocalAngles().y;
@@ -320,17 +321,6 @@ void UnitObject::setState(const State& newState)
 {
 	if (m_State == State::Dead) return;
 	if (m_State == newState) return;
-
-	//移動以外のステート&ステートがロックされているなら実行しない。死亡は通す。
-	//if (newState != State::Move && newState != State::Dead && m_pUnit->isStateLocked()) return;
-	//if (newState != State::Move && newState != State::Dead) return;
-
-	//戦闘以外のステートに移行したら前任と後任を解除する
-	//if (newState != State::Attack)
-	//{
-	//	m_pSuccessor = nullptr;
-	//	m_pPredecessor = nullptr;
-	//}
 
 	m_State = newState;
 }

@@ -11,7 +11,11 @@ UnitStats::UnitStats(nlohmann::json& json)
 	m_MaxHealthPerObject((float)json["UnitStats"]["MaxHealthPerObject"]),
 	m_MaxShieldPerObject((float)json["UnitStats"]["MaxShieldPerObject"]),
 	m_Speed((float)json["UnitStats"]["Speed"]),
-	m_RotationSpeed((float)json["UnitStats"]["RotationSpeed"])
+	m_RotationSpeed((float)json["UnitStats"]["RotationSpeed"]),
+	m_Color(Color((float)json["UnitStats"]["DebugColor"][0],
+		(float)json["UnitStats"]["DebugColor"][1],
+		(float)json["UnitStats"]["DebugColor"][2],
+		1.0f))
 {
 	//UŒ‚‚Ìî•ñ‚ğ“Ç‚İæ‚é
 	for (auto& attackInfo : json["MainAttacks"])

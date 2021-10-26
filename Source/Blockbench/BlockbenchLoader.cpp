@@ -1,13 +1,14 @@
 #include "BlockbenchLoader.h"
 #include <fstream>
+
+#include "Device\GameDevice.h"
 #include "Math\Vec3.h"
 #include "Math\MathUtility.h"
-#include "Blockbench\BlockbenchModel.h"
 
 using namespace DirectX;
 using namespace nlohmann;
 
-void BlockbenchLoader::loadModel(const std::string& filePath, const std::string& key)
+void BlockbenchLoader::load(const std::string& filePath, const std::string& textureName, const std::string& key)
 {
 	//ファイルを読み込み
 	std::fstream fs(filePath);
@@ -22,9 +23,21 @@ void BlockbenchLoader::loadModel(const std::string& filePath, const std::string&
 
 	//結果用vector
 	std::vector<XMMATRIX> resultMatrices;
+	std::vector<UV> resultUVOrigins;
+	std::vector<UV> resultUVSizes;
+
+	//モデルの情報を取得
+	auto& description = jsonFile["minecraft:geometry"][0]["description"];
+	//テクスチャの幅
+	float textureWidth = description["texture_width"];
+	//テクスチャの高さ
+	float textureHeight = description["texture_height"];
 
 	//ボーンリストを取得
 	auto& bones = jsonFile["minecraft:geometry"][0]["bones"];
+
+	//オフセット
+	DirectX::XMMATRIX modelOffset = DirectX::XMMatrixTranslation(0.0f, -50.0f, 0.0f);
 
 	//ボーンごとに処理
 	for (auto& bone : bones)
@@ -87,7 +100,7 @@ void BlockbenchLoader::loadModel(const std::string& filePath, const std::string&
 			XMMATRIX scaling = XMMatrixIdentity();
 			if (safeGet(cube, size, "size"))
 			{
-				scaling = XMMatrixScalingFromVector((Vec3(size[0], size[1], size[2]) * 0.02f).toXMVector());
+				scaling = XMMatrixScalingFromVector((Vec3(size[0], size[1], size[2]) * 0.05f).toXMVector());
 			}
 
 			//回転情報を読み取って行列に変換
@@ -113,13 +126,59 @@ void BlockbenchLoader::loadModel(const std::string& filePath, const std::string&
 			XMMATRIX offsetMat = XMMatrixTranslation(size[0] / 2, size[1] / 2, size[2] / 2);
 
 			//行列を全て合成
-			XMMATRIX world = scaling * parentMatrix * rotationMat * pivotMat * translation * offsetMat;
+			XMMATRIX world = modelOffset * scaling * parentMatrix * rotationMat * pivotMat * translation * offsetMat;
 			resultMatrices.emplace_back(world);
+
+			//UVを読み込み
+			float originX = (float)cube["uv"][0] / textureWidth;
+			float originY = (float)cube["uv"][1] / textureHeight;
+
+			float xSize = (float)size[0];
+			float ySize = (float)size[1];
+			float zSize = (float)size[2];
+
+			Face faces[6] = 
+			{
+				//+Zの面
+				Face(UV(originX + zSize / textureWidth, originY + zSize / textureHeight),
+					xSize / textureWidth,
+					ySize / textureHeight),
+				//+Xの面
+				Face(UV(originX, originY + zSize / textureHeight),
+					zSize / textureWidth,
+					ySize / textureHeight),
+				//-Xの面
+				Face(UV(originX + (xSize + zSize) / textureWidth, originY + zSize / textureHeight),
+					zSize / textureWidth,
+					ySize / textureHeight),
+				//-Zの面
+				Face(UV(originX + (xSize + zSize * 2) / textureWidth, originY + zSize / textureHeight),
+					xSize / textureWidth,
+					ySize / textureHeight),
+				//+Yの面
+				Face(UV(originX + zSize / textureWidth, originY),
+					xSize / textureWidth,
+					zSize / textureHeight),
+				//-Yの面
+				Face(UV(originX + (xSize + zSize) / textureWidth, originY),
+					xSize / textureWidth,
+					zSize / textureHeight)
+			};
+
+			//面ごとにループ
+			for (int i = 0; i < BlockbenchModel::cubeFaceCount; i++)
+			{
+				resultUVOrigins.emplace_back();
+				resultUVSizes.emplace_back();
+
+				resultUVOrigins.back() = faces[i].uvUL;
+				resultUVSizes.back() = UV(faces[i].uvDR.x - faces[i].uvUL.x, faces[i].uvDR.y - faces[i].uvUL.y);
+			}
 		}
 	}
 
 	//モデルを登録
-	m_Models.emplace(key, new BlockbenchModel(resultMatrices));
+	m_Models.emplace(key, new BlockbenchModel(resultMatrices, resultUVOrigins, resultUVSizes, textureName));
 }
 
 void BlockbenchLoader::unLoadModels()

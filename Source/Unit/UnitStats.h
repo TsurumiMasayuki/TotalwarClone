@@ -3,6 +3,7 @@
 #include <vector>
 #include "json.hpp"
 #include "Math\Vec3.h"
+#include "Utility\Color.h"
 
 enum class UnitStatsValues
 {
@@ -54,6 +55,9 @@ public:
 
 	//回転スピード
 	const float m_RotationSpeed;
+
+	//デバッグ用色
+	const Color m_Color;
 
 private:
 

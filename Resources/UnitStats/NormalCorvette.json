@@ -3,13 +3,14 @@
     {
         "Name" : "NormalCorvette",
         "DisplayName" : "Normal Corvette",
-        "ObjectCount" : 50,
+        "ObjectCount" : 10,
         "ObjectSize" : [0.5, 0.5, 1.0],
         "SpacePerObject" : 3.0,
         "MaxHealthPerObject" : 100.0,
         "MaxShieldPerObject" : 50.0,
         "Speed" : 10.0,
-        "RotationSpeed" : 10.0
+        "RotationSpeed" : 10.0,
+        "DebugColor" : [1.0, 1.0, 1.0]
     },
     "MainAttacks" : 
     [

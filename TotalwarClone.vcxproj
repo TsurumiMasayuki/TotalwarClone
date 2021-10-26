@@ -162,11 +162,14 @@
     <ClCompile Include="Source\Blockbench\BlockbenchModel.cpp" />
     <ClCompile Include="Source\Component\Cursor.cpp" />
     <ClCompile Include="Source\Component\UnitSelector.cpp" />
+    <ClCompile Include="Source\Graphics\Material\BBModelMaterial.cpp" />
+    <ClCompile Include="Source\Graphics\Shader\BBInstancingVertexShader.cpp" />
     <ClCompile Include="Source\Player\AIPlayer\AIPlayer.cpp" />
     <ClCompile Include="Source\AI\ValueMap.cpp" />
     <ClCompile Include="Source\Component\Box2D\AbstractColliderB2.cpp" />
     <ClCompile Include="Source\Component\Box2D\CircleColliderB2.cpp" />
     <ClCompile Include="Source\Component\Box2D\ContactListenerB2.cpp" />
+    <ClCompile Include="Source\UI\UIUnitCard.cpp" />
     <ClCompile Include="Source\Unit\Attack\Attack.cpp" />
     <ClCompile Include="Source\Unit\Attack\AttackStats.cpp" />
     <ClCompile Include="Source\Unit\Unit.cpp" />
@@ -183,6 +186,8 @@
     <ClInclude Include="Source\Blockbench\BlockbenchModel.h" />
     <ClInclude Include="Source\Component\Cursor.h" />
     <ClInclude Include="Source\Component\UnitSelector.h" />
+    <ClInclude Include="Source\Graphics\Material\BBModelMaterial.h" />
+    <ClInclude Include="Source\Graphics\Shader\BBInstancingVertexShader.h" />
     <ClInclude Include="Source\Player\AIPlayer\AIPlayer.h" />
     <ClInclude Include="Source\AI\ValueMap.h" />
     <ClInclude Include="Source\AI\ValueMapRenderer.h" />
@@ -190,6 +195,8 @@
     <ClInclude Include="Source\Component\Box2D\CircleColliderB2.h" />
     <ClInclude Include="Source\Component\Box2D\ContactListenerB2.h" />
     <ClInclude Include="Source\Player\IPlayer.h" />
+    <ClInclude Include="Source\UI\UIUnitCard.h" />
+    <ClInclude Include="Source\UI\UIUnitList.h" />
     <ClInclude Include="Source\Unit\Attack\Attack.h" />
     <ClInclude Include="Source\Unit\Attack\AttackStats.h" />
     <ClInclude Include="Source\Utility\JsonFileManager.h" />
@@ -215,6 +222,9 @@
     <FxCompile Include="Resources\Shaders\BasicVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\BBInstancingVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\CirclePixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

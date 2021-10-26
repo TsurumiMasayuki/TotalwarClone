@@ -1,0 +1,22 @@
+{
+    "UnitStats" :
+    {
+        "Name" : "SniperCruiser",
+        "DisplayName" : "Sniper Cruiser",
+        "ObjectCount" : 10,
+        "ObjectSize" : [3.0, 1.5, 6.0],
+        "SpacePerObject" : 10.0,
+        "MaxHealthPerObject" : 200.0,
+        "MaxShieldPerObject" : 50.0,
+        "Speed" : 10.0,
+        "RotationSpeed" : 10.0,
+        "DebugColor" : [0.0, 0.0, 1.0]
+    },
+    "MainAttacks" : 
+    [
+        { 
+            "AttackName" : "TestAttack_Snipe",
+            "Position" : [0.0, 0.0, 0.0]
+        }
+    ]
+}

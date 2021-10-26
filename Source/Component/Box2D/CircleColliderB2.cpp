@@ -28,8 +28,8 @@ void CircleColliderB2::init()
 	if (m_pBody != nullptr)
 		PhysicsManagerB2::getInstance()->destroyBody(m_pBody);
 
-	Vec3 pos = getTransform().getLocalPosition();
-	Vec3 scale = getTransform().getLocalScale();
+	const Vec3& pos = getTransform().getLocalPosition();
+	const Vec3& scale = getTransform().getLocalScale();
 
 	//X, Zç¿ïWÇéwíË
 	b2BodyDef bodyDef;
