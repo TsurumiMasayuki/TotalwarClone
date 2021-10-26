@@ -57,7 +57,7 @@ public:
 	const float m_RotationSpeed;
 
 	//デバッグ用色
-	const Color m_Color;
+	const Color m_DebugColor;
 
 private:
 

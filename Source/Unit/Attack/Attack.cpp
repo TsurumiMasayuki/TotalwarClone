@@ -18,7 +18,7 @@ Attack::~Attack()
 
 void Attack::update()
 {
-	if (!m_IsActive) return;
+	if (!m_IsActive || m_pTarget == nullptr) return;
 
 	m_AttackTimer.update();
 
@@ -57,7 +57,9 @@ float Attack::getAttackRange() const
 
 void Attack::attackTarget()
 {
-	if (m_pTarget == nullptr) return;
+	if (m_pTarget == nullptr ||
+		m_pTarget->getState() == UnitObject::State::Dead)
+		return;
 
 	//エフェクトの実行などする(予定)
 	m_pTarget->takeDamage(m_pAttackStats->m_Damage);

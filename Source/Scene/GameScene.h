@@ -3,10 +3,12 @@
 #include "Scene\Base\AbstractScene.h"
 
 class GameObject;
+class Unit;
 class InstancingMaterial;
 class BBModelMaterial;
 class ValueMapMaterial;
 class Model;
+class UISlider;
 
 class GameScene
 	: public AbstractScene
@@ -29,4 +31,7 @@ private:
 	ValueMapMaterial* m_pValueMapMaterial;
 
 	Model* m_pBBCube;
+
+	Unit* m_pUnit1;
+	UISlider* m_pHealthSlider;
 };

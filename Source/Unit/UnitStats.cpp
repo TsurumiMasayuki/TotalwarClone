@@ -12,7 +12,7 @@ UnitStats::UnitStats(nlohmann::json& json)
 	m_MaxShieldPerObject((float)json["UnitStats"]["MaxShieldPerObject"]),
 	m_Speed((float)json["UnitStats"]["Speed"]),
 	m_RotationSpeed((float)json["UnitStats"]["RotationSpeed"]),
-	m_Color(Color((float)json["UnitStats"]["DebugColor"][0],
+	m_DebugColor(Color((float)json["UnitStats"]["DebugColor"][0],
 		(float)json["UnitStats"]["DebugColor"][1],
 		(float)json["UnitStats"]["DebugColor"][2],
 		1.0f))

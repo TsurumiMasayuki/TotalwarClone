@@ -55,16 +55,7 @@ void Unit::onUpdate()
 		}
 	}
 
-	DirectX::XMVECTOR color = DirectX::Colors::White;
-	//デバッグ用色分け処理
-	if (m_pUnitStats->m_Name == "NormalCorvette")
-	{
-		color = DirectX::Colors::White;
-	}
-	if (m_pUnitStats->m_Name == "NormalBattleship")
-	{
-		color = DirectX::Colors::Blue;
-	}
+	DirectX::XMVECTOR color = m_pUnitStats->m_DebugColor.toXMVECTOR();
 
 	//InstancedRendererに情報を送る
 	std::vector<UnitInstanceInfo> instanceInfo;

@@ -14,8 +14,11 @@ void UIUnitCard::onUpdate()
 
 void UIUnitCard::init(Unit* pUnit)
 {
+	m_pUnit = pUnit;
+	auto pUnitStats = m_pUnit->getUnitStats();
+
 	//ユニットカード本体
 	GUISpriteRenderer* pUnitCardRenderer = getUser().addComponent<GUISpriteRenderer>();
 	pUnitCardRenderer->setTextureByName("BoxFill");
-	pUnitCardRenderer->setColor(m_pUnit->getUnitStats()->m_Color);
+	pUnitCardRenderer->setColor(pUnitStats->m_DebugColor);
 }

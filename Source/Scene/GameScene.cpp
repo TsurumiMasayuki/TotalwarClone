@@ -23,10 +23,11 @@
 #include "Unit\UnitStats.h"
 #include "Utility\JsonFileManager.h"
 
+#include "UI\UISlider.h"
+#include "UI\UIUnitCard.h"
+
 #include "Blockbench\BlockbenchModel.h"
 #include "Blockbench\BlockbenchLoader.h"
-
-#include "Component\Graphics\GUI\GUISpriteRenderer.h"
 
 AIPlayer* pPlayer1;
 
@@ -96,14 +97,6 @@ void GameScene::start()
 	pPlayer2->setActive(false);
 
 	{
-		auto pUIObj = new GameObject(this);
-		pUIObj->getTransform().setLocalPosition(Vec3(0.0f, 0.0f, 1.0f));
-		pUIObj->getTransform().setLocalScale(Vec3(400.0f, 400.0f, 1.0f));
-		pUIObj->setParent(&m_pDefaultCamera->getUser());
-		auto hoge = pUIObj->addComponent<GUISpriteRenderer>();
-		hoge->setTextureByName("BoxFill");
-		hoge->setColor(Color(1, 1, 1, 1));
-
 		auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
 		auto pObj2 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
 
@@ -134,6 +127,37 @@ void GameScene::start()
 
 		//pPlayer2->init(1, pPlayer1, &m_ValueMap1);
 		//pPlayer2->addUnit(pUnit1);
+
+		//ユニットのステータス表示
+		{
+			m_pUnit1 = pUnit1;
+
+			//ステータス表示用親オブジェクト
+			auto pStatsDisplayObj = new GameObject(this);
+			pStatsDisplayObj->setParent(&m_pDefaultCamera->getUser());
+			pStatsDisplayObj->getTransform().setLocalPosition(Vec3(0.0f, -300.0f, 1.0f));
+			pStatsDisplayObj->getTransform().setLocalScale(Vec3(1.0f));
+
+			//ユニットの画像(今は色だけ)
+			auto pUnitCardObj = new GameObject(this);
+			pUnitCardObj->setParent(pStatsDisplayObj);
+			pUnitCardObj->getTransform().setLocalPosition(Vec3(0.0f, 0.0f));
+			pUnitCardObj->getTransform().setLocalScale(Vec3(96.0f, 128.0f, 1.0f));
+			auto pUnitCard = pUnitCardObj->addComponent<UIUnitCard>();
+			pUnitCard->init(pUnit1);
+
+			//ユニットの体力表示
+			auto pSliderObj = new GameObject(this);
+			pSliderObj->setParent(pStatsDisplayObj);
+			pSliderObj->getTransform().setLocalPosition(Vec3(0.0f, 64.0f + 16.0f));
+			pSliderObj->getTransform().setLocalScale(Vec3(96.0f, 32.0f, 1.0f));
+			m_pHealthSlider = pSliderObj->addComponent<UISlider>();
+			m_pHealthSlider->setWidth(1.0f);
+			m_pHealthSlider->setDirection(UISlider::Direction::RIGHT);
+			m_pHealthSlider->setCurrentValue(pUnit1->getHealth());
+			m_pHealthSlider->setMaxValue(pUnit1->getHealth());
+			m_pHealthSlider->setTextureByName("BoxFill");
+		}
 	}
 
 	//情報マップ描画の生成
@@ -215,6 +239,8 @@ void GameScene::update()
 	{
 		pPlayer1->setActive(true);
 	}
+
+	m_pHealthSlider->setCurrentValue(m_pUnit1->getHealth());
 }
 
 void GameScene::shutdown()

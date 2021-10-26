@@ -38,11 +38,20 @@ void UnitObject::onUpdate()
 
 	//ターゲットが死亡していたらターゲット解除
 	if (m_pTargetObject != nullptr)
+	{
 		if (m_pTargetObject->m_State == State::Dead)
 		{
 			m_pTargetObject = nullptr;
 			setState(State::Move);
+
+			//攻撃を無効化
+			for (auto pAttacks : m_MainAttacks)
+			{
+				pAttacks->setTarget(nullptr);
+				pAttacks->setActive(false);
+			}
 		}
+	}
 
 	switch (m_State)
 	{
@@ -248,6 +257,9 @@ void UnitObject::takeDamage(float damage)
 
 	//シールド回復のタイマーをリセット
 	m_ShieldRegenTimer.reset();
+
+	if (m_Health <= 0.0f)
+		setState(State::Dead);
 }
 
 float UnitObject::getHealth() const
@@ -300,10 +312,10 @@ void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& next
 
 	//ターゲット設定
 	m_pTargetObject = pTargetObject;
-
-	//射程距離
 	for (auto pAttack : m_MainAttacks)
 	{
+		//攻撃を有効化
+		pAttack->setActive(true);
 		pAttack->setTarget(m_pTargetObject);
 	}
 
