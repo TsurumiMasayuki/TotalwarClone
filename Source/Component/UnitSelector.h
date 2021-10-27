@@ -1,10 +1,18 @@
 #pragma once
 #include "Component\Base\AbstractComponent.h"
+#include "Component\Graphics\InstancedRenderer.h"
 #include "Utility\Timer.h"
 
 class Cursor;
 class Unit;
 class CircleColliderB2;
+class ValueMapMaterial;
+
+struct PreviewObjInstance
+{
+	DirectX::XMFLOAT4X4 instanceMat;
+	DirectX::XMFLOAT4 instanceColor;
+};
 
 class UnitSelector
 	: public AbstractComponent
@@ -16,8 +24,11 @@ public:
 	virtual void onTriggerStay(GameObject* pHit) override;
 	virtual void onTriggerExit(GameObject* pHit) override;
 
-	void init(Cursor* pCursor, int teamID);
+	void init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial);
 	void selectUnit(Unit* pUnit);
+
+private:
+	void instantiatePreviewObjects();
 
 private:
 	Cursor* m_pCursor;
@@ -31,4 +42,7 @@ private:
 
 	//入力のインターバル
 	Timer m_InputInterval;
+
+	//配置予測用のInstancedRenderer
+	InstancedRenderer<PreviewObjInstance>* m_pPreviewObjRenderer;
 };

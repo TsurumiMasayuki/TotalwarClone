@@ -269,10 +269,10 @@ void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& dest
 		}
 
 		//ベースの座標を計算
-		Vec3 basePos(-m_SpacePerObject * (float)(xSize - 1) * 0.5f, -10.0f, -m_SpacePerObject * (float)(zSize - 1) * 0.5f);
+		Vec3 basePos(-m_SpacePerObject * (float)(xSize - 1) * 0.5f, -10.0f, -m_SpacePerObject * (float)(zSize) * 0.5f);
 		for (int x = 0; x < xSize; x++)
 		{
-			Vec3 newPosition = Vec3(m_SpacePerObject * x, 0.0f, -m_SpacePerObject * z) + basePos;
+			Vec3 newPosition = Vec3(m_SpacePerObject * x, 0.0f, m_SpacePerObject * z) + basePos;
 			newPosition = newPosition.multMatrix(rotateMat) + destination;
 			results.emplace_back(newPosition);
 			remainObjCount--;

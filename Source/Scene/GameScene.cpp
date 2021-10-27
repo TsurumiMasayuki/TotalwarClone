@@ -87,7 +87,7 @@ void GameScene::start()
 	g_pCursor->init(m_pDefaultCamera);
 
 	UnitSelector* pSelector = pCursorObj->addComponent<UnitSelector>();
-	pSelector->init(g_pCursor, g_TeamID1);
+	pSelector->init(g_pCursor, g_TeamID1, m_pValueMapMaterial);
 
 	auto pModel = GameDevice::getModelManager().getModel("Sphere");
 
