@@ -6,13 +6,13 @@
 
 #include <cassert>
 
+CircleColliderB2::CircleColliderB2()
+	: m_Radius(1.0f)
+{
+}
+
 void CircleColliderB2::setRadius(float radius)
 {
-#ifdef _DEBUG
-	//1.0以下のサイズは安定性を損ねるのでassert
-	assert(radius >= 1.0f);
-#endif
-
 	m_Radius = radius;
 	init();
 }
@@ -37,6 +37,13 @@ void CircleColliderB2::init()
 	bodyDef.position.Set(pos.x, pos.z);
 	bodyDef.fixedRotation = true;	//物理挙動による回転を制限
 	m_pBody = PhysicsManagerB2::getInstance()->createBody(bodyDef, this);
+
+#ifdef _DEBUG
+	if (m_Radius * scale.x < 1.0f) 
+	{
+		assert(!"1.0以下のサイズは安定性が低下します");
+	}
+#endif
 
 	//円の形状を指定
 	b2CircleShape circleShape;

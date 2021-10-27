@@ -9,7 +9,7 @@ class AbstractColliderB2
 {
 public:
 	AbstractColliderB2();
-	~AbstractColliderB2();
+	virtual ~AbstractColliderB2();
 
 	virtual void onStart() override;
 	virtual void onUpdate() override;

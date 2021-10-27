@@ -52,9 +52,10 @@ void UnitSelector::onUpdate()
 		//ユニット配置の記録終了
 		Vec3 unitPlacePosEnd = cursorPoint;
 		Vec3 diff = unitPlacePosEnd - m_UnitPlacePosBegin;
+		diff.y = 0.0f;
 		Vec3 placePos = m_UnitPlacePosBegin + diff.normalized() * diff.length() * 0.5f;
 		m_pSelectedUnit->setDestination(placePos,
-			MathUtility::toDegree(std::atan2f(diff.y, diff.x)),
+			MathUtility::toDegree(std::atan2f(diff.z, diff.x)),
 			diff.length() / m_pSelectedUnit->getSpacePerObject()
 		);
 	}

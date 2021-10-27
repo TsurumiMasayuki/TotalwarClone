@@ -81,7 +81,7 @@ void GameScene::start()
 
 	//カーソル用オブジェクト
 	auto pCursorObj = ModelGameObjectHelper::instantiateModel<int>(this, GameDevice::getModelManager().getModel("Sphere"));
-	pCursorObj->getTransform().setLocalScale(Vec3(0.1f));
+	pCursorObj->getTransform().setLocalScale(Vec3(1.0f));
 
 	g_pCursor = pCursorObj->addComponent<Cursor>();
 	g_pCursor->init(m_pDefaultCamera);
@@ -114,8 +114,8 @@ void GameScene::start()
 			auto pUnitObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
 			pUnitObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 			auto pUnit = pUnitObj->getChildren().at(0)->addComponent<Unit>();
-			pUnit->init(g_TeamID1, pUnitStats3, &m_ValueMap1);
-			pUnit->setPosition(Vec3(50.0f * i, 0.0f, 0.0f), 0.0f, 5);
+			pUnit->init(g_TeamID1, pUnitStats1, &m_ValueMap1);
+			pUnit->setPosition(Vec3(200.0f * i, 0.0f, 0.0f), 0.0f, 10);
 
 			pPlayer1->addUnit(pUnit);
 		}
@@ -135,8 +135,8 @@ void GameScene::start()
 			auto pUnitObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
 			pUnitObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 			auto pUnit = pUnitObj->getChildren().at(0)->addComponent<Unit>();
-			pUnit->init(g_TeamID2, pUnitStats3, &m_ValueMap1);
-			pUnit->setPosition(Vec3(50.0f * i, 0.0f, 200.0f), 0.0f, 5);
+			pUnit->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
+			pUnit->setPosition(Vec3(200.0f * i, 0.0f, 200.0f), 0.0f, 10);
 
 			pPlayer1->addUnit(pUnit);
 		}
@@ -153,7 +153,7 @@ void GameScene::start()
 	//レイキャスト判定用平面オブジェクト
 	{
 		auto pPlaneObj = new GameObject(this);
-		pPlaneObj->getTransform().setLocalScale(Vec3(500.0f, 0.1f, 500.0f));
+		pPlaneObj->getTransform().setLocalScale(Vec3(3000.0f, 0.1f, 3000.0f));
 		auto pCollider = pPlaneObj->addComponent<BoxColiiderBt>();
 		pCollider->setMass(0.0f);
 	}

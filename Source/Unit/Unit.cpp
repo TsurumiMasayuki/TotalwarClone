@@ -244,7 +244,7 @@ void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& dest
 {
 	DirectX::XMMATRIX rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0.0f, radian, 0.0f);
 
-	//列の数はユニットの数と0除算にならない範囲に収まるように制限
+	//列の数はユニットの数と0除算にならない値の範囲に収まるように制限
 	m_UnitWidth = MathUtility::clamp(unitWidth, 1, m_ObjectCount);
 	//切り上げ用に割る
 	float div = (float)m_ObjectCount / (float)m_UnitWidth;
@@ -257,17 +257,25 @@ void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& dest
 	//オブジェクトの数の分だけvectorのサイズ確保
 	results.reserve(m_ObjectCount);
 
-	//ベースの座標を計算
-	Vec3 basePos(-m_SpacePerObject * (float)(xSize - 1) * 0.5f, -10.0f, m_SpacePerObject * (float)(zSize - 1) * 0.5f);
-
+	//残りの計算回数
+	int remainObjCount = m_ObjectCount;
 	//オブジェクトごとの座標計算
-	for (int z = 0; z < zSize; z++)
+	for (int z = zSize - 1; z >= 0; z--)
 	{
+		//中央揃えの為に判定
+		if (remainObjCount < m_UnitWidth)
+		{
+			xSize = remainObjCount;
+		}
+
+		//ベースの座標を計算
+		Vec3 basePos(-m_SpacePerObject * (float)(xSize - 1) * 0.5f, -10.0f, -m_SpacePerObject * (float)(zSize - 1) * 0.5f);
 		for (int x = 0; x < xSize; x++)
 		{
-			Vec3 newPosition = Vec3(m_SpacePerObject * x, 0.0f, m_SpacePerObject * z) + basePos;
+			Vec3 newPosition = Vec3(m_SpacePerObject * x, 0.0f, -m_SpacePerObject * z) + basePos;
 			newPosition = newPosition.multMatrix(rotateMat) + destination;
 			results.emplace_back(newPosition);
+			remainObjCount--;
 		}
 	}
 }

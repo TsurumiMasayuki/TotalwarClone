@@ -63,6 +63,9 @@ private:
 	//目的地
 	Vec3 m_Destination;
 
+	//自身の方向
+	Vec3 m_Direction;
+
 	//各種判定用コライダー
 	CircleColliderB2* m_pCollider;
 	CircleColliderB2* m_pTrigger;

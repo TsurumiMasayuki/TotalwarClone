@@ -16,6 +16,7 @@
 #include "Utility\JsonFileManager.h"
 
 #include "Math\MathUtility.h"
+#include "Math\Easing.h"
 
 void UnitObject::onStart()
 {
@@ -34,7 +35,7 @@ void UnitObject::onUpdate()
 	//ヘルスの値を書き込む
 	m_pValueMap->writeMap(UnitStatsValues::Health, Value(getTransform().getLocalPosition(), 25.0f, m_Health));
 
-	updateShield();	
+	updateShield();
 
 	//ターゲットが死亡していたらターゲット解除
 	if (m_pTargetObject != nullptr)
@@ -42,7 +43,6 @@ void UnitObject::onUpdate()
 		if (m_pTargetObject->m_State == State::Dead)
 		{
 			m_pTargetObject = nullptr;
-			setState(State::Move);
 
 			//攻撃を無効化
 			for (auto pAttacks : m_MainAttacks)
@@ -60,6 +60,7 @@ void UnitObject::onUpdate()
 		break;
 	case UnitObject::State::Move:
 		move();
+		rotate();
 		break;
 	case UnitObject::State::Charge:
 		if (m_pTargetObject != nullptr)
@@ -82,6 +83,7 @@ void UnitObject::onUpdate()
 			}
 		}
 		move();
+		rotate();
 		break;
 	case UnitObject::State::Attack:
 		//メイン攻撃を更新
@@ -153,6 +155,7 @@ void UnitObject::setDestination(const Vec3& destination, bool moveCommand)
 	if (m_pTargetObject != nullptr && !moveCommand && m_State == State::Attack) return;
 
 	m_Destination = destination;
+	m_Destination.y = 0.0f;
 
 	if (moveCommand)
 	{
@@ -166,22 +169,15 @@ void UnitObject::move()
 	Vec3 diff = m_Destination - getTransform().getLocalPosition();
 	diff.y = 0.0f;
 
-	//目的地に近くなったら停止
-	if (diff.length() < 0.25f &&
-		m_State == State::Move)
-	{
-		m_State = State::StandBy;
-		return;
-	}
-
-	//移動
-	Vec3 moveDir = diff.normalized();
-	m_pCollider->setVelocity(moveDir.x * m_pUnit->getUnitStats()->m_Speed, moveDir.z * m_pUnit->getUnitStats()->m_Speed);
+	//徐々に減速
+	float ratio = std::fminf(1.0f, diff.length() / m_pUnit->getUnitStats()->m_Speed);
+	ratio = Easing::easeOutExpo(ratio);
+	m_pCollider->setVelocity(m_Direction.x * m_pUnit->getUnitStats()->m_Speed * ratio, m_Direction.z * m_pUnit->getUnitStats()->m_Speed * ratio);
 }
 
 void UnitObject::rotate()
 {
-	//回転方向求める
+	//回転方向を求める
 	Vec3 diff = m_Destination - getTransform().getLocalPosition();
 	if (m_pTargetObject != nullptr)
 		diff = m_pTargetObject->getTransform().getLocalPosition() - getTransform().getLocalPosition();
@@ -192,8 +188,16 @@ void UnitObject::rotate()
 
 	//目的地に向けて回転
 	float curAngle = getTransform().getLocalAngles().y;
+
+	//使用する角度
+	float angle = MathUtility::lerp(curAngle, desiredAngle, GameDevice::getGameTime().getDeltaTime() * m_pUnit->getUnitStats()->m_RotationSpeed);
+	float radian = MathUtility::toRadian(angle);
+
+	//移動方向を更新
+	m_Direction = Vec3(std::sinf(radian), 0.0f, std::cosf(radian));
+
 	getTransform().setLocalAngles(Vec3(0.0f,
-		MathUtility::lerp(curAngle, desiredAngle, GameDevice::getGameTime().getDeltaTime() * 2.0f),
+		angle,
 		0.0f)
 	);
 }
@@ -260,6 +264,7 @@ void UnitObject::takeDamage(float damage)
 	//シールド回復のタイマーをリセット
 	m_ShieldRegenTimer.reset();
 
+	//死亡判定
 	if (m_Health <= 0.0f)
 		setState(State::Dead);
 }
@@ -286,19 +291,35 @@ const UnitObject::State& UnitObject::getState() const
 
 void UnitObject::stateTransition()
 {
+	const Vec3& myPos = getTransform().getLocalPosition();
+
 	//攻撃用ステート遷移
 	if (m_pTargetObject != nullptr)
 	{
-		const Vec3& myPos = getTransform().getLocalPosition();
 		const Vec3& targetPos = m_pTargetObject->getTransform().getLocalPosition();
 
-		float sqrDistance = myPos.distance(targetPos);
+		float sqrDistance = myPos.sqrDistance(targetPos);
 		float range = m_MainAttacks.at(0)->getAttackRange();
-		if (sqrDistance < range)
+		if (sqrDistance < range * range)
 		{
 			setState(State::Attack);
 		}
 	}
+	//移動用ステート遷移
+	else
+	{
+		float distance = myPos.distance(m_Destination);
+		if (distance > 0.25f)
+		{
+			setState(State::Move);
+		}
+		else
+		{
+			setState(State::StandBy);
+		}
+	}
+
+
 
 	//死亡処理
 	if (m_Health > 0.0f) return;
@@ -327,12 +348,6 @@ void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& next
 
 	//ステート変更
 	setState(nextState);
-
-	if (nextState == State::Attack)
-	{
-		//ユニットに通知
-		m_pUnit->onEnterCombat(m_pTargetObject->m_pUnit);
-	}
 }
 
 void UnitObject::setState(const State& newState)
@@ -341,6 +356,12 @@ void UnitObject::setState(const State& newState)
 	if (m_State == newState) return;
 
 	m_State = newState;
+
+	if (m_State == State::Attack)
+	{
+		//ユニットに通知
+		m_pUnit->onEnterCombat(m_pTargetObject->m_pUnit);
+	}
 }
 
 void UnitObject::updateShield()
