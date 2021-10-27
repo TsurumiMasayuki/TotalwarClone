@@ -16,7 +16,7 @@ public:
 	virtual void onUpdate() override;
 
 	virtual void addUnit(Unit* pUnit) override;
-	virtual UnitContainer* getUnits() override;
+	virtual UnitContainer* getUnitContainer() override;
 
 	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
 

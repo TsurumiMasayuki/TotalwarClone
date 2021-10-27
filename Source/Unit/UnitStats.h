@@ -60,7 +60,6 @@ public:
 	const Color m_DebugColor;
 
 private:
-
 	//UŒ‚‚ÌƒŠƒXƒg
 	std::vector<AttackInfo> m_AttackInfoList;
 };

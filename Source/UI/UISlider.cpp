@@ -13,7 +13,7 @@ void UISlider::onUpdate()
 	float position = 0.5f * (1.0f - ratio);
 	auto& transform = m_pRendererObj->getTransform();
 
-	//スライダーの方向に合わせてサイズ更新
+	//スライダーの方向に合わせてサイズと座標更新
 	Vec3 size(0.0f, 0.0f, 1.0f);
 	switch (m_SliderDirection)
 	{

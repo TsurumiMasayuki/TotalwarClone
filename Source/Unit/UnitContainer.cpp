@@ -26,6 +26,11 @@ Unit* UnitContainer::getUnit(int index)
 	return m_Units.at(index);
 }
 
+const std::vector<Unit*>& UnitContainer::getUnits()
+{
+	return m_Units;
+}
+
 const std::vector<Unit*>& UnitContainer::getSortedUnits(UnitStatsValues sortValue)
 {
 	//XV

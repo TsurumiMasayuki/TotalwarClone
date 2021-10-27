@@ -12,6 +12,9 @@ public:
 	void addUnit(Unit* pUnit);
 	Unit* getUnit(int index);
 
+	//ユニットリストを取得
+	const std::vector<Unit*>& getUnits();
+
 	//値に沿ってソートされたユニットを取得(昇順)
 	const std::vector<Unit*>& getSortedUnits(UnitStatsValues sortValue);
 

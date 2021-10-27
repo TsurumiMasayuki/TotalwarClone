@@ -23,8 +23,7 @@
 #include "Unit\UnitStats.h"
 #include "Utility\JsonFileManager.h"
 
-#include "UI\UISlider.h"
-#include "UI\UIUnitCard.h"
+#include "UI\UIUnitList.h"
 
 #include "Blockbench\BlockbenchModel.h"
 #include "Blockbench\BlockbenchLoader.h"
@@ -96,84 +95,44 @@ void GameScene::start()
 	auto pPlayer2 = pPlayer2Obj->addComponent<AIPlayer>();
 	pPlayer2->setActive(false);
 
+	pPlayer1->init(g_TeamID1, pPlayer2, &m_ValueMap2);
+
 	{
-		auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
-		auto pObj2 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
+		//中ぐらいのやつ大量生成
+		for (int i = -2; i < 3; i++)
+		{
+			auto pUnitObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
+			pUnitObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
+			auto pUnit = pUnitObj->getChildren().at(0)->addComponent<Unit>();
+			pUnit->init(g_TeamID1, pUnitStats3, &m_ValueMap1);
+			pUnit->setPosition(Vec3(50.0f * i, 0.0f, 0.0f), 0.0f, 5);
 
-		//でかいやつ
-		pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
-		auto pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
-		pUnit1->init(g_TeamID1, pUnitStats2, &m_ValueMap1);
-		pUnit1->setPosition(Vec3(0.0f, 0.0f, 0.0f), 0.0f, 1);
+			pPlayer1->addUnit(pUnit);
+		}
 
-		//中ぐらいのやつ
-		pObj2->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
-		auto pUnit2 = pObj2->getChildren().at(0)->addComponent<Unit>();
-		pUnit2->init(g_TeamID1, pUnitStats3, &m_ValueMap1);
-		pUnit2->setPosition(Vec3(100.0f, 0.0f, 0.0f), 0.0f, 10);
-
-		//pPlayer1->init(g_TeamID1, pPlayer2, &m_ValueMap2);
-		//pPlayer1->addUnit(pUnit1);
+		auto pUIObj = new GameObject(this);
+		pUIObj->setParent(&m_pDefaultCamera->getUser());
+		UIUnitList* pUnitList = pUIObj->addComponent<UIUnitList>();
+		pUnitList->init(pPlayer1, 8.0f);
 	}
 
 	{
 		auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
 
-		//小さいやつ
-		pObj1->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
-		auto pUnit1 = pObj1->getChildren().at(0)->addComponent<Unit>();
-		pUnit1->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
-		pUnit1->setPosition(Vec3(0.0f, 0.0f, 200.0f), 180.0f, 10);
+		//中ぐらいのやつ大量生成
+		for (int i = -2; i < 3; i++)
+		{
+			auto pUnitObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
+			pUnitObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
+			auto pUnit = pUnitObj->getChildren().at(0)->addComponent<Unit>();
+			pUnit->init(g_TeamID2, pUnitStats3, &m_ValueMap1);
+			pUnit->setPosition(Vec3(50.0f * i, 0.0f, 200.0f), 0.0f, 5);
+
+			pPlayer1->addUnit(pUnit);
+		}
 
 		//pPlayer2->init(1, pPlayer1, &m_ValueMap1);
 		//pPlayer2->addUnit(pUnit1);
-
-		//ユニットのステータス表示
-		{
-			m_pUnit1 = pUnit1;
-
-			//ステータス表示用親オブジェクト
-			auto pStatsDisplayObj = new GameObject(this);
-			pStatsDisplayObj->setParent(&m_pDefaultCamera->getUser());
-			pStatsDisplayObj->getTransform().setLocalPosition(Vec3(0.0f, -300.0f, 1.0f));
-			pStatsDisplayObj->getTransform().setLocalScale(Vec3(1.0f));
-
-			//ユニットの画像(今は色だけ)
-			auto pUnitCardObj = new GameObject(this);
-			pUnitCardObj->setParent(pStatsDisplayObj);
-			pUnitCardObj->getTransform().setLocalPosition(Vec3(0.0f, 0.0f));
-			pUnitCardObj->getTransform().setLocalScale(Vec3(96.0f, 128.0f, 1.0f));
-			auto pUnitCard = pUnitCardObj->addComponent<UIUnitCard>();
-			pUnitCard->init(pUnit1);
-
-			auto pHealthObj = new GameObject(this);
-			pHealthObj->setParent(pStatsDisplayObj);
-			pHealthObj->getTransform().setLocalPosition(Vec3(0.0f, 64.0f + 16.0f, 1.0f));
-			pHealthObj->getTransform().setLocalScale(Vec3(96.0f, 32.0f, 1.0f));
-
-			//ユニットの体力表示
-			m_pHealthSlider = pHealthObj->addComponent<UISlider>();
-			m_pHealthSlider->setWidth(1.0f);
-			m_pHealthSlider->setDirection(UISlider::Direction::RIGHT);
-			m_pHealthSlider->setColor(Color(DirectX::Colors::Green));
-			m_pHealthSlider->setCurrentValue(pUnit1->getHealth());
-			m_pHealthSlider->setMaxValue(pUnit1->getHealth());
-			m_pHealthSlider->setTextureByName("BoxFill");
-
-			auto pShieldObj = new GameObject(this);
-			pShieldObj->setParent(pStatsDisplayObj);
-			pShieldObj->getTransform().setLocalPosition(Vec3(0.0f, 64.0f + 16.0f));
-			pShieldObj->getTransform().setLocalScale(Vec3(96.0f, 32.0f, 1.0f));
-
-			//ユニットのシールド表示(最大値をHPとして設定)
-			m_pShieldSlider = pShieldObj->addComponent<UISlider>();
-			m_pShieldSlider->setWidth(1.0f);
-			m_pShieldSlider->setDirection(UISlider::Direction::RIGHT);
-			m_pShieldSlider->setColor(Color(DirectX::Colors::Cyan));
-			m_pShieldSlider->setCurrentValue(pUnit1->getShield());
-			m_pShieldSlider->setMaxValue(pUnit1->getHealth());
-			m_pShieldSlider->setTextureByName("BoxFill");
-		}
 	}
 
 	//情報マップ描画の生成
@@ -255,9 +214,6 @@ void GameScene::update()
 	{
 		pPlayer1->setActive(true);
 	}
-
-	m_pHealthSlider->setCurrentValue(m_pUnit1->getHealth());
-	m_pShieldSlider->setCurrentValue(m_pUnit1->getShield());
 }
 
 void GameScene::shutdown()

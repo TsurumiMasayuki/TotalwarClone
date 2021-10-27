@@ -33,6 +33,4 @@ private:
 	Model* m_pBBCube;
 
 	Unit* m_pUnit1;
-	UISlider* m_pHealthSlider;
-	UISlider* m_pShieldSlider;
 };

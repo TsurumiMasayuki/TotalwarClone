@@ -18,7 +18,7 @@ void AIPlayer::onUpdate()
 	//‘Îí‘ŠŽè‚ª‚¢‚È‚¢‚È‚çŽÀs‚µ‚È‚¢
 	if (m_pOpponentPlayer == nullptr) return;
 
-	auto& sortedUnits = m_pOpponentPlayer->getUnits()->getSortedUnits(UnitStatsValues::Health);
+	auto& sortedUnits = m_pOpponentPlayer->getUnitContainer()->getSortedUnits(UnitStatsValues::Health);
 	auto pTarget = sortedUnits.at(0);
 	auto pMyUnit = m_Units.getUnit(0);
 
@@ -75,7 +75,7 @@ void AIPlayer::addUnit(Unit* pUnit)
 	m_Units.addUnit(pUnit);
 }
 
-UnitContainer* AIPlayer::getUnits()
+UnitContainer* AIPlayer::getUnitContainer()
 {
 	return &m_Units;
 }
