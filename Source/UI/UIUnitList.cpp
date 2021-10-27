@@ -1,7 +1,12 @@
 #include "UIUnitList.h"
+
+#include "Component\UnitSelector.h"
+
 #include "Player\IPlayer.h"
 #include "Unit\Unit.h"
 #include "Unit\UnitContainer.h"
+
+#include "UI\UIButton.h"
 #include "UI\UIUnitCard.h"
 #include "UI\UISlider.h"
 #include "UI\UISliderHelper.h"
@@ -14,7 +19,7 @@ void UIUnitList::onUpdate()
 {
 }
 
-void UIUnitList::init(IPlayer* pPlayer, float spacePerUnitCard)
+void UIUnitList::init(IPlayer* pPlayer, UnitSelector* pSelector, float spacePerUnitCard)
 {
 	const float unitCardWidth = 60.0f;
 	const float unitCardHeight = 96.0f;
@@ -27,6 +32,18 @@ void UIUnitList::init(IPlayer* pPlayer, float spacePerUnitCard)
 	for (int i = 0; i < (int)units.size(); i++)
 	{
 		auto pUnit = units.at(i);
+
+		auto pButtonObj = new GameObject(getUser().getGameMediator());
+		pButtonObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, -300.0f, 1.0f));
+		pButtonObj->getTransform().setLocalScale(Vec3(unitCardWidth, unitCardHeight, 1.0f));
+
+		auto pButton = pButtonObj->addComponent<UIButton>();
+		//ユニット選択関数を設定
+		pButton->setOnMouseButtonDown(UIButton::MouseButtons::Left, [pSelector, pUnit]()
+			{
+				pSelector->selectUnit(pUnit);
+			}
+		);
 
 		//ステータス表示用親オブジェクト
 		auto pStatsDisplayObj = new GameObject(getUser().getGameMediator());

@@ -9,6 +9,8 @@
 
 void UnitSelector::onStart()
 {
+	m_InputInterval.setUseUnscaledTime(true);
+	m_InputInterval.setMaxTime(0.25f);
 }
 
 void UnitSelector::onUpdate()
@@ -17,11 +19,16 @@ void UnitSelector::onUpdate()
 	const Vec3& cursorPoint = m_pCursor->getCursorPoint();
 	getTransform().setLocalPosition(cursorPoint);
 
+	//入力インターバル更新
+	m_InputInterval.update();
+	//入力インターバル中ならreturn
+	if (!m_InputInterval.isTime()) return;
+
 	//中クリックしたら選択(ターゲットがいないなら選択解除)
 	if (GameDevice::getInput().isMouseButtonDown(2) &&
 		m_pTargetUnit != nullptr)
 	{
-		m_pSelectedUnit = m_pTargetUnit;
+		selectUnit(m_pTargetUnit);
 	}
 
 	//左クリックしたら移動または攻撃
@@ -95,4 +102,10 @@ void UnitSelector::init(Cursor* pCursor, int teamID)
 	pCollider->setRadius(1.0f);
 	pCollider->setTrigger(true);
 	pCollider->setBodyType(b2_staticBody);
+}
+
+void UnitSelector::selectUnit(Unit* pUnit)
+{
+	m_pSelectedUnit = pUnit;
+	m_InputInterval.reset();
 }

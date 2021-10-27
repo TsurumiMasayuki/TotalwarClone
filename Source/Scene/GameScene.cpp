@@ -79,6 +79,16 @@ void GameScene::start()
 	auto pPhysicsManagerObj = new GameObject(this);
 	pPhysicsManagerObj->addComponent<PhysicsManagerB2>();
 
+	//カーソル用オブジェクト
+	auto pCursorObj = ModelGameObjectHelper::instantiateModel<int>(this, GameDevice::getModelManager().getModel("Sphere"));
+	pCursorObj->getTransform().setLocalScale(Vec3(0.1f));
+
+	g_pCursor = pCursorObj->addComponent<Cursor>();
+	g_pCursor->init(m_pDefaultCamera);
+
+	UnitSelector* pSelector = pCursorObj->addComponent<UnitSelector>();
+	pSelector->init(g_pCursor, g_TeamID1);
+
 	auto pModel = GameDevice::getModelManager().getModel("Sphere");
 
 	const auto pUnitStats1 = &JsonFileManager<UnitStats>::getInstance().get("NormalCorvette");
@@ -113,7 +123,7 @@ void GameScene::start()
 		auto pUIObj = new GameObject(this);
 		pUIObj->setParent(&m_pDefaultCamera->getUser());
 		UIUnitList* pUnitList = pUIObj->addComponent<UIUnitList>();
-		pUnitList->init(pPlayer1, 8.0f);
+		pUnitList->init(pPlayer1, pSelector, 8.0f);
 	}
 
 	{
@@ -146,18 +156,6 @@ void GameScene::start()
 		pPlaneObj->getTransform().setLocalScale(Vec3(500.0f, 0.1f, 500.0f));
 		auto pCollider = pPlaneObj->addComponent<BoxColiiderBt>();
 		pCollider->setMass(0.0f);
-	}
-
-	//カーソル用オブジェクト
-	{
-		auto pCursorObj = ModelGameObjectHelper::instantiateModel<int>(this, GameDevice::getModelManager().getModel("Sphere"));
-		pCursorObj->getTransform().setLocalScale(Vec3(0.1f));
-
-		g_pCursor = pCursorObj->addComponent<Cursor>();
-		g_pCursor->init(m_pDefaultCamera);
-
-		UnitSelector* pSelector = pCursorObj->addComponent<UnitSelector>();
-		pSelector->init(g_pCursor, g_TeamID1);
 	}
 
 	//{
