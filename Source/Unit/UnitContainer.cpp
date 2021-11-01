@@ -11,6 +11,9 @@ void UnitContainer::addUnit(Unit* pUnit)
 	if (m_SortedUnits.empty())
 	{
 		m_SortedUnits.emplace(UnitStatsValues::Health, std::vector<Unit*>());
+		m_SortedUnits.emplace(UnitStatsValues::Shield, std::vector<Unit*>());
+		m_SortedUnits.emplace(UnitStatsValues::ObjectCount, std::vector<Unit*>());
+		m_SortedUnits.emplace(UnitStatsValues::Speed, std::vector<Unit*>());
 	}
 
 	m_Units.emplace_back(pUnit);
@@ -62,6 +65,30 @@ void UnitContainer::initializeSortPreds()
 		[](Unit* a, Unit* b)
 		{
 			return a->getHealth() < b->getHealth();
+		}
+	);
+
+	//シールド
+	sortPreds.emplace(UnitStatsValues::Shield,
+		[](Unit* a, Unit* b)
+		{
+			return a->getShield() < b->getShield();
+		}
+	);
+
+	//スピード
+	sortPreds.emplace(UnitStatsValues::Speed,
+		[](Unit* a, Unit* b)
+		{
+			return a->getUnitStats()->m_Speed < b->getUnitStats()->m_Speed;
+		}
+	);
+
+	//オブジェクト数
+	sortPreds.emplace(UnitStatsValues::ObjectCount,
+		[](Unit* a, Unit* b)
+		{
+			return a->getObjectCount() < b->getObjectCount();
 		}
 	);
 }

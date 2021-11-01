@@ -9,6 +9,8 @@ class BBModelMaterial;
 class ValueMapMaterial;
 class Model;
 class UISlider;
+class Player;
+class AIPlayer;
 
 class GameScene
 	: public AbstractScene
@@ -33,4 +35,7 @@ private:
 	Model* m_pBBCube;
 
 	Unit* m_pUnit1;
+
+	Player* pPlayer1;
+	AIPlayer* pPlayer2;
 };

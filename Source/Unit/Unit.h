@@ -41,6 +41,7 @@ public:
 
 	float getHealth() const;
 	float getShield() const;
+	int getObjectCount() const;
 	const UnitStats* getUnitStats() const;
 
 	int getTeamID() const;

@@ -18,6 +18,7 @@
 #include "Graphics\Material\ValueMapMaterial.h"
 #include "Graphics\Material\BBModelMaterial.h"
 
+#include "Player\Player.h"
 #include "Player\AIPlayer\AIPlayer.h"
 
 #include "Unit\UnitStats.h"
@@ -27,8 +28,6 @@
 
 #include "Blockbench\BlockbenchModel.h"
 #include "Blockbench\BlockbenchLoader.h"
-
-AIPlayer* pPlayer1;
 
 Cursor* g_pCursor;
 
@@ -97,15 +96,14 @@ void GameScene::start()
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
-	pPlayer1 = pPlayer1Obj->addComponent<AIPlayer>();
-	pPlayer1->setActive(false);
+	pPlayer1 = pPlayer1Obj->addComponent<Player>();
 
 	//AIプレイヤー2の生成
 	auto pPlayer2Obj = new GameObject(this);
 	auto pPlayer2 = pPlayer2Obj->addComponent<AIPlayer>();
-	pPlayer2->setActive(false);
 
 	pPlayer1->init(g_TeamID1, pPlayer2, &m_ValueMap2);
+	pPlayer2->init(g_TeamID2, pPlayer1, &m_ValueMap1);
 
 	{
 		//中ぐらいのやつ大量生成
@@ -127,8 +125,6 @@ void GameScene::start()
 	}
 
 	{
-		auto pObj1 = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
-
 		//中ぐらいのやつ大量生成
 		for (int i = -2; i < 3; i++)
 		{
@@ -138,11 +134,8 @@ void GameScene::start()
 			pUnit->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
 			pUnit->setPosition(Vec3(200.0f * i, 0.0f, 200.0f), 0.0f, 10);
 
-			pPlayer1->addUnit(pUnit);
+			pPlayer2->addUnit(pUnit);
 		}
-
-		//pPlayer2->init(1, pPlayer1, &m_ValueMap1);
-		//pPlayer2->addUnit(pUnit1);
 	}
 
 	//情報マップ描画の生成
@@ -158,13 +151,13 @@ void GameScene::start()
 		pCollider->setMass(0.0f);
 	}
 
-	//{
-	//	std::string filePath = "Resources/Hoge.json";
-	//	GameDevice::getTextureManager().load("Hoge", L"Resources/Hoge.png");
+	{
+	//	std::string filePath = "Resources/TextureTest.json";
+	//	GameDevice::getTextureManager().load("TextureTest", L"Resources/TextureTest.png");
 
 	//	BlockbenchLoader loader;
-	//	loader.load(filePath, "Hoge", "Hoge");
-	//	auto& matrices = loader.getModel("Hoge")->getCubeMatrices();
+	//	loader.load(filePath, "TextureTest", "TextureTest");
+	//	auto& matrices = loader.getModel("TextureTest")->getCubeMatrices();
 
 	//	std::vector<UnitInstanceInfo> instances;
 	//	for (auto& matrix : matrices)
@@ -176,8 +169,8 @@ void GameScene::start()
 	//		instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 	//	}
 
-	//	auto& uvOrigins = loader.getModel("Hoge")->getUVOrigins();
-	//	auto& uvSizes = loader.getModel("Hoge")->getUVSizes();
+	//	auto& uvOrigins = loader.getModel("TextureTest")->getUVOrigins();
+	//	auto& uvSizes = loader.getModel("TextureTest")->getUVSizes();
 	//	for (int i = 0; i < (int)instances.size(); i++)
 	//	{
 	//		for (int j = 0; j < BlockbenchModel::cubeFaceCount / 2; j++)
@@ -196,14 +189,14 @@ void GameScene::start()
 	//		}
 	//	}
 
-	//	m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("Hoge"));
+	//	m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("TextureTest"));
 
 	//	auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
 	//	auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
 	//	pInstancedRenderer->setMaterial(m_pBBModelMaterial);
 	//	pInstancedRenderer->setInstanceInfo(instances);
 	//	loader.unLoadModels();
-	//}
+	}
 }
 
 void GameScene::update()

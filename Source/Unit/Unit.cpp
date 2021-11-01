@@ -218,6 +218,18 @@ float Unit::getShield() const
 	return shieldSum;
 }
 
+int Unit::getObjectCount() const
+{
+	int count = 0;
+	for (UnitObject* pObj : m_UnitObjects)
+	{
+		if (pObj->getHealth() > 0.0f)
+			count++;
+	}
+
+	return count;
+}
+
 const UnitStats* Unit::getUnitStats() const
 {
 	return m_pUnitStats;

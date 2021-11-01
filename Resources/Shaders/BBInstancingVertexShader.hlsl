@@ -5,12 +5,14 @@ struct VS_IN
 	float4 pos : POSITION;
 	float2 uv : TEXCOORD;
 	float4 normal : NORMAL;
+	uint4 boneIndices : BONEINDICES;
+	float4 boneWeights : BONEWEIGHTS;
 
 	//インスタンシング用
 	float4x4 instanceMat : INSTANCEMAT;
 	float4 instanceColor : INSTANCECOLOR;
-	float4x4 instanceUVOrigins : INSTANCEUVORIGINS;
-	float4x4 instanceUVSizes : INSTANCEUVSIZES;
+	float4x3 instanceUVOrigins : INSTANCEUVORIGINS;
+	float4x3 instanceUVSizes : INSTANCEUVSIZES;
 };
 
 struct VS_OUT
@@ -22,8 +24,8 @@ struct VS_OUT
 	float4 color : TEXCOORD2;
 };
 
-static int vertexCount = 0;
-static float2 uvMultPatterns[6] = 
+shared static int vertexCount = 12;
+shared static float2 uvMultPatterns[6] = 
 {
 	//左上
 	float2(0.0, 0.0),
@@ -55,8 +57,8 @@ VS_OUT main(VS_IN input)
 	vertexCount = vertexCount % 35;
 
 	//UVの原点 + 頂点毎のUVパターン * UVのサイズ
-	float2 uvOrigin = float2(input.instanceUVOrigins[uvIndex][indexOffset], input.instanceUVOrigins[uvIndex][1 + indexOffset]);
-	float2 uvSize = float2(input.instanceUVSizes[uvIndex][indexOffset], input.instanceUVSizes[uvIndex][1 + indexOffset]);
+	float2 uvOrigin = float2(input.instanceUVOrigins[indexOffset][uvIndex], input.instanceUVOrigins[1 + indexOffset][uvIndex]);
+	float2 uvSize = float2(input.instanceUVSizes[indexOffset][uvIndex], input.instanceUVSizes[1 + indexOffset][uvIndex]);
 
 	output.uv = uvOrigin + uvMultPatterns[multPatternIndex] * uvSize;
 

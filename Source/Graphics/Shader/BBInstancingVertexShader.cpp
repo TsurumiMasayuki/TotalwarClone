@@ -44,11 +44,7 @@ void BBInstancingVertexShader::getInputLayout(std::vector<D3D12_INPUT_ELEMENT_DE
 	inputElementArray.emplace_back(element10);
 
 	//面ごとのUVの原点
-	D3D12_INPUT_ELEMENT_DESC uvOrigin =
-	{ "INSTANCEUVORIGINS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 };
-	inputElementArray.emplace_back(uvOrigin);
-
-	for (unsigned int i = 1; i < 4; i++)
+	for (unsigned int i = 0; i < 3; i++)
 	{
 		D3D12_INPUT_ELEMENT_DESC element =
 		{ "INSTANCEUVORIGINS", i, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 };
@@ -56,11 +52,7 @@ void BBInstancingVertexShader::getInputLayout(std::vector<D3D12_INPUT_ELEMENT_DE
 	}
 
 	//面ごとのUVのサイズ
-	D3D12_INPUT_ELEMENT_DESC uvSize =
-	{ "INSTANCEUVSIZES", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 };
-	inputElementArray.emplace_back(uvSize);
-
-	for (unsigned int i = 1; i < 4; i++)
+	for (unsigned int i = 0; i < 3; i++)
 	{
 		D3D12_INPUT_ELEMENT_DESC element =
 		{ "INSTANCEUVSIZES", i, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1 };
@@ -68,7 +60,7 @@ void BBInstancingVertexShader::getInputLayout(std::vector<D3D12_INPUT_ELEMENT_DE
 	}
 
 	//手動+ループ数分
-	inputElementCount = 10 + 8;
+	inputElementCount = 10 + 6;
 }
 
 void BBInstancingVertexShader::getRootParams(std::vector<D3D12_ROOT_PARAMETER>& rootParamsArray, int& rootParamCount) const

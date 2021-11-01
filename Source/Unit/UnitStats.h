@@ -9,7 +9,7 @@ enum class UnitStatsValues
 {
 	Health,
 	Shield,
-	UnitCount,
+	ObjectCount,
 	Speed,
 	RotationSpeed
 };
