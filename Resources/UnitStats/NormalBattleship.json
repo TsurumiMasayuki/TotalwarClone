@@ -10,7 +10,8 @@
         "MaxShieldPerObject" : 25000.0,
         "Speed" : 10.0,
         "RotationSpeed" : 10.0,
-        "DebugColor" : [0.0, 1.0, 0.0]
+        "DebugColor" : [0.0, 1.0, 0.0],
+        "DefaultUnitWidth" : 1
     },
     "MainAttacks" : 
     [

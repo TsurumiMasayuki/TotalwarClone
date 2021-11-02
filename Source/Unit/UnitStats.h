@@ -59,6 +59,9 @@ public:
 	//デバッグ用色
 	const Color m_DebugColor;
 
+	//デフォルトの整列幅
+	const int m_DefaultUnitWidth;
+
 private:
 	//攻撃のリスト
 	std::vector<AttackInfo> m_AttackInfoList;

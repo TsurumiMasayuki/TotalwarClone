@@ -149,15 +149,15 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	}
 }
 
-void UnitObject::setDestination(const Vec3& destination, bool moveCommand)
+void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
 {
 	//ƒ^[ƒQƒbƒg‚ª‚¢‚ÄˆÚ“®–½—ß‚Å‚È‚¢‚È‚çreturn
-	if (m_pTargetObject != nullptr && !moveCommand && m_State == State::Attack) return;
+	if (m_pTargetObject != nullptr && !isMoveCommand && m_State == State::Attack) return;
 
 	m_Destination = destination;
 	m_Destination.y = 0.0f;
 
-	if (moveCommand)
+	if (isMoveCommand)
 	{
 		m_pTargetObject = nullptr;
 		setState(State::Move);
@@ -318,8 +318,6 @@ void UnitObject::stateTransition()
 			setState(State::StandBy);
 		}
 	}
-
-
 
 	//€–Sˆ—
 	if (m_Health > 0.0f) return;

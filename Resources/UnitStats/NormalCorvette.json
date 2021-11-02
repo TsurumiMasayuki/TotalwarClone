@@ -10,17 +10,14 @@
         "MaxShieldPerObject" : 0.0,
         "Speed" : 30.0,
         "RotationSpeed" : 30,
-        "DebugColor" : [1.0, 1.0, 1.0]
+        "DebugColor" : [1.0, 1.0, 1.0],
+        "DefaultUnitWidth" : 5
     },
     "MainAttacks" : 
     [
         { 
             "AttackName" : "TestAttack",
             "Position" : [0.0, 0.0, 0.0]
-        },
-        {
-            "AttackName" : "TestAttack",
-            "Position" : [0.0, 0.0, -0.5]
         }
     ]
 }

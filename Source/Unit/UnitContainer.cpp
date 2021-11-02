@@ -42,6 +42,34 @@ const std::vector<Unit*>& UnitContainer::getSortedUnits(UnitStatsValues sortValu
 	return m_SortedUnits.at(sortValue);
 }
 
+Unit* UnitContainer::getCenterUnit()
+{
+	//中心座標を算出
+	Vec3 sum;
+	for (auto pUnit : m_Units)
+	{
+		sum += pUnit->getTransform().getLocalPosition();
+	}
+	Vec3 center = sum / (float)m_Units.size();
+
+	//仮で設定
+	Unit* pCenterUnit = nullptr;
+	float minimumDistance = 100000.0f;
+	for (auto pUnit : m_Units)
+	{
+		const Vec3& pos = pUnit->getTransform().getLocalPosition();
+		float distance = center.distance(pos);
+
+		//最小距離を更新
+		if (distance < minimumDistance)
+		{
+			pCenterUnit = pUnit;
+			minimumDistance = distance;
+		}
+	}
+	return pCenterUnit;
+}
+
 void UnitContainer::updateContainer(UnitStatsValues value)
 {
 	//ソート用関数が初期化されていなかったら初期化

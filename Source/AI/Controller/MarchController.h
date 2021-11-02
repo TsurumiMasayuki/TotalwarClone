@@ -14,7 +14,7 @@ public:
 private:
 	IPlayer* m_pPlayer;
 	Unit* m_pUnit;
-	Unit* m_pSlowestUnit;
+	Unit* m_pBaseUnit;
 	Vec3 m_RelativePos;
 	int m_UnitWidth;
 };

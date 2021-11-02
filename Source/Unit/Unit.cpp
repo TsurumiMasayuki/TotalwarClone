@@ -21,40 +21,6 @@ void Unit::onUpdate()
 {
 	m_StateLockTimer.update();
 
-	//ユニットの中心座標を更新
-	int aliveCount = 0;
-	Vec3 sum;
-	for (auto pUnitObject : m_UnitObjects)
-	{
-		//死んでいるオブジェクトは含めない
-		if (pUnitObject->getState() == UnitObject::State::Dead) continue;
-
-		aliveCount++;
-		sum += pUnitObject->getTransform().getLocalPosition();
-	}
-
-	//0除算防止
-	if (aliveCount != 0)
-		getTransform().setLocalPosition(sum / (float)aliveCount);
-
-
-	//攻撃指示があるならターゲットに向けて移動
-	if (m_pTargetUnit != nullptr)
-	{
-		const Vec3& pos = getTransform().getLocalPosition();
-		const Vec3& destination = m_pTargetUnit->getTransform().getLocalPosition();
-		Vec3 diff = destination - pos;
-		diff.y = 0.0f;
-		//ターゲットとの角度を求める
-		float radian = Vec3::dot(diff, Vec3(0.0f, 0.0f, 1.0f));
-
-		int i = 0;
-		for (int i = 0; i < m_ObjectCount; i++)
-		{
-			m_UnitObjects.at(i)->setDestination(destination, false);
-		}
-	}
-
 	DirectX::XMVECTOR color = m_pUnitStats->m_DebugColor.toXMVECTOR();
 
 	//InstancedRendererに情報を送る
@@ -77,8 +43,37 @@ void Unit::onUpdate()
 		DirectX::XMStoreFloat4x4(&instance.instanceMat, instanceMat);
 		DirectX::XMStoreFloat4(&instance.instanceColor, color);
 	}
-
 	m_pInstancedRenderer->setInstanceInfo(instanceInfo);
+
+	int aliveCount = 0;
+	//生きているオブジェクトをカウント
+	for (auto pUnitObject : m_UnitObjects)
+	{
+		if (pUnitObject->getState() != UnitObject::State::Dead)
+			aliveCount++;
+	}
+
+	//生きているオブジェクトがいないならreturn
+	if (aliveCount == 0) return;
+
+	updateCenterPosition();
+
+	//攻撃指示があるならターゲットに向けて移動
+	if (m_pTargetUnit != nullptr)
+	{
+		const Vec3& pos = getTransform().getLocalPosition();
+		const Vec3& destination = m_pTargetUnit->getTransform().getLocalPosition();
+		Vec3 diff = destination - pos;
+		diff.y = 0.0f;
+		//ターゲットとの角度を求める
+		float radian = Vec3::dot(diff, Vec3(0.0f, 0.0f, 1.0f));
+
+		int i = 0;
+		for (int i = 0; i < m_ObjectCount; i++)
+		{
+			m_UnitObjects.at(i)->setDestination(destination, false);
+		}
+	}
 }
 
 void Unit::init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap)
@@ -139,9 +134,12 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 	}
 
 	m_Angle = angle;
+
+	//中心座標を更新
+	updateCenterPosition();
 }
 
-void Unit::setDestination(const Vec3& destination, float angle, int unitWidth)
+void Unit::setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand)
 {
 	//移動指示が入ったので攻撃目標はクリアする
 	m_pTargetUnit = nullptr;
@@ -152,7 +150,7 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth)
 	int i = 0;
 	for (int i = 0; i < m_ObjectCount; i++)
 	{
-		m_UnitObjects.at(i)->setDestination(newPositions.at(i));
+		m_UnitObjects.at(i)->setDestination(newPositions.at(i), isMoveCommand);
 	}
 
 	//ステートロック開始
@@ -252,6 +250,11 @@ void Unit::onEnterCombat(Unit* pEnemyUnit)
 	setTarget(pEnemyUnit);
 }
 
+bool Unit::isInCombat() const
+{
+	return m_pTargetUnit != nullptr;
+}
+
 void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& destination, float radian, int unitWidth)
 {
 	DirectX::XMMATRIX rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0.0f, radian, 0.0f);
@@ -290,4 +293,23 @@ void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& dest
 			remainObjCount--;
 		}
 	}
+}
+
+void Unit::updateCenterPosition()
+{
+	int aliveCount = 0;
+	//生きているオブジェクトをカウント
+	for (auto pUnitObject : m_UnitObjects)
+	{
+		if (pUnitObject->getState() != UnitObject::State::Dead)
+			aliveCount++;
+	}
+
+	//ユニットの中心座標を更新
+	Vec3 sum;
+	for (auto pUnitObject : m_UnitObjects)
+	{
+		sum += pUnitObject->getTransform().getLocalPosition();
+	}
+	getTransform().setLocalPosition(sum / (float)aliveCount);
 }

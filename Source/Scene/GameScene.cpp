@@ -132,7 +132,7 @@ void GameScene::start()
 			pUnitObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
 			auto pUnit = pUnitObj->getChildren().at(0)->addComponent<Unit>();
 			pUnit->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
-			pUnit->setPosition(Vec3(200.0f * i, 0.0f, 200.0f), 0.0f, 10);
+			pUnit->setPosition(Vec3(200.0f * i, 0.0f, 200.0f), 180.0f, 10);
 
 			pPlayer2->addUnit(pUnit);
 		}

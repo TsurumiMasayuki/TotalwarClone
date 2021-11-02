@@ -92,7 +92,8 @@ void UnitSelector::onUpdate()
 		Vec3 placePos = m_UnitPlacePosBegin + diff.normalized() * diff.length() * 0.5f;
 		m_pSelectedUnit->setDestination(placePos,
 			-MathUtility::toDegree(std::atan2f(diff.z, diff.x)),
-			diff.length() / m_pSelectedUnit->getSpacePerObject()
+			diff.length() / m_pSelectedUnit->getSpacePerObject(),
+			true
 		);
 
 		//InstancedRendererに空のデータを渡して非表示にする

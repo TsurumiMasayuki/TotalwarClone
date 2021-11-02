@@ -15,7 +15,8 @@ UnitStats::UnitStats(nlohmann::json& json)
 	m_DebugColor(Color((float)json["UnitStats"]["DebugColor"][0],
 		(float)json["UnitStats"]["DebugColor"][1],
 		(float)json["UnitStats"]["DebugColor"][2],
-		1.0f))
+		1.0f)),
+	m_DefaultUnitWidth((int)json["UnitStats"]["DefaultUnitWidth"])
 {
 	//UŒ‚‚Ìî•ñ‚ğ“Ç‚İæ‚é
 	for (auto& attackInfo : json["MainAttacks"])

@@ -18,6 +18,9 @@ public:
 	//値に沿ってソートされたユニットを取得(昇順)
 	const std::vector<Unit*>& getSortedUnits(UnitStatsValues sortValue);
 
+	//中心に最も近いユニットを取得
+	Unit* getCenterUnit();
+
 private:
 	void updateContainer(UnitStatsValues value);
 	static void initializeSortPreds();

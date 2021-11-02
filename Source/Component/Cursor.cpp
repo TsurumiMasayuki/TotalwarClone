@@ -21,8 +21,11 @@ void Cursor::onUpdate()
 	//-1 ~ 1の値に変換
 	mousePos.y = -mousePos.y + WindowHeight * 0.5f;
 
+	//回転行列
 	const auto& rotMat = m_pCamera->getTransform().getRotationMatrix();
-	DirectX::XMVECTOR unproject1 = DirectX::XMVector3Unproject(
+
+	//カメラの近く
+	DirectX::XMVECTOR unprojectNear = DirectX::XMVector3Unproject(
 		mousePos.toXMVector(),
 		0.0f, 0.0f, WindowWidth, WindowHeight,
 		0.1f, 10.0f,
@@ -30,17 +33,19 @@ void Cursor::onUpdate()
 	);
 
 	mousePos.z = 1.0f;
-	DirectX::XMVECTOR unproject2 = DirectX::XMVector3Unproject(
+	//カメラの遠く
+	DirectX::XMVECTOR unprojectFar = DirectX::XMVector3Unproject(
 		mousePos.toXMVector(),
 		0.0f, 0.0f, WindowWidth, WindowHeight,
 		0.1f, 10.0f,
 		m_pCamera->getProjMatrix(), m_pCamera->getViewMatrix(), DirectX::XMMatrixIdentity()
 	);
 
-	Vec3 dir = Vec3(unproject2) - Vec3(unproject1);
+	//方向を算出
+	Vec3 dir = Vec3(unprojectFar) - Vec3(unprojectNear);
 	dir = dir.normalized();
 
-	Vec3 origin = Vec3(unproject1);
+	Vec3 origin = Vec3(unprojectNear);
 
 	//カーソルがワールド上で指している場所を更新
 	Vec3 forward(0.0f, 0.0f, 10.0f);

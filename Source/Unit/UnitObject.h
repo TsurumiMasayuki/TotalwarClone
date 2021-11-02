@@ -29,7 +29,7 @@ public:
 	void init(Unit* pUnit, ValueMap* pValueMap);
 
 	//–Ú“I’n‚ğİ’è
-	void setDestination(const Vec3& destination, bool moveCommand = true);
+	void setDestination(const Vec3& destination, bool isMoveCommand = true);
 	void move();
 	void rotate();
 

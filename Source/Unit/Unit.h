@@ -21,6 +21,7 @@ class ValueMap;
 class UnitObject;
 struct UnitStats;
 
+//ユニットクラス
 class Unit
 	: public AbstractComponent
 {
@@ -30,7 +31,7 @@ public:
 
 	void init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap);
 	void setPosition(const Vec3& position, float angle, int unitWidth);
-	void setDestination(const Vec3& destination, float angle, int unitWidth);
+	void setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand = true);
 
 	float getSpacePerObject() const;
 
@@ -49,8 +50,12 @@ public:
 	bool isStateLocked();
 
 	void onEnterCombat(Unit* pEnemyUnit);
+	bool isInCombat() const;
 
 	void calculateObjectPositions(std::vector<Vec3>& results, const Vec3& destination, float radian, int unitWidth);
+
+private:
+	void updateCenterPosition();
 
 private:
 	std::vector<GameObject*> m_GameObjects;

@@ -7,13 +7,12 @@
 MarchController::MarchController(Unit* pUnit, IPlayer* pPlayer, const Vec3& relativePos, int unitWidth)
 	: m_pUnit(pUnit),
 	m_pPlayer(pPlayer),
-	m_pSlowestUnit(nullptr),
+	m_pBaseUnit(nullptr),
 	m_RelativePos(relativePos),
 	m_UnitWidth(unitWidth)
 {
-	const auto& sortedUnits = m_pPlayer->getUnitContainer()->getSortedUnits(UnitStatsValues::Speed);
-	//一番足の遅いユニットを検索
-	m_pSlowestUnit = sortedUnits.at(0);
+	//ベースになるユニットを検索
+	m_pBaseUnit = m_pPlayer->getUnitContainer()->getCenterUnit();
 }
 
 void MarchController::start()
@@ -22,14 +21,18 @@ void MarchController::start()
 
 void MarchController::update()
 {
-	float angle = m_pSlowestUnit->getAngle();
+	//戦闘中なら無効
+	if (m_pUnit->isInCombat())
+		return;
+
+	float angle = 0.0f;
 	float radian = MathUtility::toRadian(angle);
 
 	//回転行列を計算
-	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(0.0f, angle, 0.0f);
+	DirectX::XMMATRIX rotate = DirectX::XMMatrixRotationRollPitchYaw(0.0f, radian, 0.0f);
 
 	//一番遅いユニットに合わせて移動
-	const Vec3& basePos = m_pSlowestUnit->getTransform().getLocalPosition();
+	const Vec3& basePos = m_pBaseUnit->getTransform().getLocalPosition();
 	Vec3 rotatePos = m_RelativePos.multMatrix(rotate);
-	m_pUnit->setDestination(basePos + rotatePos, angle, m_UnitWidth);
+	m_pUnit->setDestination(basePos + rotatePos, angle, m_UnitWidth, false);
 }
