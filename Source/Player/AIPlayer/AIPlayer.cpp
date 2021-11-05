@@ -2,6 +2,9 @@
 #include "Unit\Unit.h"
 #include "AI\Controller\SimpleMoveController.h"
 #include "AI\Controller\MarchController.h"
+#include "GameState.h"
+
+Game::GameState Game::g_GameState;
 
 AIPlayer::AIPlayer()
 {
@@ -13,33 +16,6 @@ AIPlayer::~AIPlayer()
 
 void AIPlayer::onStart()
 {
-	Unit* pEnemyCenterUnit = m_pOpponentPlayer->getUnitContainer()->getCenterUnit();
-
-	//真ん中のユニットを取得
-	const auto& units = m_Units.getSortedUnits(UnitStatsValues::Speed);
-	auto pBaseUnit = getUnitContainer()->getCenterUnit();
-
-	//コントローラーを生成して登録
-	m_Controllers.at(pBaseUnit) = new SimpleMoveController(pBaseUnit, pEnemyCenterUnit, pBaseUnit->getUnitStats()->m_DefaultUnitWidth);
-	const Vec3& slowestUnitPos = pBaseUnit->getTransform().getLocalPosition();
-
-	//一番遅いユニット以外に適用
-	for (int i = 0; i < (int)units.size(); i++)
-	{
-		if (m_Controllers.at(units.at(i))) 
-			continue;
-
-		//基準にするオブジェクトからの相対座標を算出
-		const Vec3& relativePos = units.at(i)->getTransform().getLocalPosition() - slowestUnitPos;
-		//コントローラーを生成
-		m_Controllers.at(units.at(i)) = new MarchController(units.at(i), this, relativePos, units.at(i)->getUnitStats()->m_DefaultUnitWidth);
-	}
-
-	//初期化処理
-	for (auto& pair : m_Controllers)
-	{
-		pair.second->start();
-	}
 }
 
 void AIPlayer::onUpdate()
@@ -47,10 +23,44 @@ void AIPlayer::onUpdate()
 	//対戦相手がいないなら実行しない
 	if (m_pOpponentPlayer == nullptr) return;
 
-	//更新処理
-	for (auto& pair : m_Controllers)
+	if (Game::g_GameState == Game::GameState::CombatPhaseBegin)
 	{
-		pair.second->update();
+		Unit* pEnemyCenterUnit = m_pOpponentPlayer->getUnitContainer()->getCenterUnit();
+
+		//真ん中のユニットを取得
+		const auto& units = m_Units.getSortedUnits(UnitStatsValues::Speed);
+		auto pBaseUnit = getUnitContainer()->getCenterUnit();
+
+		//コントローラーを生成して登録
+		m_Controllers.at(pBaseUnit) = new SimpleMoveController(pBaseUnit, pEnemyCenterUnit, pBaseUnit->getUnitStats()->m_DefaultUnitWidth);
+		const Vec3& slowestUnitPos = pBaseUnit->getTransform().getLocalPosition();
+
+		//一番遅いユニット以外に適用
+		for (int i = 0; i < (int)units.size(); i++)
+		{
+			if (m_Controllers.at(units.at(i)))
+				continue;
+
+			//基準にするオブジェクトからの相対座標を算出
+			const Vec3& relativePos = units.at(i)->getTransform().getLocalPosition() - slowestUnitPos;
+			//コントローラーを生成
+			m_Controllers.at(units.at(i)) = new MarchController(units.at(i), this, relativePos, units.at(i)->getUnitStats()->m_DefaultUnitWidth);
+		}
+
+		//初期化処理
+		for (auto& pair : m_Controllers)
+		{
+			pair.second->start();
+		}
+	}
+
+	if (Game::g_GameState == Game::GameState::CombatPhase)
+	{
+		//更新処理
+		for (auto& pair : m_Controllers)
+		{
+			pair.second->update();
+		}
 	}
 
 	//auto& sortedUnits = m_pOpponentPlayer->getUnitContainer()->getSortedUnits(UnitStatsValues::Health);
@@ -113,6 +123,11 @@ void AIPlayer::onDestroy()
 	}
 }
 
+int AIPlayer::getTeamID()
+{
+	return m_TeamID;
+}
+
 void AIPlayer::addUnit(Unit* pUnit)
 {
 	//ユニットを追加
@@ -128,7 +143,7 @@ UnitContainer* AIPlayer::getUnitContainer()
 
 void AIPlayer::init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap)
 {
-	m_TeamNum = teamNum;
+	m_TeamID = teamNum;
 	m_pOpponentPlayer = pOpponentPlayer;
 	m_pValueMap = pValueMap;
 }

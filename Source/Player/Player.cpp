@@ -8,6 +8,11 @@ void Player::onUpdate()
 {
 }
 
+int Player::getTeamID()
+{
+	return m_TeamID;
+}
+
 void Player::addUnit(Unit* pUnit)
 {
 	m_Units.addUnit(pUnit);
@@ -20,7 +25,7 @@ UnitContainer* Player::getUnitContainer()
 
 void Player::init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap)
 {
-	m_TeamNum = teamNum;
+	m_TeamID = teamNum;
 	m_pOpponentPlayer = pOpponentPlayer;
 	m_pValueMap = pValueMap;
 }

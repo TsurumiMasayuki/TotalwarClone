@@ -12,7 +12,7 @@ public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
 
-	void init(IPlayer* pPlayer, UnitSelector* pSelector, float spacePerUnitCard);
+	void init(IPlayer* pPlayer, UnitSelector* pSelector);
 
 private:
 	IPlayer* m_pPlayer;

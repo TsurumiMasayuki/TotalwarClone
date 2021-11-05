@@ -12,6 +12,7 @@ public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
 
+	virtual int getTeamID() override;
 	virtual void addUnit(Unit* pUnit) override;
 	virtual UnitContainer* getUnitContainer() override;
 	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
@@ -24,5 +25,5 @@ private:
 	//ユニットリスト
 	UnitContainer m_Units;
 	//チーム番号
-	int m_TeamNum;
+	int m_TeamID;
 };

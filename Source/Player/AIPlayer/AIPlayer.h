@@ -19,6 +19,7 @@ public:
 	virtual void onUpdate() override;
 	virtual void onDestroy() override;
 
+	virtual int getTeamID() override;
 	virtual void addUnit(Unit* pUnit) override;
 	virtual UnitContainer* getUnitContainer() override;
 
@@ -32,7 +33,7 @@ private:
 	//ユニットリスト
 	UnitContainer m_Units;
 	//チーム番号
-	int m_TeamNum;
+	int m_TeamID;
 	//ユニット１つにつき１つのコントローラーを割り当てるので、mapで管理
 	std::unordered_map<Unit*, AbstractController*> m_Controllers;
 };

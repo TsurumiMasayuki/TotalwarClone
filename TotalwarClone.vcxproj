@@ -176,6 +176,7 @@
     <ClCompile Include="Source\UI\UISlider.cpp" />
     <ClCompile Include="Source\UI\UIUnitCard.cpp" />
     <ClCompile Include="Source\UI\UIUnitList.cpp" />
+    <ClCompile Include="Source\UI\UIUnitPlacer.cpp" />
     <ClCompile Include="Source\Unit\Attack\Attack.cpp" />
     <ClCompile Include="Source\Unit\Attack\AttackStats.cpp" />
     <ClCompile Include="Source\Unit\Unit.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Source\Blockbench\BlockbenchModel.h" />
     <ClInclude Include="Source\Component\Cursor.h" />
     <ClInclude Include="Source\Component\UnitSelector.h" />
+    <ClInclude Include="Source\GameState.h" />
     <ClInclude Include="Source\Graphics\Material\BBModelMaterial.h" />
     <ClInclude Include="Source\Graphics\Shader\BBInstancingVertexShader.h" />
     <ClInclude Include="Source\Player\AIPlayer\AIPlayer.h" />
@@ -210,6 +212,7 @@
     <ClInclude Include="Source\UI\UISliderHelper.h" />
     <ClInclude Include="Source\UI\UIUnitCard.h" />
     <ClInclude Include="Source\UI\UIUnitList.h" />
+    <ClInclude Include="Source\UI\UIUnitPlacer.h" />
     <ClInclude Include="Source\Unit\Attack\Attack.h" />
     <ClInclude Include="Source\Unit\Attack\AttackStats.h" />
     <ClInclude Include="Source\Utility\JsonFileManager.h" />

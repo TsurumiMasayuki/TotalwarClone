@@ -28,6 +28,8 @@ public:
 
 	void init(Unit* pUnit, ValueMap* pValueMap);
 
+	//座標を変更
+	void setPosition(const Vec3& position);
 	//目的地を設定
 	void setDestination(const Vec3& destination, bool isMoveCommand = true);
 	void move();

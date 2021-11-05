@@ -18,6 +18,8 @@
 #include "Math\MathUtility.h"
 #include "Math\Easing.h"
 
+#include "GameState.h"
+
 void UnitObject::onStart()
 {
 	m_ShieldRegenTimer.setMaxTime(1.0f);
@@ -25,6 +27,10 @@ void UnitObject::onStart()
 
 void UnitObject::onUpdate()
 {
+	//準備フェーズ中なら何も行わない
+	if (Game::g_GameState == Game::GameState::PreparePhase)
+		return;
+
 	//ステート遷移
 	stateTransition();
 
@@ -132,6 +138,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	m_pCollider = getUser().addComponent<CircleColliderB2>();
 	m_pCollider->setTrigger(false);
 	m_pCollider->setRadius(1.0f);
+	m_pCollider->setBodyType(b2BodyType::b2_kinematicBody);
 
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();
@@ -147,6 +154,14 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 			new Attack(this, &JsonFileManager<AttackStats>::getInstance().get(attacks.m_AttackName))
 		);
 	}
+}
+
+void UnitObject::setPosition(const Vec3& position)
+{
+	getTransform().setLocalPosition(position);
+	//setRadiusしてBody更新
+	m_pCollider->setRadius(m_pCollider->getRadius());
+	m_pTrigger->setRadius(m_pTrigger->getRadius());
 }
 
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
@@ -208,17 +223,6 @@ void UnitObject::onCollisionEnter(UnitObject* pUnitObject)
 
 void UnitObject::onCollisionStay(UnitObject* pUnitObject)
 {
-	//自分が死んでいたら何も行わない
-	if (m_State == State::Dead) return;
-
-	//if (pUnitObject == m_pTargetObject)
-	//{
-	//	setState(State::Attack);
-	//	//ユニットに通知
-	//	m_pUnit->onEnterCombat(m_pTargetObject->m_pUnit);
-	//}
-
-	//trySetTargetObject(pUnitObject, State::Attack);
 }
 
 void UnitObject::onCollisionExit(UnitObject* pUnitObject)

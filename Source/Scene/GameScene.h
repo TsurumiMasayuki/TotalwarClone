@@ -36,6 +36,6 @@ private:
 
 	Unit* m_pUnit1;
 
-	Player* pPlayer1;
+	Player* pPlayer;
 	AIPlayer* pPlayer2;
 };

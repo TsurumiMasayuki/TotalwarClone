@@ -128,8 +128,7 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 	int i = 0;
 	for (int i = 0; i < m_ObjectCount; i++)
 	{
-		auto& tr = m_UnitObjects.at(i)->getTransform();
-		tr.setLocalPosition(newPositions.at(i));
+		m_UnitObjects.at(i)->setPosition(newPositions.at(i));
 		m_UnitObjects.at(i)->setDestination(newPositions.at(i));
 	}
 

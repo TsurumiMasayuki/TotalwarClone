@@ -8,6 +8,7 @@
 #include "Utility\ModelGameObjectHelper.h"
 #include "Math\MathUtility.h"
 
+#include "GameState.h"
 #include "Graphics\Material\ValueMapMaterial.h"
 
 void UnitSelector::onStart()
@@ -90,11 +91,24 @@ void UnitSelector::onUpdate()
 		Vec3 unitPlacePosEnd = cursorPoint;
 		Vec3 diff = unitPlacePosEnd - m_UnitPlacePosBegin;
 		Vec3 placePos = m_UnitPlacePosBegin + diff.normalized() * diff.length() * 0.5f;
-		m_pSelectedUnit->setDestination(placePos,
-			-MathUtility::toDegree(std::atan2f(diff.z, diff.x)),
-			diff.length() / m_pSelectedUnit->getSpacePerObject(),
-			true
-		);
+
+		//準備フェーズならワープ
+		if (Game::g_GameState == Game::GameState::PreparePhase)
+		{
+			m_pSelectedUnit->setPosition(placePos,
+				-MathUtility::toDegree(std::atan2f(diff.z, diff.x)),
+				diff.length() / m_pSelectedUnit->getSpacePerObject()
+			);
+		}
+		else
+		{
+			//目的地設定
+			m_pSelectedUnit->setDestination(placePos,
+				-MathUtility::toDegree(std::atan2f(diff.z, diff.x)),
+				diff.length() / m_pSelectedUnit->getSpacePerObject(),
+				true
+			);
+		}
 
 		//InstancedRendererに空のデータを渡して非表示にする
 		std::vector<PreviewObjInstance> instances;
@@ -143,7 +157,7 @@ void UnitSelector::init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial
 	auto pCollider = getUser().addComponent<CircleColliderB2>();
 	pCollider->setRadius(1.0f);
 	pCollider->setTrigger(true);
-	pCollider->setBodyType(b2_staticBody);
+	pCollider->setBodyType(b2_kinematicBody);
 
 	auto pRendererObj = ModelGameObjectHelper::instantiateModel<PreviewObjInstance>(getUser().getGameMediator(),
 		GameDevice::getModelManager().getModel("Cube"),

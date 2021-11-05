@@ -19,11 +19,12 @@ void UIUnitList::onUpdate()
 {
 }
 
-void UIUnitList::init(IPlayer* pPlayer, UnitSelector* pSelector, float spacePerUnitCard)
+void UIUnitList::init(IPlayer* pPlayer, UnitSelector* pSelector)
 {
 	const float unitCardWidth = 60.0f;
 	const float unitCardHeight = 96.0f;
 	const float sliderHeight = 8.0f;
+	const float spacePerUnitCard = 8.0f;
 
 	m_pPlayer = pPlayer;
 	const auto& units = m_pPlayer->getUnitContainer()->getUnits();
@@ -57,7 +58,7 @@ void UIUnitList::init(IPlayer* pPlayer, UnitSelector* pSelector, float spacePerU
 		pUnitCardObj->getTransform().setLocalPosition(Vec3(0.0f, 0.0f));
 		pUnitCardObj->getTransform().setLocalScale(Vec3(unitCardWidth, unitCardHeight, 1.0f));
 		auto pUnitCard = pUnitCardObj->addComponent<UIUnitCard>();
-		pUnitCard->init(pUnit);
+		pUnitCard->init(pUnit->getUnitStats());
 
 		auto pHealthObj = new GameObject(getUser().getGameMediator());
 		pHealthObj->setParent(pStatsDisplayObj);
