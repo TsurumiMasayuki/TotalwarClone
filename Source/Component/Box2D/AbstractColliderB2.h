@@ -17,11 +17,17 @@ public:
 
 	virtual void init() = 0;
 
+	//速度を設定
 	void setVelocity(float x, float z);
 
+	//トリガーの状態設定
 	void setTrigger(bool isTrigger);
+	//トリガーの状態取得
 	bool getTrigger() const;
 
+	//グループを設定
+	void setGroupIndex(int index);
+	//BodyTypeの設定
 	void setBodyType(const b2BodyType& bodyType);
 
 	virtual void onLocalPositionChanged(const Vec3& newPosition) override;
@@ -47,4 +53,5 @@ protected:
 	b2Body* m_pBody;
 	UnitObject* m_pUnitObject;
 	b2BodyType m_BodyType;
+	int m_GroupIndex;
 };

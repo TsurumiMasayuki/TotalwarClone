@@ -7,7 +7,8 @@
 #include "Unit\UnitObject.h"
 
 AbstractColliderB2::AbstractColliderB2()
-	: m_BodyType(b2_dynamicBody)
+	: m_BodyType(b2_dynamicBody),
+	m_GroupIndex(0)
 {
 }
 
@@ -57,9 +58,18 @@ bool AbstractColliderB2::getTrigger() const
 	return m_IsTrigger;
 }
 
+void AbstractColliderB2::setGroupIndex(int index)
+{
+	m_GroupIndex = index;
+	//グループ変更の為初期化
+	init();
+}
+
 void AbstractColliderB2::setBodyType(const b2BodyType& bodyType)
 {
 	m_BodyType = bodyType;
+	//BodyType変更の為初期化
+	init();
 }
 
 void AbstractColliderB2::onLocalPositionChanged(const Vec3& newPosition)

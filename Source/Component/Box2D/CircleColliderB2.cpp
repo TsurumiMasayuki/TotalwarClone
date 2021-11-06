@@ -54,6 +54,7 @@ void CircleColliderB2::init()
 	fixtureDef.density = 100.0f;
 	fixtureDef.friction = 0.3f;
 	fixtureDef.isSensor = m_IsTrigger;
+	fixtureDef.filter.groupIndex = m_GroupIndex;
 
 	m_pBody->CreateFixture(&fixtureDef);
 }

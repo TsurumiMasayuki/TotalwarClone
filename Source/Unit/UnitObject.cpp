@@ -138,12 +138,14 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	m_pCollider = getUser().addComponent<CircleColliderB2>();
 	m_pCollider->setTrigger(false);
 	m_pCollider->setRadius(1.0f);
-	m_pCollider->setBodyType(b2BodyType::b2_kinematicBody);
+	m_pCollider->setBodyType(b2BodyType::b2_dynamicBody);
+	m_pCollider->setGroupIndex(0);
 
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();
 	m_pTrigger->setTrigger(true);
 	m_pTrigger->setRadius(30.0f);
+	m_pTrigger->setGroupIndex(1);
 
 	m_pValueMap = pValueMap;
 
@@ -159,9 +161,9 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 void UnitObject::setPosition(const Vec3& position)
 {
 	getTransform().setLocalPosition(position);
-	//setRadiusしてBody更新
-	m_pCollider->setRadius(m_pCollider->getRadius());
-	m_pTrigger->setRadius(m_pTrigger->getRadius());
+	//Body更新の為初期化
+	m_pCollider->init();
+	m_pTrigger->init();
 }
 
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)

@@ -28,8 +28,8 @@ void UnitSelector::onUpdate()
 	//入力インターバル中ならreturn
 	if (!m_InputInterval.isTime()) return;
 
-	//中クリックしたら選択(ターゲットがいないなら選択解除)
-	if (GameDevice::getInput().isMouseButtonDown(2) &&
+	//右クリックしたら選択(ターゲットがいないなら選択解除)
+	if (GameDevice::getInput().isMouseButtonDown(1) &&
 		m_pTargetUnit != nullptr)
 	{
 		selectUnit(m_pTargetUnit);
@@ -127,6 +127,7 @@ void UnitSelector::onTriggerStay(GameObject* pHit)
 		return;
 	}
 	m_pTargetUnit = pUnitObject->getUnit();
+	//selectUnit(pUnitObject->getUnit());
 }
 
 void UnitSelector::onTriggerExit(GameObject* pHit)
@@ -157,7 +158,8 @@ void UnitSelector::init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial
 	auto pCollider = getUser().addComponent<CircleColliderB2>();
 	pCollider->setRadius(1.0f);
 	pCollider->setTrigger(true);
-	pCollider->setBodyType(b2_kinematicBody);
+	pCollider->setBodyType(b2_dynamicBody);
+	pCollider->setGroupIndex(0);
 
 	auto pRendererObj = ModelGameObjectHelper::instantiateModel<PreviewObjInstance>(getUser().getGameMediator(),
 		GameDevice::getModelManager().getModel("Cube"),
