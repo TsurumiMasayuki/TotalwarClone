@@ -186,7 +186,10 @@
     <ClCompile Include="Source\Graphics\Material\ValueMapMaterial.cpp" />
     <ClCompile Include="Source\Scene\GameScene.cpp" />
     <ClCompile Include="Source\TotalwarCloneGame.cpp" />
+    <ClCompile Include="Source\Unit\UnitPlacer.cpp" />
+    <ClCompile Include="Source\Unit\UnitRenderHelper.cpp" />
     <ClCompile Include="Source\Unit\UnitStats.cpp" />
+    <ClCompile Include="Source\Unit\UnitUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AI\Controller\AbstractController.h" />
@@ -215,6 +218,10 @@
     <ClInclude Include="Source\UI\UIUnitPlacer.h" />
     <ClInclude Include="Source\Unit\Attack\Attack.h" />
     <ClInclude Include="Source\Unit\Attack\AttackStats.h" />
+    <ClInclude Include="Source\Unit\UnitInstanceInfo.h" />
+    <ClInclude Include="Source\Unit\UnitPlacer.h" />
+    <ClInclude Include="Source\Unit\UnitRenderHelper.h" />
+    <ClInclude Include="Source\Unit\UnitUtility.h" />
     <ClInclude Include="Source\Utility\JsonFileManager.h" />
     <ClInclude Include="Source\Unit\Unit.h" />
     <ClInclude Include="Source\Unit\UnitContainer.h" />

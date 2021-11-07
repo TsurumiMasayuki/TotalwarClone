@@ -19,8 +19,10 @@ public:
 	void load(const std::string& key, const std::string& filePath);
 	//解放
 	void unloadAll();
-	//ステータスの取得
+	//取得
 	const T& get(const std::string& key) const;
+	//全て取得
+	const std::unordered_map<std::string, T>& getAll() const;
 
 protected:
 	//コンストラクタを隠す
@@ -60,4 +62,10 @@ template<typename T>
 inline const T& JsonFileManager<T>::get(const std::string& key) const
 {
 	return m_FileList.at(key);
+}
+
+template<typename T>
+inline const std::unordered_map<std::string, T>& JsonFileManager<T>::getAll() const
+{
+	return m_FileList;
 }

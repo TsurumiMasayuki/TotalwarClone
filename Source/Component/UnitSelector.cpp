@@ -28,8 +28,10 @@ void UnitSelector::onUpdate()
 	//入力インターバル中ならreturn
 	if (!m_InputInterval.isTime()) return;
 
+	const Input& input = GameDevice::getInput();
+
 	//右クリックしたら選択(ターゲットがいないなら選択解除)
-	if (GameDevice::getInput().isMouseButtonDown(1) &&
+	if (input.isMouseButtonDown(1) &&
 		m_pTargetUnit != nullptr)
 	{
 		selectUnit(m_pTargetUnit);
@@ -38,7 +40,7 @@ void UnitSelector::onUpdate()
 	if (m_pSelectedUnit == nullptr) return;
 
 	//左クリックしたら移動または攻撃
-	if (GameDevice::getInput().isMouseButtonDown(0))
+	if (input.isMouseButtonDown(0))
 	{
 		if (m_pAttackTargetUnit != nullptr)
 		{
@@ -50,7 +52,7 @@ void UnitSelector::onUpdate()
 	}
 
 	//配置予測を表示
-	if (GameDevice::getInput().isMouseButton(0))
+	if (input.isMouseButton(0))
 	{
 		Vec3 unitPlacePosEnd = cursorPoint;
 		Vec3 diff = unitPlacePosEnd - m_UnitPlacePosBegin;
@@ -84,7 +86,7 @@ void UnitSelector::onUpdate()
 	}
 
 	//攻撃中でないなら移動処理終了
-	if (GameDevice::getInput().isMouseButtonUp(0) &&
+	if (input.isMouseButtonUp(0) &&
 		m_pAttackTargetUnit == nullptr)
 	{
 		//ユニット配置の記録終了
@@ -127,7 +129,6 @@ void UnitSelector::onTriggerStay(GameObject* pHit)
 		return;
 	}
 	m_pTargetUnit = pUnitObject->getUnit();
-	//selectUnit(pUnitObject->getUnit());
 }
 
 void UnitSelector::onTriggerExit(GameObject* pHit)

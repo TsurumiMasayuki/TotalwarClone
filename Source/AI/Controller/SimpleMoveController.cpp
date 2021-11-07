@@ -1,4 +1,5 @@
 #include "SimpleMoveController.h"
+#include "Component\Utility\Transform.h"
 #include "Math\MathUtility.h"
 
 SimpleMoveController::SimpleMoveController(Unit* pUnit, Unit* pTargetUnit, int unitWidth)

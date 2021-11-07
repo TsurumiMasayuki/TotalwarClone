@@ -3,13 +3,13 @@
 #include <algorithm>
 
 #include "Actor\Base\GameObject.h"
-#include "AI\ValueMap.h"
-
 #include "Component\Physics\SphereColliderBt.h"
 #include "Math\MathUtility.h"
 
+#include "AI\ValueMap.h"
 #include "Component\Box2D\CircleColliderB2.h"
 #include "Unit\UnitObject.h"
+#include "Unit\UnitRenderHelper.h"
 
 //TODO:回転を二次元座標用に変える
 
@@ -21,29 +21,13 @@ void Unit::onUpdate()
 {
 	m_StateLockTimer.update();
 
-	DirectX::XMVECTOR color = m_pUnitStats->m_DebugColor.toXMVECTOR();
-
-	//InstancedRendererに情報を送る
-	std::vector<UnitInstanceInfo> instanceInfo;
-	for (int i = 0; i < (int)m_UnitObjects.size(); i++)
+	//インスタンシング用情報を送る
+	std::vector<DirectX::XMMATRIX> objMatrices;
+	for (auto pUnitObject : m_UnitObjects)
 	{
-		instanceInfo.emplace_back();
-		auto& instance = instanceInfo.back();
-		auto world = m_UnitObjects[i]->getTransform().getWorldMatrix();
-		auto instanceMat = DirectX::XMMatrixTranspose(world);
-
-		//死亡状態なら非表示
-		if (m_UnitObjects[i]->getState() == UnitObject::State::Dead)
-			instanceMat = DirectX::XMMatrixSet(
-				0.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f, 0.0f);
-
-		DirectX::XMStoreFloat4x4(&instance.instanceMat, instanceMat);
-		DirectX::XMStoreFloat4(&instance.instanceColor, color);
+		objMatrices.emplace_back(pUnitObject->getTransform().getWorldMatrix());
 	}
-	m_pInstancedRenderer->setInstanceInfo(instanceInfo);
+	m_pRenderHelper->appendInstanceInfo(objMatrices);
 
 	int aliveCount = 0;
 	//生きているオブジェクトをカウント
@@ -76,18 +60,17 @@ void Unit::onUpdate()
 	}
 }
 
-void Unit::init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap)
+void Unit::init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper)
 {
 	m_ObjectCount = pUnitStats->m_ObjectCount;
 	m_SpacePerObject = pUnitStats->m_SpacePerObject;
 	m_TeamID = teamID;
 	m_pUnitStats = pUnitStats;
 	m_pValueMap = pValueMap;
+	m_pRenderHelper = pRenderHelper;
 
 	//ステートロックタイマー初期化
 	m_StateLockTimer.setMaxTime(1.0f);
-
-	m_pInstancedRenderer = getUser().getComponent<InstancedRenderer<UnitInstanceInfo>>();
 
 	int xSize = m_ObjectCount / 1;
 	int zSize = m_ObjectCount / xSize;

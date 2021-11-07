@@ -2,6 +2,7 @@
 #include "Unit\Unit.h"
 #include "AI\Controller\SimpleMoveController.h"
 #include "AI\Controller\MarchController.h"
+#include "Component\Utility\Transform.h"
 #include "GameState.h"
 
 Game::GameState Game::g_GameState;

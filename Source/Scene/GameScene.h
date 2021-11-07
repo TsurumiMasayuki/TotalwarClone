@@ -1,12 +1,17 @@
 #pragma once
+#include <unordered_map>
 #include "AI\ValueMap.h"
 #include "Scene\Base\AbstractScene.h"
 
 class GameObject;
+
+class UnitRenderHelper;
 class Unit;
+
 class InstancingMaterial;
 class BBModelMaterial;
 class ValueMapMaterial;
+
 class Model;
 class UISlider;
 class Player;
@@ -34,6 +39,7 @@ private:
 
 	Model* m_pBBCube;
 
+	std::unordered_map<std::string, UnitRenderHelper*> m_UnitRenderHelpers;
 	Unit* m_pUnit1;
 
 	Player* pPlayer;

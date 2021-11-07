@@ -22,6 +22,8 @@
 #include "Player\AIPlayer\AIPlayer.h"
 
 #include "Unit\UnitStats.h"
+#include "Unit\UnitRenderHelper.h"
+
 #include "Utility\JsonFileManager.h"
 
 #include "UI\UIUnitList.h"
@@ -110,6 +112,16 @@ void GameScene::start()
 	pPlayer->init(g_TeamID1, pAIPlayer, &m_ValueMap2);
 	pAIPlayer->init(g_TeamID2, pPlayer, &m_ValueMap1);
 
+	//ユニット描画用オブジェクト生成
+	for (const auto& pair : JsonFileManager<UnitStats>::getInstance().getAll())
+	{
+		auto pRendererObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
+		auto pRenderer = pRendererObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
+		pRenderer->setMaterial(m_pInstancingMaterial);
+
+		m_UnitRenderHelpers.emplace(pair.first, new UnitRenderHelper(&pair.second, nullptr, pRenderer));
+	}
+
 	//UI生成
 	{
 		auto pUIObj = new GameObject(this);
@@ -118,16 +130,15 @@ void GameScene::start()
 		pUnitList->init(pPlayer, pSelector);
 
 		UIUnitPlacer* pUnitPlacer = pUIObj->addComponent<UIUnitPlacer>();
-		pUnitPlacer->init(g_pCursor, pPlayer, &m_ValueMap1, m_pInstancingMaterial);
+		pUnitPlacer->init(g_pCursor, pPlayer, &m_ValueMap1, &m_UnitRenderHelpers);
 	}
 
 	//ユニット生成
 	for (int i = -2; i < 3; i++)
 	{
-		auto pUnitObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
-		pUnitObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(m_pInstancingMaterial);
-		auto pUnit = pUnitObj->getChildren().at(0)->addComponent<Unit>();
-		pUnit->init(g_TeamID2, pUnitStats1, &m_ValueMap2);
+		GameObject* pUnitObj = new GameObject(this);
+		auto pUnit = pUnitObj->addComponent<Unit>();
+		pUnit->init(g_TeamID2, pUnitStats1, &m_ValueMap2, m_UnitRenderHelpers.at(pUnitStats1->m_Name));
 		pUnit->setPosition(Vec3(200.0f * i, 0.0f, 200.0f), 180.0f, 10);
 
 		pAIPlayer->addUnit(pUnit);
@@ -147,50 +158,50 @@ void GameScene::start()
 	}
 
 	{
-		//	std::string filePath = "Resources/TextureTest.json";
-		//	GameDevice::getTextureManager().load("TextureTest", L"Resources/TextureTest.png");
+		//std::string filePath = "Resources/TextureTest.json";
+		//GameDevice::getTextureManager().load("TextureTest", L"Resources/TextureTest.png");
 
-		//	BlockbenchLoader loader;
-		//	loader.load(filePath, "TextureTest", "TextureTest");
-		//	auto& matrices = loader.getModel("TextureTest")->getCubeMatrices();
+		//BlockbenchLoader loader;
+		//loader.load(filePath, "TextureTest", "TextureTest");
+		//auto& matrices = loader.getModel("TextureTest")->getCubeMatrices();
 
-		//	std::vector<UnitInstanceInfo> instances;
-		//	for (auto& matrix : matrices)
+		//std::vector<UnitInstanceInfo> instances;
+		//for (auto& matrix : matrices)
+		//{
+		//	instances.emplace_back();
+		//	auto& instance = instances.back();
+
+		//	DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(matrix));
+		//	instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		//}
+
+		//auto& uvOrigins = loader.getModel("TextureTest")->getUVOrigins();
+		//auto& uvSizes = loader.getModel("TextureTest")->getUVSizes();
+		//for (int i = 0; i < (int)instances.size(); i++)
+		//{
+		//	for (int j = 0; j < BlockbenchModel::cubeFaceCount / 2; j++)
 		//	{
-		//		instances.emplace_back();
-		//		auto& instance = instances.back();
+		//		//原点をセット
+		//		instances[i].instanceUVOrigins.m[j][0] = uvOrigins.at(j).x;
+		//		instances[i].instanceUVOrigins.m[j][1] = uvOrigins.at(j).y;
+		//		instances[i].instanceUVOrigins.m[j][2] = uvOrigins.at(j + 3).x;
+		//		instances[i].instanceUVOrigins.m[j][3] = uvOrigins.at(j + 3).y;
 
-		//		DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(matrix));
-		//		instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+		//		//サイズをセット
+		//		instances[i].instanceUVSizes.m[j][0] = uvSizes.at(j).x;
+		//		instances[i].instanceUVSizes.m[j][1] = uvSizes.at(j).y;
+		//		instances[i].instanceUVSizes.m[j][2] = uvSizes.at(j + 3).x;
+		//		instances[i].instanceUVSizes.m[j][3] = uvSizes.at(j + 3).y;
 		//	}
+		//}
 
-		//	auto& uvOrigins = loader.getModel("TextureTest")->getUVOrigins();
-		//	auto& uvSizes = loader.getModel("TextureTest")->getUVSizes();
-		//	for (int i = 0; i < (int)instances.size(); i++)
-		//	{
-		//		for (int j = 0; j < BlockbenchModel::cubeFaceCount / 2; j++)
-		//		{
-		//			//原点をセット
-		//			instances[i].instanceUVOrigins.m[j][0] = uvOrigins.at(j).x;
-		//			instances[i].instanceUVOrigins.m[j][1] = uvOrigins.at(j).y;
-		//			instances[i].instanceUVOrigins.m[j][2] = uvOrigins.at(j + 3).x;
-		//			instances[i].instanceUVOrigins.m[j][3] = uvOrigins.at(j + 3).y;
+		//m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("TextureTest"));
 
-		//			//サイズをセット
-		//			instances[i].instanceUVSizes.m[j][0] = uvSizes.at(j).x;
-		//			instances[i].instanceUVSizes.m[j][1] = uvSizes.at(j).y;
-		//			instances[i].instanceUVSizes.m[j][2] = uvSizes.at(j + 3).x;
-		//			instances[i].instanceUVSizes.m[j][3] = uvSizes.at(j + 3).y;
-		//		}
-		//	}
-
-		//	m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("TextureTest"));
-
-		//	auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
-		//	auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
-		//	pInstancedRenderer->setMaterial(m_pBBModelMaterial);
-		//	pInstancedRenderer->setInstanceInfo(instances);
-		//	loader.unLoadModels();
+		//auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
+		//auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
+		//pInstancedRenderer->setMaterial(m_pBBModelMaterial);
+		//pInstancedRenderer->setInstanceInfo(instances);
+		//loader.unLoadModels();
 	}
 }
 
@@ -214,6 +225,11 @@ void GameScene::shutdown()
 	delete m_pInstancingMaterial;
 	delete m_pValueMapMaterial;
 	delete m_pBBModelMaterial;
+
+	for (auto& pair : m_UnitRenderHelpers)
+	{
+		delete pair.second;
+	}
 }
 
 void GameScene::lateUpdate()
@@ -221,4 +237,10 @@ void GameScene::lateUpdate()
 	//情報マップをクリア
 	m_ValueMap1.clearAll();
 	m_ValueMap2.clearAll();
+
+	//InstancedRendererに一斉転送
+	for (auto& pair : m_UnitRenderHelpers)
+	{
+		pair.second->sendInstanceInfo();
+	}
 }

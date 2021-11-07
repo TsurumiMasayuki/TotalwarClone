@@ -2,24 +2,14 @@
 #include <vector>
 #include <unordered_map>
 #include "Component\Base\AbstractComponent.h"
-#include "Component\Graphics\InstancedRenderer.h"
 #include "Utility\Timer.h"
 
 #include "Blockbench/BlockbenchModel.h"
 
-struct UnitInstanceInfo
-{
-	DirectX::XMFLOAT4X4 instanceMat;
-	DirectX::XMFLOAT4 instanceColor;
-	//XY, XYで入れる
-	DirectX::XMFLOAT4X4 instanceUVOrigins;
-	//XY, XYで入れる
-	DirectX::XMFLOAT4X4 instanceUVSizes;
-};
-
+struct UnitStats;
 class ValueMap;
 class UnitObject;
-struct UnitStats;
+class UnitRenderHelper;
 
 //ユニットクラス
 class Unit
@@ -29,7 +19,7 @@ public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
 
-	void init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap);
+	void init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper);
 	void setPosition(const Vec3& position, float angle, int unitWidth);
 	void setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand = true);
 
@@ -70,8 +60,8 @@ private:
 	int m_TeamID;
 
 	Timer m_StateLockTimer;
-	InstancedRenderer<UnitInstanceInfo>* m_pInstancedRenderer;
 
-	const UnitStats* m_pUnitStats;
 	ValueMap* m_pValueMap;
+	const UnitStats* m_pUnitStats;
+	UnitRenderHelper* m_pRenderHelper;
 };

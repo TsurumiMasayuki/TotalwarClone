@@ -23,9 +23,13 @@ void UIUnitPlacer::onUpdate()
 {
 }
 
-void UIUnitPlacer::init(Cursor* pCursor, IPlayer* pPlayer, ValueMap* pValueMap, InstancingMaterial* pMaterial)
+void UIUnitPlacer::init(Cursor* pCursor,
+	IPlayer* pPlayer,
+	ValueMap* pValueMap,
+	const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers)
 {
 	m_pCursor = pCursor;
+	m_pRenderHelpers = pRenderHelpers;
 
 	const float unitCardWidth = 60.0f;
 	const float unitCardHeight = 96.0f;
@@ -47,7 +51,6 @@ void UIUnitPlacer::init(Cursor* pCursor, IPlayer* pPlayer, ValueMap* pValueMap, 
 
 	const float positionOffset = (unitCardWidth + spacePerUnitCard) * (float)(unitStatsList.size() - 1) * 0.5f;
 
-	Unit** ppGrabUnit = &m_pGrabUnit;
 	IGameMediator* pGameMediator = getUser().getGameMediator();
 	auto pModel = GameDevice::getModelManager().getModel("Sphere");
 	for (int i = 0; i < (int)unitStatsList.size(); i++)
@@ -61,21 +64,17 @@ void UIUnitPlacer::init(Cursor* pCursor, IPlayer* pPlayer, ValueMap* pValueMap, 
 		auto pButton = pButtonObj->addComponent<UIButton>();
 		//ユニット配置関数を設定
 		pButton->setOnMouseButtonDown(UIButton::MouseButtons::Left,
-			[pGameMediator, pModel, pMaterial, pPlayer, unitStats, pValueMap, ppGrabUnit]()
+			[pGameMediator, pModel, pPlayer, unitStats, pValueMap, pRenderHelpers]()
 			{
 				//ユニット用オブジェクト生成
-				auto pUnitObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(pGameMediator, pModel, true);
-				//マテリアル設定
-				pUnitObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>()->setMaterial(pMaterial);
+				auto pUnitObj = new GameObject(pGameMediator);
 				//ユニット生成
-				auto pUnit = pUnitObj->getChildren().at(0)->addComponent<Unit>();
-				pUnit->init(pPlayer->getTeamID(), &unitStats, pValueMap);
-				//座標設定(プレイヤーの配置範囲の真ん中になるように変更する)
+				auto pUnit = pUnitObj->addComponent<Unit>();
+				pUnit->init(pPlayer->getTeamID(), &unitStats, pValueMap, pRenderHelpers->at(unitStats.m_Name));
+				//座標設定(TODO:プレイヤーの配置範囲の真ん中になるように変更する)
 				pUnit->setPosition(Vec3(0.0f, 0.0f, 0.0f), 0.0f, 10);
 				//ユニット登録
 				pPlayer->addUnit(pUnit);
-				//ユニットを掴んだ状態にする
-				*ppGrabUnit = pUnit;
 			}
 		);
 

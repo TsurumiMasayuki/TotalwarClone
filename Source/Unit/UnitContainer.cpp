@@ -1,5 +1,7 @@
 #include "UnitContainer.h"
 #include <algorithm>
+
+#include "Component\Utility\Transform.h"
 #include "Unit\Unit.h"
 
 bool UnitContainer::isSortPredInitialized;
