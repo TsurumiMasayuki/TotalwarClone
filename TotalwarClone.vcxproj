@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClCompile Include="DX12Main.cpp" />
     <ClCompile Include="Source\AI\Controller\MarchController.cpp" />
+    <ClCompile Include="Source\AI\Controller\SimpleCombatController.cpp" />
     <ClCompile Include="Source\AI\Controller\SimpleMoveController.cpp" />
     <ClCompile Include="Source\Blockbench\BlockbenchLoader.cpp" />
     <ClCompile Include="Source\Blockbench\BlockbenchModel.cpp" />
@@ -194,6 +195,7 @@
   <ItemGroup>
     <ClInclude Include="Source\AI\Controller\AbstractController.h" />
     <ClInclude Include="Source\AI\Controller\MarchController.h" />
+    <ClInclude Include="Source\AI\Controller\SimpleCombatController.h" />
     <ClInclude Include="Source\AI\Controller\SimpleMoveController.h" />
     <ClInclude Include="Source\Blockbench\BlockbenchLoader.h" />
     <ClInclude Include="Source\Blockbench\BlockbenchModel.h" />

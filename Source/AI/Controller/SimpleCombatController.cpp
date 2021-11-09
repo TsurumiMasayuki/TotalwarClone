@@ -1,0 +1,52 @@
+#include "SimpleCombatController.h"
+
+#include "Component\Utility\Transform.h"
+
+#include "Unit\UnitContainer.h"
+
+SimpleCombatController::SimpleCombatController(Unit* pUnit, IPlayer* pOpponentPlayer)
+	: m_pUnit(pUnit),
+	m_pOpponentPlayer(pOpponentPlayer)
+{
+}
+
+void SimpleCombatController::start()
+{
+}
+
+void SimpleCombatController::update()
+{
+	auto pTarget = m_pUnit->getTarget();
+
+	if (pTarget == nullptr)
+	{
+		searchTarget();
+	}
+}
+
+void SimpleCombatController::searchTarget()
+{
+	const std::vector<Unit*>& units = m_pOpponentPlayer->getUnitContainer()->getUnits();
+	std::vector<Unit*> sortVector;
+
+	const Vec3& myPos = m_pUnit->getTransform().getLocalPosition();
+
+	//ソートするためコピーする
+	std::copy(units.begin(), units.end(), std::back_inserter(sortVector));
+	//コントロールするユニットに近い順にソート
+	std::sort(sortVector.begin(), sortVector.end(),
+		[myPos](Unit* a, Unit* b)
+		{
+			const Vec3& posA = a->getTransform().getLocalPosition();
+			const Vec3& posB = a->getTransform().getLocalPosition();
+
+			float sqrDistanceA = myPos.sqrDistance(posA);
+			float sqrDistanceB = myPos.sqrDistance(posB);
+
+			return sqrDistanceA < sqrDistanceB;
+		}
+	);
+
+	//ターゲット設定
+	m_pUnit->setTarget(sortVector.at(0));
+}

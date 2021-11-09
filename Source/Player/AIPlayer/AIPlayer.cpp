@@ -1,9 +1,13 @@
 #include "AIPlayer.h"
-#include "Unit\Unit.h"
-#include "AI\Controller\SimpleMoveController.h"
-#include "AI\Controller\MarchController.h"
 #include "Component\Utility\Transform.h"
+
 #include "GameState.h"
+
+#include "AI\Controller\SimpleMoveController.h"
+#include "AI\Controller\SimpleCombatController.h"
+#include "AI\Controller\MarchController.h"
+
+#include "Unit\Unit.h"
 
 Game::GameState Game::g_GameState;
 
@@ -17,6 +21,7 @@ AIPlayer::~AIPlayer()
 
 void AIPlayer::onStart()
 {
+	m_ControllerUpdated = false;
 }
 
 void AIPlayer::onUpdate()
@@ -57,6 +62,23 @@ void AIPlayer::onUpdate()
 
 	if (Game::g_GameState == Game::GameState::CombatPhase)
 	{
+		//ユニットが戦闘中ならコントローラーを更新
+		for (auto pUnit : m_Units.getUnits())
+		{
+			if (!pUnit->isInCombat()) continue;
+
+			//戦闘中ならcontinue
+			if (m_ControllerUpdated)
+				continue;
+
+			for (auto pUnit2 : m_Units.getUnits())
+			{
+				setNewController(pUnit2, new SimpleCombatController(pUnit2, m_pOpponentPlayer));
+			}
+
+			m_ControllerUpdated = true;
+		}
+
 		//更新処理
 		for (auto& pair : m_Controllers)
 		{
@@ -153,4 +175,14 @@ void AIPlayer::init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap)
 	m_TeamID = teamNum;
 	m_pOpponentPlayer = pOpponentPlayer;
 	m_pValueMap = pValueMap;
+}
+
+void AIPlayer::setNewController(Unit* pUnit, AbstractController* pController)
+{
+	//nullでないならdelete
+	if (m_Controllers.at(pUnit) != nullptr)
+		delete m_Controllers.at(pUnit);
+
+	//新しいコントローラーをセット
+	m_Controllers.at(pUnit) = pController;
 }

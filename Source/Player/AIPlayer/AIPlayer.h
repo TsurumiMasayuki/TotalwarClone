@@ -27,6 +27,9 @@ public:
 	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
 
 private:
+	void setNewController(Unit* pUnit, AbstractController* pController);
+
+private:
 	//情報マップ
 	ValueMap* m_pValueMap;
 	//対戦相手
@@ -37,4 +40,6 @@ private:
 	int m_TeamID;
 	//ユニット１つにつき１つのコントローラーを割り当てるので、mapで管理
 	std::unordered_map<Unit*, AbstractController*> m_Controllers;
+
+	bool m_ControllerUpdated;
 };

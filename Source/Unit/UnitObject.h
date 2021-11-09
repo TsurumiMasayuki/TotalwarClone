@@ -30,8 +30,8 @@ public:
 
 	//目的地を設定
 	void setDestination(const Vec3& destination, bool isMoveCommand = true);
-	void move();
-	void rotate();
+	//戦闘の中止を強制する
+	void forceEscapeCombat();
 
 	//コライダーをリセット
 	void resetCollider();
@@ -61,6 +61,9 @@ private:
 	void setState(const State& newState);
 
 	void updateShield();
+
+	void move();
+	void rotate();
 
 private:
 	//目的地

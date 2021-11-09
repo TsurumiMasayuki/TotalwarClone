@@ -173,6 +173,11 @@ void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
 	}
 }
 
+void UnitObject::forceEscapeCombat()
+{
+	m_pTargetObject = nullptr;
+}
+
 void UnitObject::move()
 {
 	Vec3 diff = m_Destination - getTransform().getLocalPosition();
@@ -295,6 +300,14 @@ const UnitObject::State& UnitObject::getState() const
 
 void UnitObject::stateTransition()
 {
+	//éÄñSèàóù
+	if (m_Health <= 0.0f)
+	{
+		setState(State::Dead);
+		getUser().setActive(false);
+		return;
+	}
+
 	const Vec3& myPos = getTransform().getLocalPosition();
 
 	//çUåÇópÉXÉeÅ[ÉgëJà⁄
@@ -322,13 +335,6 @@ void UnitObject::stateTransition()
 			setState(State::StandBy);
 		}
 	}
-
-	//éÄñSèàóù
-	if (m_Health > 0.0f) return;
-
-	setState(State::Dead);
-
-	getUser().setActive(false);
 }
 
 void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& nextState)

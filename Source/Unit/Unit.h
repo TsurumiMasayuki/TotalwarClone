@@ -43,9 +43,16 @@ public:
 
 	int getTeamID() const;
 
+	//ステート移行ロック中かどうか
 	bool isStateLocked();
 
 	void onEnterCombat(Unit* pEnemyUnit);
+	//戦闘の中止を強制する
+	void forceEscapeCombat();
+	//戦闘を許可するか設定
+	void setAllowCombat(bool value);
+	//戦闘を許可するかどうか
+	bool isAllowCombat() const;
 	bool isInCombat() const;
 
 private:
@@ -61,6 +68,7 @@ private:
 
 	int m_ObjectCount;
 	int m_TeamID;
+	bool m_IsAllowCombat;
 
 	Timer m_StateLockTimer;
 

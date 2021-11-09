@@ -32,13 +32,15 @@ void Unit::onUpdate()
 	}
 
 	//生きているオブジェクトがいないならreturn
-	if (aliveCount == 0) return;
+	if (aliveCount == 0)
+		return;
 
 	//インスタンシング用情報を送る
 	std::vector<DirectX::XMMATRIX> objMatrices;
 	for (auto pUnitObject : m_UnitObjects)
 	{
-		objMatrices.emplace_back(pUnitObject->getTransform().getWorldMatrix());
+		if (pUnitObject->getState() != UnitObject::State::Dead)
+			objMatrices.emplace_back(pUnitObject->getTransform().getWorldMatrix());
 	}
 	m_pRenderHelper->appendInstanceInfo(objMatrices);
 
@@ -64,9 +66,9 @@ void Unit::onUpdate()
 
 void Unit::onDestroy()
 {
-	for (auto pUnitObj : m_UnitObjects)
+	for (auto pUnitObject : m_UnitObjects)
 	{
-		pUnitObj->getUser().destroy();
+		pUnitObject->getUser().destroy();
 	}
 
 	m_pOwnerPlayer->removeUnit(this);
@@ -74,17 +76,17 @@ void Unit::onDestroy()
 
 void Unit::onEnable()
 {
-	for (auto pUnitObj : m_UnitObjects)
+	for (auto pUnitObject : m_UnitObjects)
 	{
-		pUnitObj->getUser().setActive(true);
+		pUnitObject->getUser().setActive(true);
 	}
 }
 
 void Unit::onDisable()
 {
-	for (auto pUnitObj : m_UnitObjects)
+	for (auto pUnitObject : m_UnitObjects)
 	{
-		pUnitObj->getUser().setActive(false);
+		pUnitObject->getUser().setActive(false);
 	}
 
 	m_pOwnerPlayer->removeUnit(this);
@@ -142,10 +144,10 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 	m_ObjectPlacement.applyObjectPositions();
 
 	//コライダーをリセット
-	for (auto pObj : m_UnitObjects)
+	for (auto pUnitObject : m_UnitObjects)
 	{
-		pObj->setDestination(pObj->getTransform().getLocalPosition());
-		pObj->resetCollider();
+		pUnitObject->setDestination(pUnitObject->getTransform().getLocalPosition());
+		pUnitObject->resetCollider();
 	}
 
 	//中心座標を更新
@@ -164,7 +166,6 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth, b
 	std::vector<Vec3> newPositions;
 	m_ObjectPlacement.calculateObjectPositions(newPositions);
 
-	int i = 0;
 	for (int i = 0; i < m_ObjectCount; i++)
 	{
 		m_UnitObjects.at(i)->setDestination(newPositions.at(i), isMoveCommand);
@@ -211,9 +212,9 @@ float Unit::getHealth() const
 {
 	//オブジェクトからHPを取得して合計する
 	float healthSum = 0.0f;
-	for (UnitObject* pObj : m_UnitObjects)
+	for (UnitObject* pUnitObject : m_UnitObjects)
 	{
-		healthSum += pObj->getHealth();
+		healthSum += pUnitObject->getHealth();
 	}
 
 	return healthSum;
@@ -223,9 +224,9 @@ float Unit::getShield() const
 {
 	//オブジェクトからシールドのHPを取得して合計する
 	float shieldSum = 0.0f;
-	for (UnitObject* pObj : m_UnitObjects)
+	for (UnitObject* pUnitObject : m_UnitObjects)
 	{
-		shieldSum += pObj->getShield();
+		shieldSum += pUnitObject->getShield();
 	}
 
 	return shieldSum;
@@ -234,9 +235,9 @@ float Unit::getShield() const
 int Unit::getObjectCount() const
 {
 	int count = 0;
-	for (UnitObject* pObj : m_UnitObjects)
+	for (UnitObject* pUnitObject : m_UnitObjects)
 	{
-		if (pObj->getHealth() > 0.0f)
+		if (pUnitObject->getHealth() > 0.0f)
 			count++;
 	}
 
@@ -263,6 +264,26 @@ void Unit::onEnterCombat(Unit* pEnemyUnit)
 	if (m_pTargetUnit != nullptr) return;
 
 	setTarget(pEnemyUnit);
+}
+
+void Unit::forceEscapeCombat()
+{
+	for (auto pUnitObject : m_UnitObjects)
+	{
+		pUnitObject->forceEscapeCombat();
+	}
+
+	m_StateLockTimer.reset();
+}
+
+void Unit::setAllowCombat(bool value)
+{
+	m_IsAllowCombat = value;
+}
+
+bool Unit::isAllowCombat() const
+{
+	return m_IsAllowCombat;
 }
 
 bool Unit::isInCombat() const
