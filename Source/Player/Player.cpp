@@ -18,6 +18,11 @@ void Player::addUnit(Unit* pUnit)
 	m_Units.addUnit(pUnit);
 }
 
+void Player::removeUnit(Unit* pUnit)
+{
+	m_Units.removeUnit(pUnit);
+}
+
 UnitContainer* Player::getUnitContainer()
 {
 	return &m_Units;

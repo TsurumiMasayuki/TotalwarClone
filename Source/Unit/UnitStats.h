@@ -60,7 +60,7 @@ public:
 	const Color m_DebugColor;
 
 	//デフォルトの整列幅
-	const int m_DefaultUnitWidth;
+	const int m_DefaultWidth;
 
 private:
 	//攻撃のリスト

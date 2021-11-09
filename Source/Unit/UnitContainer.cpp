@@ -26,6 +26,17 @@ void UnitContainer::addUnit(Unit* pUnit)
 	}
 }
 
+void UnitContainer::removeUnit(Unit* pUnit)
+{
+	//ユニットの管理終了
+	m_Units.erase(std::find(m_Units.begin(), m_Units.end(), pUnit));
+
+	for (auto& pair : m_SortedUnits)
+	{
+		pair.second.erase(std::find(pair.second.begin(), pair.second.end(), pUnit));
+	}
+}
+
 Unit* UnitContainer::getUnit(int index)
 {
 	return m_Units.at(index);

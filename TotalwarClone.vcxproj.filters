@@ -57,7 +57,7 @@
     <ClCompile Include="Source\Component\Cursor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Component\UnitSelector.cpp">
+    <ClCompile Include="Source\Unit\UnitSelector.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\Blockbench\BlockbenchModel.cpp">
@@ -105,13 +105,13 @@
     <ClCompile Include="Source\UI\UIUnitPlacer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Unit\UnitPlacer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Unit\UnitRenderHelper.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\Unit\UnitUtility.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Unit\ObjectPlacement.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -164,7 +164,7 @@
     <ClInclude Include="Source\Component\Cursor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Component\UnitSelector.h">
+    <ClInclude Include="Source\Unit\UnitSelector.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Blockbench\BlockbenchLoader.h">
@@ -224,9 +224,6 @@
     <ClInclude Include="Source\GameState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Unit\UnitPlacer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Unit\UnitRenderHelper.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -234,6 +231,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Unit\UnitUtility.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Unit\ObjectPlacement.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

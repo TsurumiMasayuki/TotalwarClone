@@ -60,10 +60,33 @@ void Unit::onUpdate()
 	}
 }
 
+void Unit::onDestroy()
+{
+	for (auto pUnitObj : m_UnitObjects)
+	{
+		pUnitObj->getUser().destroy();
+	}
+}
+
+void Unit::onEnable()
+{
+	for (auto pUnitObj : m_UnitObjects)
+	{
+		pUnitObj->getUser().setActive(true);
+	}
+}
+
+void Unit::onDisable()
+{
+	for (auto pUnitObj : m_UnitObjects)
+	{
+		pUnitObj->getUser().setActive(false);
+	}
+}
+
 void Unit::init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper)
 {
 	m_ObjectCount = pUnitStats->m_ObjectCount;
-	m_SpacePerObject = pUnitStats->m_SpacePerObject;
 	m_TeamID = teamID;
 	m_pUnitStats = pUnitStats;
 	m_pValueMap = pValueMap;
@@ -72,50 +95,50 @@ void Unit::init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap, Un
 	//ステートロックタイマー初期化
 	m_StateLockTimer.setMaxTime(1.0f);
 
-	int xSize = m_ObjectCount / 1;
+	int xSize = m_ObjectCount;
 	int zSize = m_ObjectCount / xSize;
 
-	Vec3 basePos(-m_SpacePerObject * (float)xSize * 0.5f, -10.0f, m_SpacePerObject * (float)zSize * 0.5f);
+	Vec3 basePos(-pUnitStats->m_SpacePerObject * (float)xSize * 0.5f, -10.0f, pUnitStats->m_SpacePerObject * (float)zSize * 0.5f);
 
-	for (int z = 0; z < zSize; z++)
+	m_ObjectPlacement.setSpacePerObject(pUnitStats->m_SpacePerObject);
+	m_ObjectPlacement.setBasePos(basePos);
+	m_ObjectPlacement.setWidth(xSize);
+	m_ObjectPlacement.setAngle(0.0f);
+
+	for (int z = 0; z < m_ObjectCount; z++)
 	{
-		for (int x = 0; x < xSize; x++)
-		{
-			//ゲームオブジェクトを追加
-			m_GameObjects.emplace_back();
-			auto& pObj = m_GameObjects.back();
-			pObj = new GameObject(getUser().getGameMediator());
+		//ゲームオブジェクトを追加
+		m_GameObjects.emplace_back();
+		auto pObj = m_GameObjects.back();
+		pObj = new GameObject(getUser().getGameMediator());
+		auto& transform = pObj->getTransform();
+		transform.setLocalScale(m_pUnitStats->m_ObjectSize);
 
-			//コンポーネントを追加
-			m_UnitObjects.emplace_back();
-			auto& pUnitObject = m_UnitObjects.back();
-			pUnitObject = pObj->addComponent<UnitObject>();
-			pUnitObject->init(this, m_pValueMap);
+		//コンポーネントを追加
+		m_UnitObjects.emplace_back();
+		auto& pUnitObject = m_UnitObjects.back();
+		pUnitObject = pObj->addComponent<UnitObject>();
+		pUnitObject->init(this, m_pValueMap);
 
-			//目的地を初期化
-			auto& tr = pObj->getTransform();
-			Vec3 position = Vec3(m_SpacePerObject * x, 0.0f, m_SpacePerObject * z) + basePos;
-			tr.setLocalPosition(position);
-			tr.setLocalScale(m_pUnitStats->m_ObjectSize);
-
-			pUnitObject->setDestination(position);
-		}
+		//オブジェクト配置に登録
+		m_ObjectPlacement.addObject(&transform);
 	}
 }
 
 void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 {
-	std::vector<Vec3> newPositions;
-	calculateObjectPositions(newPositions, position, MathUtility::toRadian(angle), unitWidth);
+	//ユニットオブジェクトの座標設定
+	m_ObjectPlacement.setBasePos(position);
+	m_ObjectPlacement.setAngle(angle);
+	m_ObjectPlacement.setWidth(unitWidth);
+	//座標計算して適用
+	m_ObjectPlacement.applyObjectPositions();
 
-	int i = 0;
-	for (int i = 0; i < m_ObjectCount; i++)
+	//コライダーをリセット
+	for (auto pObj : m_UnitObjects)
 	{
-		m_UnitObjects.at(i)->setPosition(newPositions.at(i));
-		m_UnitObjects.at(i)->setDestination(newPositions.at(i));
+		pObj->resetCollider();
 	}
-
-	m_Angle = angle;
 
 	//中心座標を更新
 	updateCenterPosition();
@@ -126,8 +149,12 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth, b
 	//移動指示が入ったので攻撃目標はクリアする
 	m_pTargetUnit = nullptr;
 
+	m_ObjectPlacement.setBasePos(destination);
+	m_ObjectPlacement.setWidth(unitWidth);
+	m_ObjectPlacement.setAngle(angle);
+
 	std::vector<Vec3> newPositions;
-	calculateObjectPositions(newPositions, destination, MathUtility::toRadian(angle), unitWidth);
+	m_ObjectPlacement.calculateObjectPositions(newPositions);
 
 	int i = 0;
 	for (int i = 0; i < m_ObjectCount; i++)
@@ -137,18 +164,16 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth, b
 
 	//ステートロック開始
 	m_StateLockTimer.reset();
-
-	m_Angle = angle;
 }
 
 float Unit::getSpacePerObject() const
 {
-	return m_SpacePerObject;
+	return m_ObjectPlacement.getSpacePerObject();
 }
 
 float Unit::getAngle() const
 {
-	return m_Angle;
+	return m_ObjectPlacement.getAngle();
 }
 
 void Unit::setTarget(Unit* pTarget)
@@ -235,46 +260,6 @@ void Unit::onEnterCombat(Unit* pEnemyUnit)
 bool Unit::isInCombat() const
 {
 	return m_pTargetUnit != nullptr;
-}
-
-void Unit::calculateObjectPositions(std::vector<Vec3>& results, const Vec3& destination, float radian, int unitWidth)
-{
-	DirectX::XMMATRIX rotateMat = DirectX::XMMatrixRotationRollPitchYaw(0.0f, radian, 0.0f);
-
-	//列の数はユニットの数と0除算にならない値の範囲に収まるように制限
-	m_UnitWidth = MathUtility::clamp(unitWidth, 1, m_ObjectCount);
-	//切り上げ用に割る
-	float div = (float)m_ObjectCount / (float)m_UnitWidth;
-	//切り上げて行の数を求める
-	div = std::ceil(div);
-
-	int xSize = m_UnitWidth;
-	int zSize = (int)div;
-
-	//オブジェクトの数の分だけvectorのサイズ確保
-	results.reserve(m_ObjectCount);
-
-	//残りの計算回数
-	int remainObjCount = m_ObjectCount;
-	//オブジェクトごとの座標計算
-	for (int z = zSize - 1; z >= 0; z--)
-	{
-		//中央揃えの為に判定
-		if (remainObjCount < m_UnitWidth)
-		{
-			xSize = remainObjCount;
-		}
-
-		//ベースの座標を計算
-		Vec3 basePos(-m_SpacePerObject * (float)(xSize - 1) * 0.5f, -10.0f, -m_SpacePerObject * (float)(zSize) * 0.5f);
-		for (int x = 0; x < xSize; x++)
-		{
-			Vec3 newPosition = Vec3(m_SpacePerObject * x, 0.0f, m_SpacePerObject * z) + basePos;
-			newPosition = newPosition.multMatrix(rotateMat) + destination;
-			results.emplace_back(newPosition);
-			remainObjCount--;
-		}
-	}
 }
 
 void Unit::updateCenterPosition()

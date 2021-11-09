@@ -1,6 +1,6 @@
 #pragma once
 #include <functional>
-#include <vector>
+#include <unordered_set>
 #include <unordered_map>
 #include "Unit\UnitStats.h"
 
@@ -10,6 +10,7 @@ class UnitContainer
 {
 public:
 	void addUnit(Unit* pUnit);
+	void removeUnit(Unit* pUnit);
 	Unit* getUnit(int index);
 
 	//ユニットリストを取得

@@ -1,10 +1,10 @@
 #include "UIUnitList.h"
 
-#include "Component\UnitSelector.h"
 
 #include "Player\IPlayer.h"
 #include "Unit\Unit.h"
 #include "Unit\UnitContainer.h"
+#include "Unit\UnitSelector.h"
 
 #include "UI\UIButton.h"
 #include "UI\UIUnitCard.h"
@@ -30,10 +30,9 @@ void UIUnitList::init(IPlayer* pPlayer, UnitSelector* pSelector)
 	const auto& units = m_pPlayer->getUnitContainer()->getUnits();
 	const float positionOffset = (unitCardWidth + spacePerUnitCard) * (float)(units.size() - 1) * 0.5f;
 
-	for (int i = 0; i < (int)units.size(); i++)
+	int i = 0;
+	for (auto pUnit : units)
 	{
-		auto pUnit = units.at(i);
-
 		auto pButtonObj = new GameObject(getUser().getGameMediator());
 		pButtonObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, -300.0f, 1.0f));
 		pButtonObj->getTransform().setLocalScale(Vec3(unitCardWidth, unitCardHeight, 1.0f));

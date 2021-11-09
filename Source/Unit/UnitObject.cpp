@@ -158,14 +158,6 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	}
 }
 
-void UnitObject::setPosition(const Vec3& position)
-{
-	getTransform().setLocalPosition(position);
-	//Body更新の為初期化
-	m_pCollider->init();
-	m_pTrigger->init();
-}
-
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
 {
 	//ターゲットがいて移動命令でないならreturn
@@ -217,6 +209,12 @@ void UnitObject::rotate()
 		angle,
 		0.0f)
 	);
+}
+
+void UnitObject::resetCollider()
+{
+	m_pCollider->init();
+	m_pTrigger->init();
 }
 
 void UnitObject::onCollisionEnter(UnitObject* pUnitObject)

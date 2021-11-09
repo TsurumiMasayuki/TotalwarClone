@@ -163,7 +163,7 @@
     <ClCompile Include="Source\Blockbench\BlockbenchLoader.cpp" />
     <ClCompile Include="Source\Blockbench\BlockbenchModel.cpp" />
     <ClCompile Include="Source\Component\Cursor.cpp" />
-    <ClCompile Include="Source\Component\UnitSelector.cpp" />
+    <ClCompile Include="Source\Unit\UnitSelector.cpp" />
     <ClCompile Include="Source\Graphics\Material\BBModelMaterial.cpp" />
     <ClCompile Include="Source\Graphics\Shader\BBInstancingVertexShader.cpp" />
     <ClCompile Include="Source\Player\AIPlayer\AIPlayer.cpp" />
@@ -179,6 +179,7 @@
     <ClCompile Include="Source\UI\UIUnitPlacer.cpp" />
     <ClCompile Include="Source\Unit\Attack\Attack.cpp" />
     <ClCompile Include="Source\Unit\Attack\AttackStats.cpp" />
+    <ClCompile Include="Source\Unit\ObjectPlacement.cpp" />
     <ClCompile Include="Source\Unit\Unit.cpp" />
     <ClCompile Include="Source\Unit\UnitContainer.cpp" />
     <ClCompile Include="Source\Unit\UnitObject.cpp" />
@@ -186,7 +187,6 @@
     <ClCompile Include="Source\Graphics\Material\ValueMapMaterial.cpp" />
     <ClCompile Include="Source\Scene\GameScene.cpp" />
     <ClCompile Include="Source\TotalwarCloneGame.cpp" />
-    <ClCompile Include="Source\Unit\UnitPlacer.cpp" />
     <ClCompile Include="Source\Unit\UnitRenderHelper.cpp" />
     <ClCompile Include="Source\Unit\UnitStats.cpp" />
     <ClCompile Include="Source\Unit\UnitUtility.cpp" />
@@ -198,7 +198,7 @@
     <ClInclude Include="Source\Blockbench\BlockbenchLoader.h" />
     <ClInclude Include="Source\Blockbench\BlockbenchModel.h" />
     <ClInclude Include="Source\Component\Cursor.h" />
-    <ClInclude Include="Source\Component\UnitSelector.h" />
+    <ClInclude Include="Source\Unit\UnitSelector.h" />
     <ClInclude Include="Source\GameState.h" />
     <ClInclude Include="Source\Graphics\Material\BBModelMaterial.h" />
     <ClInclude Include="Source\Graphics\Shader\BBInstancingVertexShader.h" />
@@ -219,7 +219,7 @@
     <ClInclude Include="Source\Unit\Attack\Attack.h" />
     <ClInclude Include="Source\Unit\Attack\AttackStats.h" />
     <ClInclude Include="Source\Unit\UnitInstanceInfo.h" />
-    <ClInclude Include="Source\Unit\UnitPlacer.h" />
+    <ClInclude Include="Source\Unit\ObjectPlacement.h" />
     <ClInclude Include="Source\Unit\UnitRenderHelper.h" />
     <ClInclude Include="Source\Unit\UnitUtility.h" />
     <ClInclude Include="Source\Utility\JsonFileManager.h" />

@@ -33,19 +33,19 @@ void AIPlayer::onUpdate()
 		auto pBaseUnit = getUnitContainer()->getCenterUnit();
 
 		//コントローラーを生成して登録
-		m_Controllers.at(pBaseUnit) = new SimpleMoveController(pBaseUnit, pEnemyCenterUnit, pBaseUnit->getUnitStats()->m_DefaultUnitWidth);
+		m_Controllers.at(pBaseUnit) = new SimpleMoveController(pBaseUnit, pEnemyCenterUnit, pBaseUnit->getUnitStats()->m_DefaultWidth);
 		const Vec3& slowestUnitPos = pBaseUnit->getTransform().getLocalPosition();
 
 		//一番遅いユニット以外に適用
-		for (int i = 0; i < (int)units.size(); i++)
+		for (auto pUnit : units)
 		{
-			if (m_Controllers.at(units.at(i)))
+			if (m_Controllers.at(pUnit))
 				continue;
 
 			//基準にするオブジェクトからの相対座標を算出
-			const Vec3& relativePos = units.at(i)->getTransform().getLocalPosition() - slowestUnitPos;
+			const Vec3& relativePos = pUnit->getTransform().getLocalPosition() - slowestUnitPos;
 			//コントローラーを生成
-			m_Controllers.at(units.at(i)) = new MarchController(units.at(i), this, relativePos, units.at(i)->getUnitStats()->m_DefaultUnitWidth);
+			m_Controllers.at(pUnit) = new MarchController(pUnit, this, relativePos, pUnit->getUnitStats()->m_DefaultWidth);
 		}
 
 		//初期化処理
@@ -135,6 +135,12 @@ void AIPlayer::addUnit(Unit* pUnit)
 	m_Units.addUnit(pUnit);
 	//コントローラーのスロット追加
 	m_Controllers.emplace(pUnit, nullptr);
+}
+
+void AIPlayer::removeUnit(Unit* pUnit)
+{
+	//ユニットを削除
+	m_Units.removeUnit(pUnit);
 }
 
 UnitContainer* AIPlayer::getUnitContainer()

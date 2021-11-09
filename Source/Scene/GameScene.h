@@ -44,4 +44,7 @@ private:
 
 	Player* pPlayer;
 	AIPlayer* pPlayer2;
+
+	Vec3 m_PreCameraPos;
+	Vec3 m_PreCameraAngles;
 };

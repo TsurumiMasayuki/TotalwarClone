@@ -3,6 +3,8 @@
 #include "Component\Graphics\InstancedRenderer.h"
 #include "Utility\Timer.h"
 
+#include "Unit\ObjectPlacement.h"
+
 class Cursor;
 class Unit;
 class CircleColliderB2;
@@ -28,7 +30,10 @@ public:
 	void selectUnit(Unit* pUnit);
 
 private:
-	void instantiatePreviewObjects();
+	//ユニット選択の更新
+	void updateUnitSelecting();
+	//ユニット配置の更新
+	void updateUnitPlacement();
 
 private:
 	Cursor* m_pCursor;
@@ -43,6 +48,11 @@ private:
 	//入力のインターバル
 	Timer m_InputInterval;
 
+	//配置予測用のオブジェクト配置補助
+	ObjectPlacement m_ObjPlacement;
+
+	//配置予測用のオブジェクト
+	std::vector<GameObject*> m_PreviewObjects;
 	//配置予測用のInstancedRenderer
 	InstancedRenderer<PreviewObjInstance>* m_pPreviewObjRenderer;
 };

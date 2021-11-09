@@ -14,6 +14,7 @@ public:
 
 	virtual int getTeamID() override;
 	virtual void addUnit(Unit* pUnit) override;
+	virtual void removeUnit(Unit* pUnit) override;
 	virtual UnitContainer* getUnitContainer() override;
 	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
 
