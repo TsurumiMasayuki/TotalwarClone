@@ -23,14 +23,6 @@ void Unit::onUpdate()
 {
 	m_StateLockTimer.update();
 
-	//インスタンシング用情報を送る
-	std::vector<DirectX::XMMATRIX> objMatrices;
-	for (auto pUnitObject : m_UnitObjects)
-	{
-		objMatrices.emplace_back(pUnitObject->getTransform().getWorldMatrix());
-	}
-	m_pRenderHelper->appendInstanceInfo(objMatrices);
-
 	int aliveCount = 0;
 	//生きているオブジェクトをカウント
 	for (auto pUnitObject : m_UnitObjects)
@@ -41,6 +33,14 @@ void Unit::onUpdate()
 
 	//生きているオブジェクトがいないならreturn
 	if (aliveCount == 0) return;
+
+	//インスタンシング用情報を送る
+	std::vector<DirectX::XMMATRIX> objMatrices;
+	for (auto pUnitObject : m_UnitObjects)
+	{
+		objMatrices.emplace_back(pUnitObject->getTransform().getWorldMatrix());
+	}
+	m_pRenderHelper->appendInstanceInfo(objMatrices);
 
 	updateCenterPosition();
 
@@ -144,6 +144,7 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 	//コライダーをリセット
 	for (auto pObj : m_UnitObjects)
 	{
+		pObj->setDestination(pObj->getTransform().getLocalPosition());
 		pObj->resetCollider();
 	}
 

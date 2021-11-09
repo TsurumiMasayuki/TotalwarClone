@@ -207,13 +207,6 @@ void GameScene::start()
 
 void GameScene::update()
 {
-	if (!GameDevice::getInput().isKey(DIK_SPACE))
-	{
-		auto& cameraTr = m_pDefaultCamera->getTransform();
-		cameraTr.setLocalPosition(m_PreCameraPos);
-		cameraTr.setLocalAngles(m_PreCameraAngles);
-	}
-
 	//CombatPhaseBeginを1フレームで終わらせる
 	if (Game::g_GameState == Game::GameState::CombatPhaseBegin)
 	{
@@ -223,6 +216,27 @@ void GameScene::update()
 	if (GameDevice::getInput().isKeyDown(DIK_1))
 	{
 		Game::g_GameState = Game::GameState::CombatPhaseBegin;
+	}
+
+	//スペースキーが押されたらカメラ移動
+	if (GameDevice::getInput().isKey(DIK_SPACE))
+	{
+		auto& cameraTr = m_pDefaultCamera->getTransform();
+
+		auto mousePos = GameDevice::getInput().getMouseMove();
+		cameraTr.setLocalAngles(cameraTr.getLocalAngles() + Vec3(mousePos.y, mousePos.x, 0.0f).normalized());
+
+		const auto& input = GameDevice::getInput();
+		Vec3 move;
+		if (input.isKey(DIK_W)) move.z += 1.0f;
+		if (input.isKey(DIK_S)) move.z -= 1.0f;
+		if (input.isKey(DIK_E)) move.y += 1.0f;
+		if (input.isKey(DIK_Q)) move.y -= 1.0f;
+		if (input.isKey(DIK_A)) move.x -= 1.0f;
+		if (input.isKey(DIK_D)) move.x += 1.0f;
+
+		move = move.multMatrix(cameraTr.getRotationMatrix());
+		cameraTr.setLocalPosition(cameraTr.getLocalPosition() + move);
 	}
 }
 
@@ -250,27 +264,4 @@ void GameScene::lateUpdate()
 	{
 		pair.second->sendInstanceInfo();
 	}
-
-	auto& cameraTr = m_pDefaultCamera->getTransform();
-	//スペースキーが押されたらカメラ移動
-	if (GameDevice::getInput().isKey(DIK_SPACE))
-	{
-		auto mousePos = GameDevice::getInput().getMouseMove();
-		cameraTr.setLocalAngles(cameraTr.getLocalAngles() + Vec3(mousePos.y, mousePos.x, 0.0f).normalized());
-
-		const auto& input = GameDevice::getInput();
-		Vec3 move;
-		if (input.isKey(DIK_W)) move.z += 1.0f;
-		if (input.isKey(DIK_S)) move.z -= 1.0f;
-		if (input.isKey(DIK_E)) move.y += 1.0f;
-		if (input.isKey(DIK_Q)) move.y -= 1.0f;
-		if (input.isKey(DIK_A)) move.x -= 1.0f;
-		if (input.isKey(DIK_D)) move.x += 1.0f;
-
-		move = move.multMatrix(cameraTr.getRotationMatrix());
-		cameraTr.setLocalPosition(cameraTr.getLocalPosition() + move);
-	}
-
-	m_PreCameraPos = cameraTr.getLocalPosition();
-	m_PreCameraAngles = cameraTr.getLocalAngles();
 }
