@@ -51,6 +51,7 @@ void UnitSelector::onUpdate()
 	{
 		//選択したユニットをオブジェクトごと破棄
 		m_pSelectedUnit->getUser().setActive(false);
+		m_pSelectedUnit = nullptr;
 	}
 }
 

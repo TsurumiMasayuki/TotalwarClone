@@ -18,6 +18,8 @@ public:
 	virtual UnitContainer* getUnitContainer() override;
 	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
 
+	int getEnergy() const;
+
 private:
 	//情報マップ
 	ValueMap* m_pValueMap;
@@ -27,4 +29,7 @@ private:
 	UnitContainer m_Units;
 	//チーム番号
 	int m_TeamID;
+
+	//ユニット配置用通貨の残り
+	int m_CurrentEnergy;
 };

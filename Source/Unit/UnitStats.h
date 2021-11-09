@@ -62,6 +62,9 @@ public:
 	//デフォルトの整列幅
 	const int m_DefaultWidth;
 
+	//ユニットのコスト
+	const int m_EnergyCost;
+
 private:
 	//攻撃のリスト
 	std::vector<AttackInfo> m_AttackInfoList;

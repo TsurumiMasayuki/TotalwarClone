@@ -5,7 +5,8 @@
 #include "Actor\Base\GameObject.h"
 #include "Component\Cursor.h"
 #include "Device\GameDevice.h"
-#include "Player\AIPlayer\AIPlayer.h"
+
+#include "Player\Player.h"
 
 #include "UI\UIButton.h"
 #include "UI\UIUnitCard.h"
@@ -24,7 +25,7 @@ void UIUnitPlacer::onUpdate()
 }
 
 void UIUnitPlacer::init(Cursor* pCursor,
-	IPlayer* pPlayer,
+	Player* pPlayer,
 	ValueMap* pValueMap,
 	const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers)
 {
@@ -66,11 +67,15 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		pButton->setOnMouseButtonDown(UIButton::MouseButtons::Left,
 			[pGameMediator, pModel, pPlayer, unitStats, pValueMap, pRenderHelpers]()
 			{
+				//配置用エネルギーが無かったらreturn
+				if (pPlayer->getEnergy() - unitStats.m_EnergyCost < 0)
+					return;
+
 				//ユニット用オブジェクト生成
 				auto pUnitObj = new GameObject(pGameMediator);
 				//ユニット生成
 				auto pUnit = pUnitObj->addComponent<Unit>();
-				pUnit->init(pPlayer->getTeamID(), &unitStats, pValueMap, pRenderHelpers->at(unitStats.m_Name));
+				pUnit->init(pPlayer, &unitStats, pValueMap, pRenderHelpers->at(unitStats.m_Name));
 				//座標設定(TODO:プレイヤーの配置範囲の真ん中になるように変更する)
 				pUnit->setPosition(Vec3(0.0f, 0.0f, 0.0f), 0.0f, 10);
 				//ユニット登録

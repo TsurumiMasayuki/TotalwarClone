@@ -11,6 +11,8 @@
 #include "Unit\UnitObject.h"
 #include "Unit\UnitRenderHelper.h"
 
+#include "Player\IPlayer.h"
+
 //TODO:回転を二次元座標用に変える
 
 void Unit::onStart()
@@ -66,6 +68,8 @@ void Unit::onDestroy()
 	{
 		pUnitObj->getUser().destroy();
 	}
+
+	m_pOwnerPlayer->removeUnit(this);
 }
 
 void Unit::onEnable()
@@ -82,15 +86,18 @@ void Unit::onDisable()
 	{
 		pUnitObj->getUser().setActive(false);
 	}
+
+	m_pOwnerPlayer->removeUnit(this);
 }
 
-void Unit::init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper)
+void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper)
 {
 	m_ObjectCount = pUnitStats->m_ObjectCount;
-	m_TeamID = teamID;
+	m_TeamID = pPlayer->getTeamID();
 	m_pUnitStats = pUnitStats;
 	m_pValueMap = pValueMap;
 	m_pRenderHelper = pRenderHelper;
+	m_pOwnerPlayer = pPlayer;
 
 	//ステートロックタイマー初期化
 	m_StateLockTimer.setMaxTime(1.0f);

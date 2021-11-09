@@ -138,7 +138,7 @@ void GameScene::start()
 	{
 		GameObject* pUnitObj = new GameObject(this);
 		auto pUnit = pUnitObj->addComponent<Unit>();
-		pUnit->init(g_TeamID2, pUnitStats1, &m_ValueMap2, m_UnitRenderHelpers.at(pUnitStats1->m_Name));
+		pUnit->init(pAIPlayer, pUnitStats1, &m_ValueMap2, m_UnitRenderHelpers.at(pUnitStats1->m_Name));
 		pUnit->setPosition(Vec3(200.0f * i, 0.0f, 200.0f), 180.0f, 10);
 
 		pAIPlayer->addUnit(pUnit);

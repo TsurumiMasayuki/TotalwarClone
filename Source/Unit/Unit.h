@@ -8,6 +8,7 @@
 #include "Unit\ObjectPlacement.h"
 
 struct UnitStats;
+class IPlayer;
 class ValueMap;
 class UnitObject;
 class UnitRenderHelper;
@@ -24,7 +25,7 @@ public:
 	virtual void onEnable() override;
 	virtual void onDisable() override;
 
-	void init(int teamID, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper);
+	void init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper);
 	void setPosition(const Vec3& position, float angle, int unitWidth);
 	void setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand = true);
 
@@ -53,6 +54,8 @@ private:
 private:
 	std::vector<GameObject*> m_GameObjects;
 	std::vector<UnitObject*> m_UnitObjects;
+
+	IPlayer* m_pOwnerPlayer;
 
 	Unit* m_pTargetUnit;
 

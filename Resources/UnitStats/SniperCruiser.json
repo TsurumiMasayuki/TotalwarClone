@@ -11,7 +11,8 @@
         "Speed" : 10.0,
         "RotationSpeed" : 10.0,
         "DebugColor" : [0.0, 0.0, 1.0],
-        "DefaultUnitWidth" : 5
+        "DefaultUnitWidth" : 5,
+        "EnergyCost" : 2500
     },
     "MainAttacks" : 
     [
