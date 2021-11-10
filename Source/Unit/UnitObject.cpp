@@ -354,8 +354,11 @@ void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& next
 	//ターゲットが設定済みなら実行しない
 	if (m_pTargetObject != nullptr) return;
 
-	//同じチームなら処理を行わない
+	//同じチームなら実行しない
 	if (getTeamID() == pTargetObject->getTeamID()) return;
+
+	//ステートロック中なら実行しない
+	if (m_pUnit->isStateLocked()) return;
 
 	//ターゲット設定
 	m_pTargetObject = pTargetObject;

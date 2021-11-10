@@ -67,6 +67,7 @@ void GameScene::start()
 	{
 		auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
 		unitStatsManager.load("NormalCorvette", "Resources/UnitStats/NormalCorvette.json");
+		unitStatsManager.load("NormalCruiser", "Resources/UnitStats/NormalCruiser.json");
 		unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
 		unitStatsManager.load("SniperCruiser", "Resources/UnitStats/SniperCruiser.json");
 	}
@@ -104,10 +105,6 @@ void GameScene::start()
 	m_pUnitSelector->init(g_pCursor, g_TeamID1, m_pValueMapMaterial);
 
 	auto pModel = GameDevice::getModelManager().getModel("Sphere");
-
-	const auto pUnitStats1 = &JsonFileManager<UnitStats>::getInstance().get("NormalCorvette");
-	const auto pUnitStats2 = &JsonFileManager<UnitStats>::getInstance().get("NormalBattleship");
-	const auto pUnitStats3 = &JsonFileManager<UnitStats>::getInstance().get("SniperCruiser");
 
 	//AIÉvÉåÉCÉÑÅ[1ÇÃê∂ê¨
 	auto pPlayer1Obj = new GameObject(this);

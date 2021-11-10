@@ -60,5 +60,5 @@ void SimpleCombatController::searchTarget()
 	}
 
 	//ターゲット設定
-	m_pUnit->setTarget(sortVector.at(0));
+	m_pUnit->setTarget(pTarget);
 }
