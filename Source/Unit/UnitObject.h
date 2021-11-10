@@ -92,6 +92,9 @@ private:
 	//シールド回復開始までのタイマー
 	Timer m_ShieldRegenTimer;
 
+	//射程距離が最も長い攻撃
+	Attack* m_pLongestMainAttack;
+
 	//攻撃クラス(メイン)
 	std::vector<Attack*> m_MainAttacks;
 

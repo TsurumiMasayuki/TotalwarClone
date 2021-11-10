@@ -77,7 +77,7 @@ void UnitObject::onUpdate()
 			const Vec3& targetPos = m_pTargetObject->getTransform().getLocalPosition();
 
 			//自身の座標とターゲットの座標から攻撃が当たる最も近い座標を算出して目的地にする
-			float range = m_MainAttacks.at(0)->getAttackRange();
+			float range = m_pLongestMainAttack->getAttackRange();
 			Vec3 diff = targetPos - myPos;
 			if (diff.sqrLength() < range * range)
 			{
@@ -133,6 +133,26 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	const UnitStats* pUnitStats = m_pUnit->getUnitStats();
 	m_Health = pUnitStats->m_MaxHealthPerObject;
 	m_Shield = pUnitStats->m_MaxShieldPerObject;
+	m_pValueMap = pValueMap;
+
+	//攻撃クラス生成
+	for (auto& attacks : m_pUnit->getUnitStats()->getMainAttacks())
+	{
+		m_MainAttacks.emplace_back(
+			new Attack(this, &JsonFileManager<AttackStats>::getInstance().get(attacks.m_AttackName))
+		);
+	}
+
+	//射程距離が長い順にソート
+	std::sort(m_MainAttacks.begin(), m_MainAttacks.end(),
+		[](Attack* a, Attack* b)
+		{
+			return a->getAttackRange() > b->getAttackRange();
+		}
+	);
+
+	//最も射程距離が長い攻撃を登録
+	m_pLongestMainAttack = m_MainAttacks.at(0);
 
 	//通常コライダー
 	m_pCollider = getUser().addComponent<CircleColliderB2>();
@@ -144,18 +164,10 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();
 	m_pTrigger->setTrigger(true);
-	m_pTrigger->setRadius(30.0f);
+	//射程距離と同じサイズにするためにスケールで割る
+	float scaleX = getTransform().getLocalScale().x;
+	m_pTrigger->setRadius(m_pLongestMainAttack->getAttackRange() / scaleX);
 	m_pTrigger->setGroupIndex(1);
-
-	m_pValueMap = pValueMap;
-
-	//攻撃クラス生成
-	for (auto& attacks : m_pUnit->getUnitStats()->getMainAttacks())
-	{
-		m_MainAttacks.emplace_back(
-			new Attack(this, &JsonFileManager<AttackStats>::getInstance().get(attacks.m_AttackName))
-		);
-	}
 }
 
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
@@ -185,8 +197,8 @@ void UnitObject::move()
 
 	//徐々に減速
 	float ratio = std::fminf(1.0f, diff.length() / m_pUnit->getUnitStats()->m_Speed);
-	ratio = Easing::easeOutExpo(ratio);
-	m_pCollider->setVelocity(m_Direction.x * m_pUnit->getUnitStats()->m_Speed * ratio, m_Direction.z * m_pUnit->getUnitStats()->m_Speed * ratio);
+	ratio = Easing::easeOutExpo(ratio) * m_pUnit->getUnitStats()->m_Speed;
+	m_pCollider->setVelocity(m_Direction.x * ratio, m_Direction.z * ratio);
 }
 
 void UnitObject::rotate()

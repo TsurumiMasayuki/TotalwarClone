@@ -34,7 +34,7 @@ void AIPlayer::onUpdate()
 		Unit* pEnemyCenterUnit = m_pOpponentPlayer->getUnitContainer()->getCenterUnit();
 
 		//真ん中のユニットを取得
-		const auto& units = m_Units.getSortedUnits(UnitStatsValues::Speed);
+		const auto& units = m_Units.getUnits();
 		auto pBaseUnit = getUnitContainer()->getCenterUnit();
 
 		//コントローラーを生成して登録
