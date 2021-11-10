@@ -5,7 +5,7 @@
 
 class Cursor;
 class Player;
-class Unit;
+class UnitSelector;
 class UIUnitCard;
 class ValueMap;
 class UnitRenderHelper;
@@ -17,11 +17,10 @@ public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
 
-	void init(Cursor* pCursor, Player* pPlayer, ValueMap* pValueMap, const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers);
+	void init(Cursor* pCursor, Player* pPlayer, UnitSelector* pUnitSelector, ValueMap* pValueMap, const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers);
 
 private:
 	Cursor* m_pCursor;
-	Unit* m_pGrabUnit;
 	std::vector<UIUnitCard*> m_UnitCards;
 	const std::unordered_map<std::string, UnitRenderHelper*>* m_pRenderHelpers;
 };

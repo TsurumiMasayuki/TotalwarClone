@@ -164,6 +164,7 @@
     <ClCompile Include="Source\Blockbench\BlockbenchLoader.cpp" />
     <ClCompile Include="Source\Blockbench\BlockbenchModel.cpp" />
     <ClCompile Include="Source\Component\Cursor.cpp" />
+    <ClCompile Include="Source\Stage\Stage.cpp" />
     <ClCompile Include="Source\Unit\UnitSelector.cpp" />
     <ClCompile Include="Source\Graphics\Material\BBModelMaterial.cpp" />
     <ClCompile Include="Source\Graphics\Shader\BBInstancingVertexShader.cpp" />
@@ -190,7 +191,6 @@
     <ClCompile Include="Source\TotalwarCloneGame.cpp" />
     <ClCompile Include="Source\Unit\UnitRenderHelper.cpp" />
     <ClCompile Include="Source\Unit\UnitStats.cpp" />
-    <ClCompile Include="Source\Unit\UnitUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AI\Controller\AbstractController.h" />
@@ -200,6 +200,7 @@
     <ClInclude Include="Source\Blockbench\BlockbenchLoader.h" />
     <ClInclude Include="Source\Blockbench\BlockbenchModel.h" />
     <ClInclude Include="Source\Component\Cursor.h" />
+    <ClInclude Include="Source\Stage\Stage.h" />
     <ClInclude Include="Source\Unit\UnitSelector.h" />
     <ClInclude Include="Source\GameState.h" />
     <ClInclude Include="Source\Graphics\Material\BBModelMaterial.h" />
@@ -223,7 +224,6 @@
     <ClInclude Include="Source\Unit\UnitInstanceInfo.h" />
     <ClInclude Include="Source\Unit\ObjectPlacement.h" />
     <ClInclude Include="Source\Unit\UnitRenderHelper.h" />
-    <ClInclude Include="Source\Unit\UnitUtility.h" />
     <ClInclude Include="Source\Utility\JsonFileManager.h" />
     <ClInclude Include="Source\Unit\Unit.h" />
     <ClInclude Include="Source\Unit\UnitContainer.h" />

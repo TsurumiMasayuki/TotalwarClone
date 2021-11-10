@@ -23,17 +23,15 @@ void Unit::onUpdate()
 {
 	m_StateLockTimer.update();
 
-	int aliveCount = 0;
-	//生きているオブジェクトをカウント
-	for (auto pUnitObject : m_UnitObjects)
-	{
-		if (pUnitObject->getState() != UnitObject::State::Dead)
-			aliveCount++;
-	}
-
 	//生きているオブジェクトがいないならreturn
-	if (aliveCount == 0)
+	if (getObjectCount() == 0)
 		return;
+
+	if (m_pTargetUnit != nullptr)
+	{
+		if (m_pTargetUnit->getObjectCount() == 0)
+			m_pTargetUnit = nullptr;
+	}
 
 	//インスタンシング用情報を送る
 	std::vector<DirectX::XMMATRIX> objMatrices;
@@ -56,10 +54,9 @@ void Unit::onUpdate()
 		//ターゲットとの角度を求める
 		float radian = Vec3::dot(diff, Vec3(0.0f, 0.0f, 1.0f));
 
-		int i = 0;
-		for (int i = 0; i < m_ObjectCount; i++)
+		for (auto pUnitObject : m_UnitObjects)
 		{
-			m_UnitObjects.at(i)->setDestination(destination, false);
+			pUnitObject->setDestination(destination, false);
 		}
 	}
 }
@@ -94,7 +91,7 @@ void Unit::onDisable()
 
 void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper)
 {
-	m_ObjectCount = pUnitStats->m_ObjectCount;
+	int objectCount = pUnitStats->m_ObjectCount;
 	m_TeamID = pPlayer->getTeamID();
 	m_pUnitStats = pUnitStats;
 	m_pValueMap = pValueMap;
@@ -104,8 +101,8 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 	//ステートロックタイマー初期化
 	m_StateLockTimer.setMaxTime(1.0f);
 
-	int xSize = m_ObjectCount;
-	int zSize = m_ObjectCount / xSize;
+	int xSize = objectCount;
+	int zSize = objectCount / xSize;
 
 	Vec3 basePos(-pUnitStats->m_SpacePerObject * (float)xSize * 0.5f, -10.0f, pUnitStats->m_SpacePerObject * (float)zSize * 0.5f);
 
@@ -114,7 +111,7 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 	m_ObjectPlacement.setWidth(xSize);
 	m_ObjectPlacement.setAngle(0.0f);
 
-	for (int z = 0; z < m_ObjectCount; z++)
+	for (int z = 0; z < objectCount; z++)
 	{
 		//ゲームオブジェクトを追加
 		m_GameObjects.emplace_back();
@@ -150,6 +147,8 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 		pUnitObject->resetCollider();
 	}
 
+	m_Width = unitWidth;
+
 	//中心座標を更新
 	updateCenterPosition();
 }
@@ -166,7 +165,7 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth, b
 	std::vector<Vec3> newPositions;
 	m_ObjectPlacement.calculateObjectPositions(newPositions);
 
-	for (int i = 0; i < m_ObjectCount; i++)
+	for (int i = 0; i < (int)newPositions.size(); i++)
 	{
 		m_UnitObjects.at(i)->setDestination(newPositions.at(i), isMoveCommand);
 	}
@@ -183,6 +182,11 @@ float Unit::getSpacePerObject() const
 float Unit::getAngle() const
 {
 	return m_ObjectPlacement.getAngle();
+}
+
+int Unit::getWidth() const
+{
+	return m_Width;
 }
 
 void Unit::setTarget(Unit* pTarget)

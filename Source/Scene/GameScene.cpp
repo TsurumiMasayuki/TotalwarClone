@@ -32,6 +32,8 @@
 #include "Blockbench\BlockbenchModel.h"
 #include "Blockbench\BlockbenchLoader.h"
 
+#include "Stage\Stage.h"
+
 #include "GameState.h"
 
 Cursor* g_pCursor;
@@ -69,6 +71,12 @@ void GameScene::start()
 		unitStatsManager.load("SniperCruiser", "Resources/UnitStats/SniperCruiser.json");
 	}
 
+	//ステージの読み込み
+	{
+		auto& stageManager = JsonFileManager<Stage>::getInstance();
+		stageManager.load("TestStage", "Resources/Stages/TestStage.json");
+	}
+
 	//マテリアルの生成
 	m_pInstancingMaterial = new InstancingMaterial();
 	m_pInstancingMaterial->init(DX12GraphicsCore::g_pDevice.Get());
@@ -92,8 +100,8 @@ void GameScene::start()
 	g_pCursor = pCursorObj->addComponent<Cursor>();
 	g_pCursor->init(m_pDefaultCamera);
 
-	UnitSelector* pSelector = pCursorObj->addComponent<UnitSelector>();
-	pSelector->init(g_pCursor, g_TeamID1, m_pValueMapMaterial);
+	m_pUnitSelector = pCursorObj->addComponent<UnitSelector>();
+	m_pUnitSelector->init(g_pCursor, g_TeamID1, m_pValueMapMaterial);
 
 	auto pModel = GameDevice::getModelManager().getModel("Sphere");
 
@@ -103,14 +111,14 @@ void GameScene::start()
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
-	pPlayer = pPlayer1Obj->addComponent<Player>();
+	m_pPlayer = pPlayer1Obj->addComponent<Player>();
 
 	//AIプレイヤー2の生成
 	auto pPlayer2Obj = new GameObject(this);
-	auto pAIPlayer = pPlayer2Obj->addComponent<AIPlayer>();
+	m_pAIPlayer = pPlayer2Obj->addComponent<AIPlayer>();
 
-	pPlayer->init(g_TeamID1, pAIPlayer, &m_ValueMap2);
-	pAIPlayer->init(g_TeamID2, pPlayer, &m_ValueMap1);
+	m_pPlayer->init(g_TeamID1, m_pAIPlayer, &m_ValueMap2);
+	m_pAIPlayer->init(g_TeamID2, m_pPlayer, &m_ValueMap1);
 
 	//ユニット描画用オブジェクト生成
 	for (const auto& pair : JsonFileManager<UnitStats>::getInstance().getAll())
@@ -124,24 +132,30 @@ void GameScene::start()
 
 	//UI生成
 	{
-		auto pUIObj = new GameObject(this);
-		pUIObj->setParent(&m_pDefaultCamera->getUser());
-		UIUnitList* pUnitList = pUIObj->addComponent<UIUnitList>();
-		pUnitList->init(pPlayer, pSelector);
+		auto pUIObj1 = new GameObject(this);
+		pUIObj1->setParent(&m_pDefaultCamera->getUser());
+		m_pUIUnitPlacer = pUIObj1->addComponent<UIUnitPlacer>();
+		m_pUIUnitPlacer->init(g_pCursor, m_pPlayer, m_pUnitSelector, &m_ValueMap1, &m_UnitRenderHelpers);
 
-		UIUnitPlacer* pUnitPlacer = pUIObj->addComponent<UIUnitPlacer>();
-		pUnitPlacer->init(g_pCursor, pPlayer, &m_ValueMap1, &m_UnitRenderHelpers);
+		auto pUIObj2 = new GameObject(this);
+		pUIObj2->setParent(&m_pDefaultCamera->getUser());
+		m_pUIUnitList = pUIObj2->addComponent<UIUnitList>();
+		pUIObj2->setActive(false);
 	}
 
 	//ユニット生成
-	for (int i = -2; i < 3; i++)
+	const Stage& testStage = JsonFileManager<Stage>::getInstance().get("TestStage");
+
+	for (const auto& enemy : testStage.getUnitList())
 	{
+		const UnitStats& unitStats = JsonFileManager<UnitStats>::getInstance().get(enemy.m_Name);
+
 		GameObject* pUnitObj = new GameObject(this);
 		auto pUnit = pUnitObj->addComponent<Unit>();
-		pUnit->init(pAIPlayer, pUnitStats1, &m_ValueMap2, m_UnitRenderHelpers.at(pUnitStats1->m_Name));
-		pUnit->setPosition(Vec3(200.0f * i, 0.0f, 200.0f), 180.0f, 10);
+		pUnit->init(m_pAIPlayer, &unitStats, &m_ValueMap2, m_UnitRenderHelpers.at(unitStats.m_Name));
+		pUnit->setPosition(enemy.m_Position, enemy.m_Angle, enemy.m_Width);
 
-		pAIPlayer->addUnit(pUnit);
+		m_pAIPlayer->addUnit(pUnit);
 	}
 
 	//情報マップ描画の生成
@@ -211,6 +225,10 @@ void GameScene::update()
 	if (Game::g_GameState == Game::GameState::CombatPhaseBegin)
 	{
 		Game::g_GameState = Game::GameState::CombatPhase;
+
+		m_pUIUnitPlacer->getUser().setActive(false);
+		m_pUIUnitList->getUser().setActive(true);
+		m_pUIUnitList->init(m_pPlayer, m_pUnitSelector);
 	}
 
 	if (GameDevice::getInput().isKeyDown(DIK_1))

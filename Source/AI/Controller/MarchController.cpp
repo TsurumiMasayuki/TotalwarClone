@@ -5,15 +5,12 @@
 #include "Math\MathUtility.h"
 #include "Unit\UnitContainer.h"
 
-MarchController::MarchController(Unit* pUnit, IPlayer* pPlayer, const Vec3& relativePos, int unitWidth)
+MarchController::MarchController(Unit* pUnit, Unit* pBaseUnit, const Vec3& relativePos, int unitWidth)
 	: m_pUnit(pUnit),
-	m_pPlayer(pPlayer),
-	m_pBaseUnit(nullptr),
+	m_pBaseUnit(pBaseUnit),
 	m_RelativePos(relativePos),
 	m_UnitWidth(unitWidth)
 {
-	//ベースになるユニットを検索
-	m_pBaseUnit = m_pPlayer->getUnitContainer()->getCenterUnit();
 }
 
 void MarchController::start()

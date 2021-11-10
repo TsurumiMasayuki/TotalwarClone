@@ -46,6 +46,15 @@ void UnitSelector::onUpdate()
 	//ユニット配置の更新
 	updateUnitPlacement();
 
+	//配置予測表示中でないなら選択中のユニットを強調表示
+	if (!input.isMouseButton(1))
+	{
+		setInstanceInfo(m_pSelectedUnit->getTransform().getLocalPosition(),
+			m_pSelectedUnit->getAngle(),
+			m_pSelectedUnit->getWidth()
+		);
+	}
+
 	//デリートキーが押されたら
 	if (input.isKeyDown(DIK_DELETE))
 	{
@@ -160,34 +169,10 @@ void UnitSelector::updateUnitPlacement()
 		Vec3 diff = unitPlacePosEnd - m_UnitPlacePosBegin;
 		diff.y = 0.0f;
 		Vec3 placePos = m_UnitPlacePosBegin + diff.normalized() * diff.length() * 0.5f;
+		float angle = MathUtility::toDegree(-std::atan2f(diff.z, diff.x));
+		int width = diff.length() / m_pSelectedUnit->getSpacePerObject();
 
-		//プレビューの設定
-		m_ObjPlacement.setSpacePerObject(m_pSelectedUnit->getSpacePerObject());
-		m_ObjPlacement.setBasePos(placePos);
-		m_ObjPlacement.setAngle(MathUtility::toDegree(-std::atan2f(diff.z, diff.x)));
-		m_ObjPlacement.setWidth(diff.length() / m_pSelectedUnit->getSpacePerObject());
-
-		//プレビューの座標計算
-		std::vector<Vec3> previewObjPositions;
-		m_ObjPlacement.calculateObjectPositions(previewObjPositions);
-
-		const float modelScaling = 0.05f;
-		const Vec3& scale = m_pSelectedUnit->getTransform().getLocalScale();
-
-		//InstancedRenderer用データ作成
-		std::vector<PreviewObjInstance> instances;
-		for (auto& position : previewObjPositions)
-		{
-			instances.emplace_back();
-			auto translate = DirectX::XMMatrixTranslationFromVector(position.toXMVector());
-			auto scaling = DirectX::XMMatrixScaling(scale.x * modelScaling, 0.1f * modelScaling, scale.z * modelScaling);
-			auto world = DirectX::XMMatrixTranspose(scaling * translate);
-			DirectX::XMStoreFloat4x4(&instances.back().instanceMat, world);
-			DirectX::XMStoreFloat4(&instances.back().instanceColor, DirectX::Colors::Orange);
-		}
-
-		//InstancedRendererにデータを渡す
-		m_pPreviewObjRenderer->setInstanceInfo(instances);
+		setInstanceInfo(placePos, angle, width);
 	}
 
 	//攻撃中でないなら移動処理終了
@@ -221,4 +206,35 @@ void UnitSelector::updateUnitPlacement()
 		std::vector<PreviewObjInstance> instances;
 		m_pPreviewObjRenderer->setInstanceInfo(instances);
 	}
+}
+
+void UnitSelector::setInstanceInfo(const Vec3& placePos, float angle, int width)
+{
+	//プレビューの設定
+	m_ObjPlacement.setSpacePerObject(m_pSelectedUnit->getSpacePerObject());
+	m_ObjPlacement.setBasePos(placePos);
+	m_ObjPlacement.setAngle(angle);
+	m_ObjPlacement.setWidth(width);
+
+	//プレビューの座標計算
+	std::vector<Vec3> previewObjPositions;
+	m_ObjPlacement.calculateObjectPositions(previewObjPositions);
+
+	const float modelScaling = 0.05f;
+	const Vec3& scale = m_pSelectedUnit->getTransform().getLocalScale();
+
+	//InstancedRenderer用データ作成
+	std::vector<PreviewObjInstance> instances;
+	for (auto& position : previewObjPositions)
+	{
+		instances.emplace_back();
+		auto translate = DirectX::XMMatrixTranslationFromVector(position.toXMVector());
+		auto scaling = DirectX::XMMatrixScaling(scale.x * modelScaling, 0.1f * modelScaling, scale.z * modelScaling);
+		auto world = DirectX::XMMatrixTranspose(scaling * translate);
+		DirectX::XMStoreFloat4x4(&instances.back().instanceMat, world);
+		DirectX::XMStoreFloat4(&instances.back().instanceColor, DirectX::Colors::Orange);
+	}
+
+	//InstancedRendererにデータを渡す
+	m_pPreviewObjRenderer->setInstanceInfo(instances);
 }

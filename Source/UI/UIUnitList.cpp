@@ -106,5 +106,7 @@ void UIUnitList::init(IPlayer* pPlayer, UnitSelector* pSelector)
 				}
 			);
 		}
+
+		i++;
 	}
 }

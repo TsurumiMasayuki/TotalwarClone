@@ -35,6 +35,8 @@ private:
 	//ユニット配置の更新
 	void updateUnitPlacement();
 
+	void setInstanceInfo(const Vec3& placePos, float angle, int width);
+
 private:
 	Cursor* m_pCursor;
 	int m_TeamID;

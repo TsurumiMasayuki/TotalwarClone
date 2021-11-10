@@ -30,8 +30,8 @@ public:
 	void setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand = true);
 
 	float getSpacePerObject() const;
-
 	float getAngle() const;
+	int getWidth() const;
 
 	void setTarget(Unit* pTarget);
 	Unit* getTarget();
@@ -66,7 +66,7 @@ private:
 
 	Unit* m_pTargetUnit;
 
-	int m_ObjectCount;
+	int m_Width;
 	int m_TeamID;
 	bool m_IsAllowCombat;
 

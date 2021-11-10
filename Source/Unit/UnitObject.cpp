@@ -167,7 +167,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	//射程距離と同じサイズにするためにスケールで割る
 	float scaleX = getTransform().getLocalScale().x;
 	m_pTrigger->setRadius(m_pLongestMainAttack->getAttackRange() / scaleX);
-	m_pTrigger->setGroupIndex(1);
+	m_pTrigger->setGroupIndex(-1);
 }
 
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)

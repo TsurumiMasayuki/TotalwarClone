@@ -47,6 +47,18 @@ void SimpleCombatController::searchTarget()
 		}
 	);
 
+	Unit* pTarget = nullptr;
+
+	for (auto pUnit : sortVector)
+	{
+		//ユニットが全滅していないならターゲットに指定
+		if (pUnit->getObjectCount() != 0)
+		{
+			pTarget = pUnit;
+			break;
+		}
+	}
+
 	//ターゲット設定
 	m_pUnit->setTarget(sortVector.at(0));
 }

@@ -33,9 +33,9 @@ void AIPlayer::onUpdate()
 	{
 		Unit* pEnemyCenterUnit = m_pOpponentPlayer->getUnitContainer()->getCenterUnit();
 
-		//真ん中のユニットを取得
-		const auto& units = m_Units.getUnits();
-		auto pBaseUnit = getUnitContainer()->getCenterUnit();
+		//一番遅いユニットを取得
+		const auto& units = m_Units.getSortedUnits(UnitStatsValues::Speed);
+		auto pBaseUnit = units.at(0);
 
 		//コントローラーを生成して登録
 		m_Controllers.at(pBaseUnit) = new SimpleMoveController(pBaseUnit, pEnemyCenterUnit, pBaseUnit->getUnitStats()->m_DefaultWidth);
@@ -50,7 +50,7 @@ void AIPlayer::onUpdate()
 			//基準にするオブジェクトからの相対座標を算出
 			const Vec3& relativePos = pUnit->getTransform().getLocalPosition() - slowestUnitPos;
 			//コントローラーを生成
-			m_Controllers.at(pUnit) = new MarchController(pUnit, this, relativePos, pUnit->getUnitStats()->m_DefaultWidth);
+			m_Controllers.at(pUnit) = new MarchController(pUnit, pBaseUnit, relativePos, pUnit->getUnitStats()->m_DefaultWidth);
 		}
 
 		//初期化処理
@@ -68,8 +68,7 @@ void AIPlayer::onUpdate()
 			if (!pUnit->isInCombat()) continue;
 
 			//戦闘中ならcontinue
-			if (m_ControllerUpdated)
-				continue;
+			if (m_ControllerUpdated) continue;
 
 			for (auto pUnit2 : m_Units.getUnits())
 			{

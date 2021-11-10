@@ -5,6 +5,7 @@
 #include "Actor\Base\GameObject.h"
 #include "Component\Cursor.h"
 #include "Device\GameDevice.h"
+#include "Graphics\DX12\Material\DefaultMaterials.h"
 
 #include "Player\Player.h"
 
@@ -12,9 +13,9 @@
 #include "UI\UIUnitCard.h"
 #include "Utility\JsonFileManager.h"
 #include "Utility\ModelGameObjectHelper.h"
-#include "Unit\Unit.h"
 
-#include "Graphics\DX12\Material\DefaultMaterials.h"
+#include "Unit\Unit.h"
+#include "Unit\UnitSelector.h"
 
 void UIUnitPlacer::onStart()
 {
@@ -26,6 +27,7 @@ void UIUnitPlacer::onUpdate()
 
 void UIUnitPlacer::init(Cursor* pCursor,
 	Player* pPlayer,
+	UnitSelector* pUnitSelector,
 	ValueMap* pValueMap,
 	const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers)
 {
@@ -65,7 +67,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		auto pButton = pButtonObj->addComponent<UIButton>();
 		//ユニット配置関数を設定
 		pButton->setOnMouseButtonDown(UIButton::MouseButtons::Left,
-			[pGameMediator, pModel, pPlayer, unitStats, pValueMap, pRenderHelpers]()
+			[pGameMediator, pUnitSelector, pPlayer, unitStats, pValueMap, pRenderHelpers]()
 			{
 				//配置用エネルギーが無かったらreturn
 				if (pPlayer->getEnergy() - unitStats.m_EnergyCost < 0)
@@ -80,6 +82,8 @@ void UIUnitPlacer::init(Cursor* pCursor,
 				pUnit->setPosition(Vec3(0.0f, 0.0f, 0.0f), 0.0f, 10);
 				//ユニット登録
 				pPlayer->addUnit(pUnit);
+				//セレクターで選択
+				pUnitSelector->selectUnit(pUnit);
 			}
 		);
 

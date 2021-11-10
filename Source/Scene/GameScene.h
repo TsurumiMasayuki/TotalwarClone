@@ -5,15 +5,18 @@
 
 class GameObject;
 
-class UnitRenderHelper;
 class Unit;
+class UnitRenderHelper;
+class UnitSelector;
+
+class UIUnitPlacer;
+class UIUnitList;
 
 class InstancingMaterial;
 class BBModelMaterial;
 class ValueMapMaterial;
 
 class Model;
-class UISlider;
 class Player;
 class AIPlayer;
 
@@ -40,11 +43,14 @@ private:
 	Model* m_pBBCube;
 
 	std::unordered_map<std::string, UnitRenderHelper*> m_UnitRenderHelpers;
-	Unit* m_pUnit1;
+	UnitSelector* m_pUnitSelector;
 
-	Player* pPlayer;
-	AIPlayer* pPlayer2;
+	Player* m_pPlayer;
+	AIPlayer* m_pAIPlayer;
 
 	Vec3 m_PreCameraPos;
 	Vec3 m_PreCameraAngles;
+
+	UIUnitList* m_pUIUnitList;
+	UIUnitPlacer* m_pUIUnitPlacer;
 };
