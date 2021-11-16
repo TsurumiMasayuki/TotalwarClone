@@ -222,6 +222,8 @@ void UnitSelector::setInstanceInfo(const Vec3& placePos, float angle, int width)
 
 	const float modelScaling = 0.05f;
 	const Vec3& scale = m_pSelectedUnit->getTransform().getLocalScale();
+	auto scaling = DirectX::XMMatrixScaling(scale.x * modelScaling, 0.1f * modelScaling, scale.z * modelScaling);
+	auto offsetMat = DirectX::XMMatrixTranslation(0.0f, -10.0f, 0.0f);
 
 	//InstancedRenderer用データ作成
 	std::vector<PreviewObjInstance> instances;
@@ -229,8 +231,7 @@ void UnitSelector::setInstanceInfo(const Vec3& placePos, float angle, int width)
 	{
 		instances.emplace_back();
 		auto translate = DirectX::XMMatrixTranslationFromVector(position.toXMVector());
-		auto scaling = DirectX::XMMatrixScaling(scale.x * modelScaling, 0.1f * modelScaling, scale.z * modelScaling);
-		auto world = DirectX::XMMatrixTranspose(scaling * translate);
+		auto world = DirectX::XMMatrixTranspose(scaling * translate * offsetMat);
 		DirectX::XMStoreFloat4x4(&instances.back().instanceMat, world);
 		DirectX::XMStoreFloat4(&instances.back().instanceColor, DirectX::Colors::Orange);
 	}

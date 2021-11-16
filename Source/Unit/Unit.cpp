@@ -27,6 +27,7 @@ void Unit::onUpdate()
 	if (getObjectCount() == 0)
 		return;
 
+	//ターゲット解除処理
 	if (m_pTargetUnit != nullptr)
 	{
 		if (m_pTargetUnit->getObjectCount() == 0)
@@ -99,7 +100,7 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 	m_pOwnerPlayer = pPlayer;
 
 	//ステートロックタイマー初期化
-	m_StateLockTimer.setMaxTime(1.0f);
+	m_StateLockTimer.setMaxTime(10.0f);
 
 	int xSize = objectCount;
 	int zSize = objectCount / xSize;
@@ -147,8 +148,6 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 		pUnitObject->resetCollider();
 	}
 
-	m_Width = unitWidth;
-
 	//中心座標を更新
 	updateCenterPosition();
 }
@@ -186,7 +185,7 @@ float Unit::getAngle() const
 
 int Unit::getWidth() const
 {
-	return m_Width;
+	return m_ObjectPlacement.getWidth();
 }
 
 void Unit::setTarget(Unit* pTarget)
@@ -305,11 +304,15 @@ void Unit::updateCenterPosition()
 			aliveCount++;
 	}
 
+	//0除算防止
+	if (aliveCount == 0) return;
+
 	//ユニットの中心座標を更新
 	Vec3 sum;
 	for (auto pUnitObject : m_UnitObjects)
 	{
-		sum += pUnitObject->getTransform().getLocalPosition();
+		if (pUnitObject->getState() != UnitObject::State::Dead)
+			sum += pUnitObject->getTransform().getLocalPosition();
 	}
 	getTransform().setLocalPosition(sum / (float)aliveCount);
 }

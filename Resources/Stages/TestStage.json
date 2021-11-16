@@ -12,31 +12,31 @@
             "EnemyName" : "NormalCorvette",
             "Position" : [0.0, 0.0, 550.0],
             "Angle" : 180.0,
-            "Width" : 10
+            "Width" : 5
         },
         {
             "EnemyName" : "NormalCorvette",
             "Position" : [100.0, 0.0, 550.0],
             "Angle" : 180.0,
-            "Width" : 10
+            "Width" : 5
         },
         {
             "EnemyName" : "NormalCorvette",
             "Position" : [200.0, 0.0, 550.0],
             "Angle" : 180.0,
-            "Width" : 10
+            "Width" : 5
         },
         {
             "EnemyName" : "NormalCorvette",
             "Position" : [-100.0, 0.0, 550.0],
             "Angle" : 180.0,
-            "Width" : 10
+            "Width" : 5
         },
         {
             "EnemyName" : "NormalCorvette",
             "Position" : [-200.0, 0.0, 550.0],
             "Angle" : 180.0,
-            "Width" : 10
+            "Width" : 5
         }
     ]
 }

@@ -173,7 +173,9 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
 {
 	//ターゲットがいて移動命令でないならreturn
-	if (m_pTargetObject != nullptr && !isMoveCommand && m_State == State::Attack) return;
+	if (m_pTargetObject != nullptr &&
+		!isMoveCommand &&
+		m_State == State::Attack) return;
 
 	m_Destination = destination;
 	m_Destination.y = 0.0f;
@@ -216,7 +218,7 @@ void UnitObject::rotate()
 	float curAngle = getTransform().getLocalAngles().y;
 
 	//使用する角度
-	float angle = MathUtility::lerp(curAngle, desiredAngle, GameDevice::getGameTime().getDeltaTime() * m_pUnit->getUnitStats()->m_RotationSpeed);
+	float angle = MathUtility::lerp(curAngle, desiredAngle, 1.0f);
 	float radian = MathUtility::toRadian(angle);
 
 	//移動方向を更新
@@ -338,7 +340,7 @@ void UnitObject::stateTransition()
 	else
 	{
 		float distance = myPos.distance(m_Destination);
-		if (distance > 0.25f)
+		if (distance > 0.15f)
 		{
 			setState(State::Move);
 		}

@@ -38,7 +38,7 @@ void SimpleCombatController::searchTarget()
 		[myPos](Unit* a, Unit* b)
 		{
 			const Vec3& posA = a->getTransform().getLocalPosition();
-			const Vec3& posB = a->getTransform().getLocalPosition();
+			const Vec3& posB = b->getTransform().getLocalPosition();
 
 			float sqrDistanceA = myPos.sqrDistance(posA);
 			float sqrDistanceB = myPos.sqrDistance(posB);

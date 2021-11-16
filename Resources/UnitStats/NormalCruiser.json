@@ -9,7 +9,7 @@
         "MaxHealthPerObject" : 1000.0,
         "MaxShieldPerObject" : 0.0,
         "Speed" : 10.0,
-        "RotationSpeed" : 10,
+        "RotationSpeed" : 10.0,
         "DebugColor" : [1.0, 0.0, 0.0],
         "DefaultUnitWidth" : 5,
         "EnergyCost" : 2000

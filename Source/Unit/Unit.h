@@ -66,7 +66,6 @@ private:
 
 	Unit* m_pTargetUnit;
 
-	int m_Width;
 	int m_TeamID;
 	bool m_IsAllowCombat;
 

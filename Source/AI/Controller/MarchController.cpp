@@ -32,5 +32,5 @@ void MarchController::update()
 	//ˆê”Ô’x‚¢ƒ†ƒjƒbƒg‚É‡‚í‚¹‚ÄˆÚ“®
 	const Vec3& basePos = m_pBaseUnit->getTransform().getLocalPosition();
 	Vec3 rotatePos = m_RelativePos.multMatrix(rotate);
-	m_pUnit->setDestination(basePos + rotatePos, angle, m_UnitWidth, false);
+	m_pUnit->setDestination(basePos + rotatePos, 180.0f, m_UnitWidth, false);
 }

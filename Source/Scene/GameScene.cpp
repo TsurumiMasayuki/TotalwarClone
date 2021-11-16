@@ -85,6 +85,7 @@ void GameScene::start()
 	//マテリアルの生成
 	m_pValueMapMaterial = new ValueMapMaterial();
 	m_pValueMapMaterial->init(DX12GraphicsCore::g_pDevice.Get());
+	m_pValueMapMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("CircleFill"));
 
 	//マテリアルの生成
 	m_pBBModelMaterial = new BBModelMaterial();
@@ -156,9 +157,9 @@ void GameScene::start()
 	}
 
 	//情報マップ描画の生成
-	auto pValueMapRendererObj = new GameObject(this);
-	auto pValueMapRenderer = pValueMapRendererObj->addComponent<ValueMapRenderer<UnitStatsValues::Health>>();
-	pValueMapRenderer->init(&m_ValueMap2, m_pValueMapMaterial, Color(DirectX::Colors::LightGreen));
+	//auto pValueMapRendererObj = new GameObject(this);
+	//auto pValueMapRenderer = pValueMapRendererObj->addComponent<ValueMapRenderer<UnitStatsValues::Health>>();
+	//pValueMapRenderer->init(&m_ValueMap2, m_pValueMapMaterial, Color(DirectX::Colors::LightGreen));
 
 	//レイキャスト判定用平面オブジェクト
 	{
