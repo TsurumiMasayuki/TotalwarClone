@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "AI\ValueMap.h"
 #include "Scene\Base\AbstractScene.h"
+#include "Effect\EffectRenderHelper.h"
 
 class GameObject;
 
@@ -43,6 +44,7 @@ private:
 	Model* m_pBBCube;
 
 	std::unordered_map<std::string, UnitRenderHelper*> m_UnitRenderHelpers;
+	EffectRenderHelper* m_pEffectRenderHelper;
 	UnitSelector* m_pUnitSelector;
 
 	Player* m_pPlayer;

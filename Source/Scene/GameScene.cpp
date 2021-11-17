@@ -105,8 +105,6 @@ void GameScene::start()
 	m_pUnitSelector = pCursorObj->addComponent<UnitSelector>();
 	m_pUnitSelector->init(g_pCursor, g_TeamID1, m_pValueMapMaterial);
 
-	auto pModel = GameDevice::getModelManager().getModel("Sphere");
-
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
 	m_pPlayer = pPlayer1Obj->addComponent<Player>();
@@ -118,14 +116,27 @@ void GameScene::start()
 	m_pPlayer->init(g_TeamID1, m_pAIPlayer, &m_ValueMap2);
 	m_pAIPlayer->init(g_TeamID2, m_pPlayer, &m_ValueMap1);
 
+	auto pSphereModel = GameDevice::getModelManager().getModel("Sphere");
+
 	//ユニット描画用オブジェクト生成
 	for (const auto& pair : JsonFileManager<UnitStats>::getInstance().getAll())
 	{
-		auto pRendererObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
+		auto pRendererObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pSphereModel, true);
 		auto pRenderer = pRendererObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
 		pRenderer->setMaterial(m_pInstancingMaterial);
 
 		m_UnitRenderHelpers.emplace(pair.first, new UnitRenderHelper(&pair.second, nullptr, pRenderer));
+	}
+	
+	auto pCubeModel = GameDevice::getModelManager().getModel("Cube");
+
+	//エフェクト描画用オブジェクト生成
+	{
+		auto pRendererObj = ModelGameObjectHelper::instantiateModel<EffectInstanceInfo>(this, pCubeModel, true);
+		auto pRenderer = pRendererObj->getChildren().at(0)->getComponent<InstancedRenderer<EffectInstanceInfo>>();
+		pRenderer->setMaterial(m_pInstancingMaterial);
+
+		m_pEffectRenderHelper = new EffectRenderHelper(pRenderer);
 	}
 
 	//UI生成
@@ -133,7 +144,7 @@ void GameScene::start()
 		auto pUIObj1 = new GameObject(this);
 		pUIObj1->setParent(&m_pDefaultCamera->getUser());
 		m_pUIUnitPlacer = pUIObj1->addComponent<UIUnitPlacer>();
-		m_pUIUnitPlacer->init(g_pCursor, m_pPlayer, m_pUnitSelector, &m_ValueMap1, &m_UnitRenderHelpers);
+		m_pUIUnitPlacer->init(g_pCursor, m_pPlayer, m_pUnitSelector, &m_ValueMap1, &m_UnitRenderHelpers, m_pEffectRenderHelper);
 
 		auto pUIObj2 = new GameObject(this);
 		pUIObj2->setParent(&m_pDefaultCamera->getUser());
@@ -150,7 +161,7 @@ void GameScene::start()
 
 		GameObject* pUnitObj = new GameObject(this);
 		auto pUnit = pUnitObj->addComponent<Unit>();
-		pUnit->init(m_pAIPlayer, &unitStats, &m_ValueMap2, m_UnitRenderHelpers.at(unitStats.m_Name));
+		pUnit->init(m_pAIPlayer, &unitStats, &m_ValueMap2, m_UnitRenderHelpers.at(unitStats.m_Name), m_pEffectRenderHelper);
 		pUnit->setPosition(enemy.m_Position, enemy.m_Angle, enemy.m_Width);
 
 		m_pAIPlayer->addUnit(pUnit);
@@ -267,6 +278,8 @@ void GameScene::shutdown()
 	{
 		delete pair.second;
 	}
+
+	delete m_pEffectRenderHelper;
 }
 
 void GameScene::lateUpdate()
@@ -280,4 +293,6 @@ void GameScene::lateUpdate()
 	{
 		pair.second->sendInstanceInfo();
 	}
+
+	m_pEffectRenderHelper->sendInstanceInfo();
 }

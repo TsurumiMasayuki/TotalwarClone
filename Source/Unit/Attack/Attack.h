@@ -1,16 +1,15 @@
 #pragma once
 #include "Utility\Timer.h"
 
-//エフェクトクラス(仮)
-class IEffect;
 class UnitObject;
 struct AttackStats;
+class TestEffect_Beam;
 
 //攻撃クラス
 class Attack
 {
 public:
-	Attack(UnitObject* pOwner, const AttackStats* pAttackStats);
+	Attack(UnitObject* pOwner, const AttackStats* pAttackStats, TestEffect_Beam* pEffect);
 	virtual ~Attack();
 
 	void update();
@@ -40,10 +39,12 @@ private:
 	Timer m_AttackTimer;
 
 	//自身が乗っているオブジェクト
-	const UnitObject* m_pOwner;
+	UnitObject* m_pOwner;
 
 	//ターゲット
 	UnitObject* m_pTarget;
+
+	TestEffect_Beam* m_pEffect;
 
 	//現在の角度
 	float m_CurrentAngle;

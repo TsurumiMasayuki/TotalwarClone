@@ -17,19 +17,26 @@
 #include "Unit\Unit.h"
 #include "Unit\UnitSelector.h"
 
+#include "GameState.h"
+
 void UIUnitPlacer::onStart()
 {
 }
 
 void UIUnitPlacer::onUpdate()
 {
+	if (Game::g_GameState == Game::GameState::CombatPhaseBegin)
+	{
+		getUser().setActive(false);
+	}
 }
 
 void UIUnitPlacer::init(Cursor* pCursor,
 	Player* pPlayer,
 	UnitSelector* pUnitSelector,
 	ValueMap* pValueMap,
-	const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers)
+	const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers,
+	EffectRenderHelper* pEffectRenderHelper)
 {
 	m_pCursor = pCursor;
 	m_pRenderHelpers = pRenderHelpers;
@@ -63,11 +70,12 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		auto pButtonObj = new GameObject(getUser().getGameMediator());
 		pButtonObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f, 1.0f));
 		pButtonObj->getTransform().setLocalScale(Vec3(unitCardWidth, unitCardHeight, 1.0f));
+		pButtonObj->setParent(&getUser());
 
 		auto pButton = pButtonObj->addComponent<UIButton>();
 		//ユニット配置関数を設定
 		pButton->setOnMouseButtonDown(UIButton::MouseButtons::Left,
-			[pGameMediator, pUnitSelector, pPlayer, unitStats, pValueMap, pRenderHelpers]()
+			[pGameMediator, pUnitSelector, pPlayer, unitStats, pValueMap, pRenderHelpers, pEffectRenderHelper]()
 			{
 				//配置用エネルギーが無かったらreturn
 				if (pPlayer->getEnergy() - unitStats.m_EnergyCost < 0)
@@ -77,7 +85,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 				auto pUnitObj = new GameObject(pGameMediator);
 				//ユニット生成
 				auto pUnit = pUnitObj->addComponent<Unit>();
-				pUnit->init(pPlayer, &unitStats, pValueMap, pRenderHelpers->at(unitStats.m_Name));
+				pUnit->init(pPlayer, &unitStats, pValueMap, pRenderHelpers->at(unitStats.m_Name), pEffectRenderHelper);
 				//座標設定(TODO:プレイヤーの配置範囲の真ん中になるように変更する)
 				pUnit->setPosition(Vec3(0.0f, 0.0f, 0.0f), 0.0f, 10);
 				//ユニット登録

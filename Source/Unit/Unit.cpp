@@ -41,7 +41,7 @@ void Unit::onUpdate()
 		if (pUnitObject->getState() != UnitObject::State::Dead)
 			objMatrices.emplace_back(pUnitObject->getTransform().getWorldMatrix());
 	}
-	m_pRenderHelper->appendInstanceInfo(objMatrices);
+	m_pUnitRenderHelper->appendInstanceInfo(objMatrices);
 
 	updateCenterPosition();
 
@@ -90,13 +90,13 @@ void Unit::onDisable()
 	m_pOwnerPlayer->removeUnit(this);
 }
 
-void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper)
+void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pUnitRenderHelper, EffectRenderHelper* pEffectRenderHelper)
 {
 	int objectCount = pUnitStats->m_ObjectCount;
 	m_TeamID = pPlayer->getTeamID();
 	m_pUnitStats = pUnitStats;
 	m_pValueMap = pValueMap;
-	m_pRenderHelper = pRenderHelper;
+	m_pUnitRenderHelper = pUnitRenderHelper;
 	m_pOwnerPlayer = pPlayer;
 
 	//ステートロックタイマー初期化
@@ -125,7 +125,7 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 		m_UnitObjects.emplace_back();
 		auto& pUnitObject = m_UnitObjects.back();
 		pUnitObject = pObj->addComponent<UnitObject>();
-		pUnitObject->init(this, m_pValueMap);
+		pUnitObject->init(this, m_pValueMap, pEffectRenderHelper);
 
 		//オブジェクト配置に登録
 		m_ObjectPlacement.addObject(&transform);
@@ -271,11 +271,6 @@ void Unit::onEnterCombat(Unit* pEnemyUnit)
 
 void Unit::forceEscapeCombat()
 {
-	for (auto pUnitObject : m_UnitObjects)
-	{
-		pUnitObject->forceEscapeCombat();
-	}
-
 	m_StateLockTimer.reset();
 }
 

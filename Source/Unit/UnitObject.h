@@ -7,6 +7,8 @@ class Unit;
 class Attack;
 class CircleColliderB2;
 class ValueMap;
+class TestEffect_Beam;
+class EffectRenderHelper;
 
 class UnitObject
 	: public AbstractComponent
@@ -26,12 +28,10 @@ public:
 	virtual void onUpdate() override;
 	virtual void onDestroy() override;
 
-	void init(Unit* pUnit, ValueMap* pValueMap);
+	void init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEffectRenderHelper);
 
 	//目的地を設定
 	void setDestination(const Vec3& destination, bool isMoveCommand = true);
-	//戦闘の中止を強制する
-	void forceEscapeCombat();
 
 	//コライダーをリセット
 	void resetCollider();
@@ -100,4 +100,7 @@ private:
 
 	//攻撃クラス(サブ)
 	std::vector<Attack*> m_SubAttacks;
+
+	//エフェクトクラス
+	std::vector<TestEffect_Beam*> m_AttackEffects;
 };

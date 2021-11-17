@@ -1,19 +1,27 @@
 #include "Attack.h"
+#include "Component\Utility\Transform.h"
+
 #include "Unit\UnitObject.h"
 #include "Unit\Attack\AttackStats.h"
+#include "Effect\TestEffect_Beam.h"
 
-Attack::Attack(UnitObject* pOwner, const AttackStats* pAttackStats)
+Attack::Attack(UnitObject* pOwner, const AttackStats* pAttackStats, TestEffect_Beam* pEffect)
 	: m_pAttackStats(pAttackStats),
 	m_AttackTimer(pAttackStats->m_AttackInterval),
 	m_IsActive(true),
 	m_pOwner(pOwner),
 	m_pTarget(nullptr),
+	m_pEffect(pEffect),
 	m_CurrentAngle(0.0f)
 {
+	m_pEffect->setWidth(0.5f);
+	m_pEffect->setTime(0.5f);
 }
 
 Attack::~Attack()
 {
+	//エフェクトオブジェクトを破棄
+	m_pEffect->getUser().destroy();
 }
 
 void Attack::update()
@@ -61,8 +69,13 @@ void Attack::attackTarget()
 		m_pTarget->getState() == UnitObject::State::Dead)
 		return;
 
-	//エフェクトの実行などする(予定)
 	m_pTarget->takeDamage(m_pAttackStats->m_Damage);
+
+	//エフェクト再生
+	m_pEffect->setBeginPos(m_pOwner->getTransform().getLocalPosition());
+	m_pEffect->setEndPos(m_pTarget->getTransform().getLocalPosition());
+
+	m_pEffect->playEffect();
 }
 
 void Attack::trackTarget()

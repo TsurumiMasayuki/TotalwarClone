@@ -19,22 +19,6 @@
         { 
             "AttackName" : "TestAttack",
             "Position" : [0.0, 0.0, 0.0]
-        },
-        { 
-            "AttackName" : "TestAttack",
-            "Position" : [0.0, 0.0, 0.0]
-        },
-        { 
-            "AttackName" : "TestAttack",
-            "Position" : [0.0, 0.0, 0.0]
-        },
-        { 
-            "AttackName" : "TestAttack",
-            "Position" : [0.0, 0.0, 0.0]
-        },
-        { 
-            "AttackName" : "TestAttack",
-            "Position" : [0.0, 0.0, 0.0]
         }
     ]
 }

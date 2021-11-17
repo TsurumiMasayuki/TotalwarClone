@@ -12,6 +12,7 @@ class IPlayer;
 class ValueMap;
 class UnitObject;
 class UnitRenderHelper;
+class EffectRenderHelper;
 
 //ユニットクラス
 class Unit
@@ -25,7 +26,7 @@ public:
 	virtual void onEnable() override;
 	virtual void onDisable() override;
 
-	void init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pRenderHelper);
+	void init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pUnitRenderHelper, EffectRenderHelper* pEffectRenderHelper);
 	void setPosition(const Vec3& position, float angle, int unitWidth);
 	void setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand = true);
 
@@ -73,7 +74,7 @@ private:
 
 	ValueMap* m_pValueMap;
 	const UnitStats* m_pUnitStats;
-	UnitRenderHelper* m_pRenderHelper;
+	UnitRenderHelper* m_pUnitRenderHelper;
 
 	ObjectPlacement m_ObjectPlacement;
 };

@@ -20,6 +20,8 @@
 
 #include "GameState.h"
 
+#include "Effect\TestEffect_Beam.h"
+
 void UnitObject::onStart()
 {
 	m_ShieldRegenTimer.setMaxTime(1.0f);
@@ -125,7 +127,7 @@ void UnitObject::onDestroy()
 	}
 }
 
-void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
+void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEffectRenderHelper)
 {
 	m_pUnit = pUnit;
 	setState(State::StandBy);
@@ -135,11 +137,23 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap)
 	m_Shield = pUnitStats->m_MaxShieldPerObject;
 	m_pValueMap = pValueMap;
 
-	//攻撃クラス生成
 	for (auto& attacks : m_pUnit->getUnitStats()->getMainAttacks())
 	{
+		auto pEffectObj = new GameObject(getUser().getGameMediator());
+
+		//エフェクト生成
+		m_AttackEffects.emplace_back(
+			pEffectObj->addComponent<TestEffect_Beam>()
+		);
+
+		auto pAttackEffect = m_AttackEffects.back();
+		pAttackEffect->init(pEffectRenderHelper);
+
+		//攻撃クラス生成
 		m_MainAttacks.emplace_back(
-			new Attack(this, &JsonFileManager<AttackStats>::getInstance().get(attacks.m_AttackName))
+			new Attack(this, 
+				&JsonFileManager<AttackStats>::getInstance().get(attacks.m_AttackName),
+				pAttackEffect)
 		);
 	}
 
@@ -185,11 +199,6 @@ void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
 		m_pTargetObject = nullptr;
 		setState(State::Move);
 	}
-}
-
-void UnitObject::forceEscapeCombat()
-{
-	m_pTargetObject = nullptr;
 }
 
 void UnitObject::move()
