@@ -4,6 +4,8 @@
 #include "Player\IPlayer.h"
 #include "Unit\UnitContainer.h"
 
+class D2DTextRenderer;
+
 class Player
 	: public AbstractComponent, public IPlayer
 {
@@ -18,6 +20,7 @@ public:
 	virtual UnitContainer* getUnitContainer() override;
 	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
 
+	void setEnergy(int energy);
 	int getEnergy() const;
 
 private:
@@ -32,4 +35,7 @@ private:
 
 	//ユニット配置用通貨の残り
 	int m_CurrentEnergy;
+
+	//残りエネルギー表示用テキスト
+	D2DTextRenderer* m_pEnergyText;
 };

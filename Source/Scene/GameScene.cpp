@@ -152,9 +152,11 @@ void GameScene::start()
 		pUIObj2->setActive(false);
 	}
 
-	//ユニット生成
+	//ステージ設定読み込み
 	const Stage& testStage = JsonFileManager<Stage>::getInstance().get("TestStage");
+	m_pPlayer->setEnergy(testStage.m_PlayerEnergy);
 
+	//ユニット生成
 	for (const auto& enemy : testStage.getUnitList())
 	{
 		const UnitStats& unitStats = JsonFileManager<UnitStats>::getInstance().get(enemy.m_Name);

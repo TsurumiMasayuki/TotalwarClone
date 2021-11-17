@@ -3,8 +3,9 @@
 #include <Actor\Base\GameObject.h>
 #include <Component\Base\AbstractComponent.h>
 #include <Component\Graphics\IRenderer.h>
-#include <Device\Resource\DX12Mesh.h>
 #include <Device\GameDevice.h>
+#include <Device\Resource\DX12Mesh.h>
+#include <Graphics\DX12\DX12GraphicsCore.h>
 #include <Graphics\DX12\DX12Texture2D.h>
 #include <Graphics\DX12\Material\AbstractMaterial.h>
 #include <Utility\Color.h>

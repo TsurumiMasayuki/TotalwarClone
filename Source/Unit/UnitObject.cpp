@@ -344,6 +344,10 @@ void UnitObject::stateTransition()
 		{
 			setState(State::Attack);
 		}
+		else
+		{
+			//setState(State::Charge);
+		}
 	}
 	//移動用ステート遷移
 	else
@@ -379,9 +383,6 @@ void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& next
 		pAttack->setActive(true);
 		pAttack->setTarget(m_pTargetObject);
 	}
-
-	//ステート変更
-	setState(nextState);
 }
 
 void UnitObject::setState(const State& newState)

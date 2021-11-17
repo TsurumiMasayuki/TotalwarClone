@@ -8,6 +8,7 @@
 
 #include <Component\Graphics\Camera.h>
 #include <Component\Graphics\IRenderer.h>
+#include <Component\Graphics\ID2DRenderer.h>
 
 #include <Graphics\DX12\DX12GraphicsCore.h>
 #include <Graphics\DX12\DX12RenderTarget.h>
@@ -25,6 +26,9 @@ public:
 	void addRenderer(IRenderer* pRenderer);
 	void removeRenderer(IRenderer* pRenderer);
 
+	void addD2DRenderer(ID2DRenderer* pRenderer);
+	void removeD2DRenderer(ID2DRenderer* pRenderer);
+
 	//レンダーターゲットを画面描画用に変更
 	void setDefaultRenderTarget();
 	//レンダーターゲットを登録(既に登録されているものはクリアされる)
@@ -40,16 +44,19 @@ public:
 private:
 	ManagerHelper<Camera*> m_CameraList;
 	ManagerHelper<IRenderer*> m_RendererList;
+	ManagerHelper<ID2DRenderer*> m_D2DRendererList;
 
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator>		m_pCommandAllocator;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_pCommandList;
-	Microsoft::WRL::ComPtr<ID3D12Fence>					m_pFence;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_pCommandAllocator;
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_pCommandList;
+	Microsoft::WRL::ComPtr<ID3D12Fence>	m_pFence;
+
 	UINT m_FenceValue;
 
 	bool m_RTVFlag;
 
-	DX12RenderTarget m_BackBuffer1;
-	DX12RenderTarget m_BackBuffer2;
+	DX12RenderTarget m_BackBuffers[2];
+	Microsoft::WRL::ComPtr<ID3D11Resource> m_WrappedBackBuffers[2];
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1> m_D2DRenderTargets[2];
 
 	DX12RenderTarget* m_pRenderTarget;
 };

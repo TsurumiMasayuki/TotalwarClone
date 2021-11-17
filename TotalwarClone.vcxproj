@@ -124,7 +124,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TsuruLib.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dcompiler.lib;d2d1.lib;dwrite.lib;d3d11.lib;d3d12.lib;dxgi.lib;dxguid.lib;TsuruLib.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(SolutionDir)Resources\Shaders\Compiled\%(Filename).cso</ObjectFileOutput>
@@ -149,7 +149,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>TsuruLib.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dcompiler.lib;d2d1.lib;dwrite.lib;d3d11.lib;d3d12.lib;dxgi.lib;dxguid.lib;TsuruLib.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(SolutionDir)Resources\Shaders\Compiled\%(Filename).cso</ObjectFileOutput>

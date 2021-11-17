@@ -4,8 +4,10 @@
 
 #include "Actor\Base\GameObject.h"
 #include "Component\Cursor.h"
+#include "Component\Graphics\D2DTextRenderer.h"
 #include "Device\GameDevice.h"
 #include "Graphics\DX12\Material\DefaultMaterials.h"
+#include "Utility\StringUtility.h"
 
 #include "Player\Player.h"
 
@@ -95,18 +97,52 @@ void UIUnitPlacer::init(Cursor* pCursor,
 			}
 		);
 
-		//ステータス表示用親オブジェクト
-		auto pStatsDisplayObj = new GameObject(getUser().getGameMediator());
-		pStatsDisplayObj->setParent(&getUser());
-		pStatsDisplayObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f, 1.0f));
-		pStatsDisplayObj->getTransform().setLocalScale(Vec3(1.0f));
-
 		//ユニットの画像(今は色だけ)
 		auto pUnitCardObj = new GameObject(getUser().getGameMediator());
-		pUnitCardObj->setParent(pStatsDisplayObj);
-		pUnitCardObj->getTransform().setLocalPosition(Vec3(0.0f, 0.0f));
+		pUnitCardObj->setParent(&getUser());
+		pUnitCardObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f, 1.0f));
 		pUnitCardObj->getTransform().setLocalScale(Vec3(unitCardWidth, unitCardHeight, 1.0f));
 		auto pUnitCard = pUnitCardObj->addComponent<UIUnitCard>();
 		pUnitCard->init(&unitStats);
+
+		//ユニット名
+		auto pUnitNameObj = new GameObject(getUser().getGameMediator());
+		pUnitNameObj->setParent(&getUser());
+		pUnitNameObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f - unitCardHeight * 0.75f, 1.0f));
+		pUnitNameObj->getTransform().setLocalScale(Vec3(1.0f, 1.0f, 1.0f));
+		D2DTextRenderer* pNameRenderer = pUnitNameObj->addComponent<D2DTextRenderer>();
+		pNameRenderer->setFont(L"Meiryo UI",
+			L"ja-jp",
+			8.0f
+		);
+		pNameRenderer->setFontWeight(DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM);
+		pNameRenderer->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
+		pNameRenderer->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
+		pNameRenderer->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		pNameRenderer->setTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
+		pNameRenderer->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+		pNameRenderer->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);
+		pNameRenderer->setText(StringUtility::ToWString(unitStats.m_DisplayName));
+
+		//ユニットコスト
+		auto pUnitCostObj = new GameObject(getUser().getGameMediator());
+		pUnitCostObj->setParent(&getUser());
+		pUnitCostObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f - unitCardHeight, 1.0f));
+		pUnitCostObj->getTransform().setLocalScale(Vec3(1.0f, 1.0f, 1.0f));
+		D2DTextRenderer* pCostRenderer = pUnitCostObj->addComponent<D2DTextRenderer>();
+		pCostRenderer->setFont(L"Meiryo UI",
+			L"ja-jp",
+			10.0f
+		);
+		pCostRenderer->setFontWeight(DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM);
+		pCostRenderer->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
+		pCostRenderer->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
+		pCostRenderer->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		pCostRenderer->setTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
+		pCostRenderer->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+
+		pCostRenderer->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);
+		pCostRenderer->setText(std::to_wstring(unitStats.m_EnergyCost));
 	}
 }

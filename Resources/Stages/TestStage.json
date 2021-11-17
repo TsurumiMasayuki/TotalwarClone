@@ -1,6 +1,6 @@
 {
     "StageName" : "TestStage",
-    "PlayerEnergy" : 1000000,
+    "PlayerEnergy" : 30000,
     "EnemyUnits" : [
         {
             "EnemyName" : "NormalCorvette",
