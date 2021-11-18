@@ -273,6 +273,5 @@
     <FxCompile Include="Resources\Shaders\PostEffectPixelShader.hlsl" />
     <FxCompile Include="Resources\Shaders\GaussianBlurPixelShader.hlsl" />
     <FxCompile Include="Resources\Shaders\InstancingPixelShader.hlsl" />
-    <FxCompile Include="Resources\Shaders\BBInstancingVertexShader.hlsl" />
   </ItemGroup>
 </Project>

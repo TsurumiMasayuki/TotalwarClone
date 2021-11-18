@@ -100,7 +100,7 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 	m_pOwnerPlayer = pPlayer;
 
 	//ステートロックタイマー初期化
-	m_StateLockTimer.setMaxTime(10.0f);
+	m_StateLockTimer.setMaxTime(5.0f);
 
 	int xSize = objectCount;
 	int zSize = objectCount / xSize;
@@ -169,8 +169,9 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth, b
 		m_UnitObjects.at(i)->setDestination(newPositions.at(i), isMoveCommand);
 	}
 
-	//ステートロック開始
-	m_StateLockTimer.reset();
+	//移動指示ならステートロック開始
+	if (isMoveCommand)
+		m_StateLockTimer.reset();
 }
 
 float Unit::getSpacePerObject() const
@@ -194,7 +195,7 @@ void Unit::setTarget(Unit* pTarget)
 	if (m_pTargetUnit == pTarget) return;
 
 	//ステートロック開始
-	m_StateLockTimer.reset();
+	//m_StateLockTimer.reset();
 
 	m_pTargetUnit = pTarget;
 
@@ -259,7 +260,7 @@ int Unit::getTeamID() const
 
 bool Unit::isStateLocked()
 {
-	return m_StateLockTimer.isTime();
+	return !m_StateLockTimer.isTime();
 }
 
 void Unit::onEnterCombat(Unit* pEnemyUnit)

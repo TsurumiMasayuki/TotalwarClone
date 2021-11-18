@@ -41,6 +41,18 @@ Cursor* g_pCursor;
 int g_TeamID1 = 0;
 int g_TeamID2 = 1;
 
+//DX12Mesh::MeshVertex vertices[8] =
+//{
+//	{ DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT2(0.0f, 0.0f) },
+//	{ DirectX::XMFLOAT3(1, 0, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT2(0.0f, 0.0f) },
+//	{ DirectX::XMFLOAT3(1, 1, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT2(0.0f, 0.0f) },
+//	{ DirectX::XMFLOAT3(0, 1, 0), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT2(0.0f, 0.0f) },
+//	{ DirectX::XMFLOAT3(0, 0, 1), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT2(0.0f, 0.0f) },
+//	{ DirectX::XMFLOAT3(1, 0, 1), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT2(0.0f, 0.0f) },
+//	{ DirectX::XMFLOAT3(1, 1, 1), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT2(0.0f, 0.0f) },
+//	{ DirectX::XMFLOAT3(0, 1, 1), DirectX::XMFLOAT3(0, 0, 0), DirectX::XMFLOAT2(0.0f, 0.0f) }
+//};
+
 std::string GameScene::nextScene()
 {
 	return std::string();
@@ -183,12 +195,12 @@ void GameScene::start()
 	}
 
 	{
-		//std::string filePath = "Resources/TextureTest.json";
-		//GameDevice::getTextureManager().load("TextureTest", L"Resources/TextureTest.png");
+		//std::string filePath = "Resources/Hoge.json";
+		//GameDevice::getTextureManager().load("Hoge", L"Resources/Hoge.png");
 
 		//BlockbenchLoader loader;
-		//loader.load(filePath, "TextureTest", "TextureTest");
-		//auto& matrices = loader.getModel("TextureTest")->getCubeMatrices();
+		//loader.load(filePath, "Hoge", "Hoge");
+		//auto& matrices = loader.getModel("Hoge")->getCubeMatrices();
 
 		//std::vector<UnitInstanceInfo> instances;
 		//for (auto& matrix : matrices)
@@ -200,8 +212,8 @@ void GameScene::start()
 		//	instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		//}
 
-		//auto& uvOrigins = loader.getModel("TextureTest")->getUVOrigins();
-		//auto& uvSizes = loader.getModel("TextureTest")->getUVSizes();
+		//auto& uvOrigins = loader.getModel("Hoge")->getUVOrigins();
+		//auto& uvSizes = loader.getModel("Hoge")->getUVSizes();
 		//for (int i = 0; i < (int)instances.size(); i++)
 		//{
 		//	for (int j = 0; j < BlockbenchModel::cubeFaceCount / 2; j++)
@@ -220,10 +232,11 @@ void GameScene::start()
 		//	}
 		//}
 
-		//m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("TextureTest"));
+		//m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("BoxFill"));
 
-		//auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, GameDevice::getModelManager().getModel("Cube"), true);
-		//auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
+		//auto pModelObj = new GameObject(this);
+		//auto pInstancedRenderer = pModelObj->addComponent<InstancedRenderer<UnitInstanceInfo>>();
+		//pInstancedRenderer->setMesh();
 		//pInstancedRenderer->setMaterial(m_pBBModelMaterial);
 		//pInstancedRenderer->setInstanceInfo(instances);
 		//loader.unLoadModels();

@@ -28,7 +28,7 @@ public:
 
 	void init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pUnitRenderHelper, EffectRenderHelper* pEffectRenderHelper);
 	void setPosition(const Vec3& position, float angle, int unitWidth);
-	void setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand = true);
+	void setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand = false);
 
 	float getSpacePerObject() const;
 	float getAngle() const;

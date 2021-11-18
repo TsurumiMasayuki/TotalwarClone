@@ -107,7 +107,6 @@ void UnitObject::onUpdate()
 		m_pCollider->setVelocity(0.0f, 0.0f);
 
 		rotate();
-
 		break;
 	}
 }
@@ -346,7 +345,7 @@ void UnitObject::stateTransition()
 		}
 		else
 		{
-			//setState(State::Charge);
+			setState(State::Charge);
 		}
 	}
 	//移動用ステート遷移

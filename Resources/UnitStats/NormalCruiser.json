@@ -6,16 +6,28 @@
         "ObjectCount" : 5,
         "ObjectSize" : [2.5, 2.5, 5],
         "SpacePerObject" : 16.0,
-        "MaxHealthPerObject" : 1000.0,
+        "MaxHealthPerObject" : 10000.0,
         "MaxShieldPerObject" : 0.0,
         "Speed" : 10.0,
         "RotationSpeed" : 10.0,
         "DebugColor" : [1.0, 0.0, 0.0],
         "DefaultUnitWidth" : 5,
-        "EnergyCost" : 2000
+        "EnergyCost" : 4000
     },
     "MainAttacks" : 
     [
+        { 
+            "AttackName" : "TestAttack",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "TestAttack",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "TestAttack",
+            "Position" : [0.0, 0.0, 0.0]
+        },
         { 
             "AttackName" : "TestAttack",
             "Position" : [0.0, 0.0, 0.0]

@@ -15,7 +15,7 @@ Attack::Attack(UnitObject* pOwner, const AttackStats* pAttackStats, TestEffect_B
 	m_CurrentAngle(0.0f)
 {
 	m_pEffect->setWidth(0.5f);
-	m_pEffect->setTime(0.5f);
+	m_pEffect->setTime(0.25f);
 }
 
 Attack::~Attack()

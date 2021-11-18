@@ -67,11 +67,11 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 		XMMATRIX bonePivotMat = XMMatrixIdentity();
 		if (safeGet(bone, bonePivot, "pivot"))
 		{
-			bonePivotMat = XMMatrixTranslation(-(float)(bonePivot[0] - 1.0f) * 0.5f, -(float)(bonePivot[1]), (float)(bonePivot[2]));
+			bonePivotMat = XMMatrixTranslation((float)bonePivot[0], -(float)bonePivot[1], (float)bonePivot[2]);
 		}
 
 		//行列を合成
-		XMMATRIX boneMat = bonePivotMat * boneRotationMat;
+		XMMATRIX boneMat = boneRotationMat;
 
 		//親の名前を読み取って親の行列を合成する
 		json parentName = "";
@@ -100,7 +100,7 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 			XMMATRIX scaling = XMMatrixIdentity();
 			if (safeGet(cube, size, "size"))
 			{
-				scaling = XMMatrixScalingFromVector((Vec3(size[0], size[1], size[2]) * 0.05f).toXMVector());
+				scaling = XMMatrixScalingFromVector((Vec3(size[0], size[1], size[2]) * 0.01f).toXMVector());
 			}
 
 			//回転情報を読み取って行列に変換
@@ -108,7 +108,8 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 			XMMATRIX rotationMat = XMMatrixIdentity();
 			if (safeGet(cube, rotation, "rotation"))
 			{
-				rotationMat = XMMatrixRotationRollPitchYaw(MathUtility::toRadian(rotation[0]),
+				rotationMat = XMMatrixRotationRollPitchYaw(
+					MathUtility::toRadian(rotation[0]),
 					MathUtility::toRadian(rotation[1]),
 					MathUtility::toRadian(rotation[2])
 				);
@@ -119,14 +120,14 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 			XMMATRIX pivotMat = XMMatrixIdentity();
 			if (safeGet(cube, pivot, "pivot"))
 			{
-				pivotMat = XMMatrixTranslation(pivot[0] - 0.5f, pivot[1], pivot[2]);
+				pivotMat = XMMatrixTranslation(pivot[0], pivot[1], pivot[2]);
 			}
 
 			//スケールの1/2分ずらす
-			XMMATRIX offsetMat = XMMatrixTranslation(size[0] / 2, size[1] / 2, size[2] / 2);
+			XMMATRIX offsetMat = XMMatrixTranslation(-(float)origin[0] * 0.5f, -(float)origin[1] * 0.5f, (float)size[2] * 0.5f);
 
 			//行列を全て合成
-			XMMATRIX world = modelOffset * scaling * parentMatrix * rotationMat * pivotMat * translation * offsetMat;
+			XMMATRIX world = scaling * offsetMat * translation;
 			resultMatrices.emplace_back(world);
 
 			//UVを読み込み
