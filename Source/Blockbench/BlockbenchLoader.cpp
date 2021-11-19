@@ -36,9 +36,6 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 	//ボーンリストを取得
 	auto& bones = jsonFile["minecraft:geometry"][0]["bones"];
 
-	//オフセット
-	DirectX::XMMATRIX modelOffset = DirectX::XMMatrixTranslation(0.0f, -50.0f, 0.0f);
-
 	//ボーンごとに処理
 	for (auto& bone : bones)
 	{
@@ -67,11 +64,11 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 		XMMATRIX bonePivotMat = XMMatrixIdentity();
 		if (safeGet(bone, bonePivot, "pivot"))
 		{
-			bonePivotMat = XMMatrixTranslation((float)bonePivot[0], -(float)bonePivot[1], (float)bonePivot[2]);
+			bonePivotMat = XMMatrixTranslation((float)bonePivot[0], (float)bonePivot[1], (float)bonePivot[2]);
 		}
 
 		//行列を合成
-		XMMATRIX boneMat = boneRotationMat;
+		XMMATRIX boneMat = bonePivotMat * boneRotationMat;
 
 		//親の名前を読み取って親の行列を合成する
 		json parentName = "";
@@ -89,18 +86,18 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 		{
 			//座標情報を読み取って行列に変換
 			json origin;
-			XMMATRIX translation = XMMatrixIdentity();
+			XMMATRIX translateMat = XMMatrixIdentity();
 			if (safeGet(cube, origin, "origin"))
 			{
-				translation = XMMatrixTranslation(origin[0], origin[1], origin[2]);
+				translateMat = XMMatrixTranslation(origin[0], origin[1], origin[2]);
 			}
 
 			//スケール情報を読み取って行列に変換
 			json size;
-			XMMATRIX scaling = XMMatrixIdentity();
+			XMMATRIX scalingMat = XMMatrixIdentity();
 			if (safeGet(cube, size, "size"))
 			{
-				scaling = XMMatrixScalingFromVector((Vec3(size[0], size[1], size[2]) * 0.01f).toXMVector());
+				scalingMat = XMMatrixScalingFromVector((Vec3(size[0], size[1], size[2])).toXMVector());
 			}
 
 			//回転情報を読み取って行列に変換
@@ -118,16 +115,15 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 			//ピボット情報を読み取って行列に変換
 			json pivot;
 			XMMATRIX pivotMat = XMMatrixIdentity();
+			XMMATRIX pivotReverseMat = XMMatrixIdentity();
 			if (safeGet(cube, pivot, "pivot"))
 			{
-				pivotMat = XMMatrixTranslation(pivot[0], pivot[1], pivot[2]);
+				pivotMat = XMMatrixTranslation((float)pivot[0], (float)pivot[1], (float)pivot[2]);
+				pivotReverseMat = XMMatrixTranslation(-(float)pivot[0], -(float)pivot[1], -(float)pivot[2]);
 			}
 
-			//スケールの1/2分ずらす
-			XMMATRIX offsetMat = XMMatrixTranslation(-(float)origin[0] * 0.5f, -(float)origin[1] * 0.5f, (float)size[2] * 0.5f);
-
 			//行列を全て合成
-			XMMATRIX world = scaling * offsetMat * translation;
+			XMMATRIX world = scalingMat * pivotMat * rotationMat * pivotReverseMat * translateMat;
 			resultMatrices.emplace_back(world);
 
 			//UVを読み込み

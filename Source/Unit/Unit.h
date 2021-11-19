@@ -49,6 +49,8 @@ public:
 
 	std::vector<UnitObject*>& getUnitObjects();
 
+	float getAttackRange() const;
+
 private:
 	void updateCenterPosition();
 

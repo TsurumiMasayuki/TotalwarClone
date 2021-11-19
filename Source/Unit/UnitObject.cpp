@@ -233,6 +233,7 @@ void UnitObject::takeDamage(float damage)
 		m_IsDead = true;
 		m_pCollider->setVelocity(0.0f, 0.0f);
 		m_pCollider->setActive(false);
+		m_pTrigger->setActive(false);
 	}
 }
 

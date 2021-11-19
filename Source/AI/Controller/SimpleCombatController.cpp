@@ -27,14 +27,16 @@ void SimpleCombatController::update()
 	if (pTarget == nullptr) return;
 
 	//ˆÚ“®ˆ—
-	const Vec3& myPosition = m_pUnit->getTransform().getLocalPosition();
-	const Vec3& targetPosition = pTarget->getTransform().getLocalPosition();
+	const Vec3& myPos = m_pUnit->getTransform().getLocalPosition();
+	const Vec3& targetPos = pTarget->getTransform().getLocalPosition();
+	Vec3 diff = targetPos - myPos;
 
-	Vec3 diff = targetPosition - myPosition;
 	float radian = std::atan2f(diff.z, diff.x);
 	float angle = MathUtility::toDegree(radian);
 
-	m_pUnit->setDestination(targetPosition, angle, pTarget->getWidth());
+	Vec3 destination = targetPos + -diff.normalized() * m_pUnit->getAttackRange();
+
+	m_pUnit->setDestination(destination, angle, pTarget->getWidth());
 
 }
 

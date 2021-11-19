@@ -1,5 +1,5 @@
 {
-    "Damage" : 500.0,
+    "Damage" : 800.0,
     "AttackInterval" : 5.0,
     "AttackRange" : 400.0,
     "TrackSpeed" : 10.0,

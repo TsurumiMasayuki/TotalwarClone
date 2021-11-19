@@ -178,7 +178,7 @@ void Unit::setTarget(Unit* pTarget, bool isPlayerCommand)
 	const Vec3& targetPos = m_pTargetUnit->getTransform().getLocalPosition();
 	Vec3 diff = targetPos - myPos;
 
-	Vec3 destination = targetPos + diff.normalized() * m_MainAttackRange;
+	Vec3 destination = targetPos + -diff.normalized() * m_MainAttackRange;
 	float radian = atan2f(diff.x, diff.z);
 
 	//ñ⁄ìIínê›íË
@@ -251,6 +251,11 @@ bool Unit::isInCombat() const
 std::vector<UnitObject*>& Unit::getUnitObjects()
 {
 	return m_UnitObjects;
+}
+
+float Unit::getAttackRange() const
+{
+	return m_MainAttackRange;
 }
 
 void Unit::updateCenterPosition()
