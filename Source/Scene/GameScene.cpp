@@ -73,6 +73,7 @@ void GameScene::start()
 		attackStatsManager.load("TestAttack", "Resources/AttackStats/TestAttack.json");
 		attackStatsManager.load("TestAttack_Strong", "Resources/AttackStats/TestAttack_Strong.json");
 		attackStatsManager.load("TestAttack_Snipe", "Resources/AttackStats/TestAttack_Snipe.json");
+		attackStatsManager.load("CruiserNormalAttack", "Resources/AttackStats/CruiserNormalAttack.json");
 	}
 
 	//ユニットステータスの読み込み
@@ -175,7 +176,7 @@ void GameScene::start()
 
 		GameObject* pUnitObj = new GameObject(this);
 		auto pUnit = pUnitObj->addComponent<Unit>();
-		pUnit->init(m_pAIPlayer, &unitStats, &m_ValueMap2, m_UnitRenderHelpers.at(unitStats.m_Name), m_pEffectRenderHelper);
+		pUnit->init(m_pAIPlayer, &unitStats, &m_ValueMap2, m_UnitRenderHelpers.at(unitStats.m_Name), m_pEffectRenderHelper, false);
 		pUnit->setPosition(enemy.m_Position, enemy.m_Angle, enemy.m_Width);
 
 		m_pAIPlayer->addUnit(pUnit);

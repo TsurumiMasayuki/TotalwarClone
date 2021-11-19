@@ -10,10 +10,8 @@
 #include "Component\Box2D\CircleColliderB2.h"
 #include "Unit\UnitObject.h"
 #include "Unit\UnitRenderHelper.h"
-
+#include "Utility\JsonFileManager.h"
 #include "Player\IPlayer.h"
-
-//TODO:回転を二次元座標用に変える
 
 void Unit::onStart()
 {
@@ -21,8 +19,6 @@ void Unit::onStart()
 
 void Unit::onUpdate()
 {
-	m_StateLockTimer.update();
-
 	//生きているオブジェクトがいないならreturn
 	if (getObjectCount() == 0)
 		return;
@@ -38,28 +34,12 @@ void Unit::onUpdate()
 	std::vector<DirectX::XMMATRIX> objMatrices;
 	for (auto pUnitObject : m_UnitObjects)
 	{
-		if (pUnitObject->getState() != UnitObject::State::Dead)
+		if (!pUnitObject->isDead())
 			objMatrices.emplace_back(pUnitObject->getTransform().getWorldMatrix());
 	}
 	m_pUnitRenderHelper->appendInstanceInfo(objMatrices);
 
 	updateCenterPosition();
-
-	//攻撃指示があるならターゲットに向けて移動
-	if (m_pTargetUnit != nullptr)
-	{
-		const Vec3& pos = getTransform().getLocalPosition();
-		const Vec3& destination = m_pTargetUnit->getTransform().getLocalPosition();
-		Vec3 diff = destination - pos;
-		diff.y = 0.0f;
-		//ターゲットとの角度を求める
-		float radian = Vec3::dot(diff, Vec3(0.0f, 0.0f, 1.0f));
-
-		for (auto pUnitObject : m_UnitObjects)
-		{
-			pUnitObject->setDestination(destination, false);
-		}
-	}
 }
 
 void Unit::onDestroy()
@@ -90,7 +70,7 @@ void Unit::onDisable()
 	m_pOwnerPlayer->removeUnit(this);
 }
 
-void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pUnitRenderHelper, EffectRenderHelper* pEffectRenderHelper)
+void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pUnitRenderHelper, EffectRenderHelper* pEffectRenderHelper, bool isControlledByHuman)
 {
 	int objectCount = pUnitStats->m_ObjectCount;
 	m_TeamID = pPlayer->getTeamID();
@@ -98,9 +78,7 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 	m_pValueMap = pValueMap;
 	m_pUnitRenderHelper = pUnitRenderHelper;
 	m_pOwnerPlayer = pPlayer;
-
-	//ステートロックタイマー初期化
-	m_StateLockTimer.setMaxTime(5.0f);
+	m_IsControlledByHuman = isControlledByHuman;
 
 	int xSize = objectCount;
 	int zSize = objectCount / xSize;
@@ -130,6 +108,8 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 		//オブジェクト配置に登録
 		m_ObjectPlacement.addObject(&transform);
 	}
+	
+	m_MainAttackRange = JsonFileManager<AttackStats>::getInstance().get(m_pUnitStats->getMainAttacks().at(0).m_AttackName).m_AttackRange;
 }
 
 void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
@@ -145,6 +125,7 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 	for (auto pUnitObject : m_UnitObjects)
 	{
 		pUnitObject->setDestination(pUnitObject->getTransform().getLocalPosition());
+		pUnitObject->getTransform().setLocalAngles(Vec3(0.0f, angle, 0.0f));
 		pUnitObject->resetCollider();
 	}
 
@@ -154,9 +135,6 @@ void Unit::setPosition(const Vec3& position, float angle, int unitWidth)
 
 void Unit::setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand)
 {
-	//移動指示が入ったので攻撃目標はクリアする
-	m_pTargetUnit = nullptr;
-
 	m_ObjectPlacement.setBasePos(destination);
 	m_ObjectPlacement.setWidth(unitWidth);
 	m_ObjectPlacement.setAngle(angle);
@@ -168,10 +146,6 @@ void Unit::setDestination(const Vec3& destination, float angle, int unitWidth, b
 	{
 		m_UnitObjects.at(i)->setDestination(newPositions.at(i), isMoveCommand);
 	}
-
-	//移動指示ならステートロック開始
-	if (isMoveCommand)
-		m_StateLockTimer.reset();
 }
 
 float Unit::getSpacePerObject() const
@@ -189,22 +163,26 @@ int Unit::getWidth() const
 	return m_ObjectPlacement.getWidth();
 }
 
-void Unit::setTarget(Unit* pTarget)
+void Unit::setTarget(Unit* pTarget, bool isPlayerCommand)
 {
 	//同じものが既に設定済みなら設定しない
-	if (m_pTargetUnit == pTarget) return;
-
-	//ステートロック開始
-	//m_StateLockTimer.reset();
+	if (m_pTargetUnit == pTarget &&
+		!isPlayerCommand) return;
 
 	m_pTargetUnit = pTarget;
 
+	//AIコントロールでなければ目的地も設定
+	if (!isPlayerCommand) return;
+
+	const Vec3& myPos = getTransform().getLocalPosition();
+	const Vec3& targetPos = m_pTargetUnit->getTransform().getLocalPosition();
+	Vec3 diff = targetPos - myPos;
+
+	Vec3 destination = targetPos + diff.normalized() * m_MainAttackRange;
+	float radian = atan2f(diff.x, diff.z);
+
 	//目的地設定
-	const Vec3& destination = m_pTargetUnit->getTransform().getLocalPosition();
-	for (auto pUnitObject : m_UnitObjects)
-	{
-		pUnitObject->setDestination(destination);
-	}
+	setDestination(destination, MathUtility::toDegree(radian), getWidth());
 }
 
 Unit* Unit::getTarget()
@@ -258,11 +236,6 @@ int Unit::getTeamID() const
 	return m_TeamID;
 }
 
-bool Unit::isStateLocked()
-{
-	return !m_StateLockTimer.isTime();
-}
-
 void Unit::onEnterCombat(Unit* pEnemyUnit)
 {
 	if (m_pTargetUnit != nullptr) return;
@@ -270,24 +243,14 @@ void Unit::onEnterCombat(Unit* pEnemyUnit)
 	setTarget(pEnemyUnit);
 }
 
-void Unit::forceEscapeCombat()
-{
-	m_StateLockTimer.reset();
-}
-
-void Unit::setAllowCombat(bool value)
-{
-	m_IsAllowCombat = value;
-}
-
-bool Unit::isAllowCombat() const
-{
-	return m_IsAllowCombat;
-}
-
 bool Unit::isInCombat() const
 {
 	return m_pTargetUnit != nullptr;
+}
+
+std::vector<UnitObject*>& Unit::getUnitObjects()
+{
+	return m_UnitObjects;
 }
 
 void Unit::updateCenterPosition()
@@ -296,7 +259,7 @@ void Unit::updateCenterPosition()
 	//生きているオブジェクトをカウント
 	for (auto pUnitObject : m_UnitObjects)
 	{
-		if (pUnitObject->getState() != UnitObject::State::Dead)
+		if (!pUnitObject->isDead())
 			aliveCount++;
 	}
 
@@ -307,7 +270,7 @@ void Unit::updateCenterPosition()
 	Vec3 sum;
 	for (auto pUnitObject : m_UnitObjects)
 	{
-		if (pUnitObject->getState() != UnitObject::State::Dead)
+		if (!pUnitObject->isDead())
 			sum += pUnitObject->getTransform().getLocalPosition();
 	}
 	getTransform().setLocalPosition(sum / (float)aliveCount);

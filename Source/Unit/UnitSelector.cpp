@@ -1,16 +1,21 @@
 #include "UnitSelector.h"
 #include "Actor\Base\GameObject.h"
 #include "Component\Box2D\CircleColliderB2.h"
-#include "Component\Cursor.h"
+#include "Component\Graphics\SpriteRenderer.h"
+#include "Component\Utility\Action\Actions.h"
+#include "Component\Utility\Action\ActionManager.h"
 #include "Device\GameDevice.h"
-#include "Unit\Unit.h"
-#include "Unit\UnitObject.h"
-#include "Unit\UnitStats.h"
 #include "Utility\ModelGameObjectHelper.h"
 #include "Math\MathUtility.h"
 
+#include "Component\Cursor.h"
+
 #include "GameState.h"
 #include "Graphics\Material\ValueMapMaterial.h"
+
+#include "Unit\Unit.h"
+#include "Unit\UnitObject.h"
+#include "Unit\UnitStats.h"
 
 void UnitSelector::onStart()
 {
@@ -36,11 +41,28 @@ void UnitSelector::onUpdate()
 	//何も選択されていないならreturn
 	if (m_pSelectedUnit == nullptr) return;
 
-	//右クリックしたら攻撃
+	//左クリックしたら攻撃
 	if (input.isMouseButtonDown(0) &&
-		m_pAttackTargetUnit != nullptr)
+		m_pAttackTargetUnit != nullptr &&
+		Game::g_GameState == Game::GameState::CombatPhase)
 	{
-		m_pSelectedUnit->setTarget(m_pAttackTargetUnit);
+		//プレイヤーの行動としてターゲット指定
+		m_pSelectedUnit->setTarget(m_pAttackTargetUnit, true);
+
+		//エフェクト設定
+		const Vec3& selectPosition = m_pSelectedUnit->getTransform().getLocalPosition();
+		const Vec3& targetPosition = m_pAttackTargetUnit->getTransform().getLocalPosition();
+
+		Vec3 diff = targetPosition - selectPosition;
+		float radian = std::atan2f(diff.x, diff.z);
+		float angle = MathUtility::toDegree(radian);
+
+		auto& transform = m_pAttackDisplayObj->getTransform();
+		transform.setLocalPosition(selectPosition + diff.normalized() * diff.length() * 0.5f);
+		transform.setLocalAngles(Vec3(90.0f, angle, 0.0f));
+		transform.setLocalScale(Vec3(3.0f, diff.length(), 1.0f));
+
+		m_pAttackDisplayObj->getComponent<Action::ActionManager>()->enqueueAction(new Action::ScaleTo(Vec3(0.0f, diff.length(), 0.0f), 1.0f));
 	}
 
 	//ユニット配置の更新
@@ -49,16 +71,32 @@ void UnitSelector::onUpdate()
 	//配置予測表示中でないなら選択中のユニットを強調表示
 	if (!input.isMouseButton(1))
 	{
-		setInstanceInfo(m_pSelectedUnit->getTransform().getLocalPosition(),
-			m_pSelectedUnit->getAngle(),
-			m_pSelectedUnit->getWidth()
-		);
+		std::vector<PreviewObjInstance> instances;
+		std::vector<UnitObject*>& objects = m_pSelectedUnit->getUnitObjects();
+
+		//オブジェクトの少し下にハイライトを表示
+		float modelScaling = 0.05f;
+		auto scaling = DirectX::XMMatrixScaling(modelScaling, 0.0f, modelScaling);
+		auto offsetMat = DirectX::XMMatrixTranslation(0.0f, -10.0f, 0.0f);
+		for (auto object : objects)
+		{
+			if (object->isDead()) continue;
+
+			instances.emplace_back();
+			auto& instance = instances.back();
+			DirectX::XMMATRIX world = scaling * object->getTransform().getTranslateMatrix() * offsetMat;
+			DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(world));
+			DirectX::XMStoreFloat4(&instance.instanceColor, DirectX::Colors::Orange);
+		}
+
+		m_pPreviewObjRenderer->setInstanceInfo(instances);
 	}
 
-	//デリートキーが押されたら
-	if (input.isKeyDown(DIK_DELETE))
+	//準備フェーズ中にデリートキーが押されたら
+	if (input.isKeyDown(DIK_DELETE) &&
+		Game::g_GameState == Game::GameState::PreparePhase)
 	{
-		//選択したユニットをオブジェクトごと破棄
+		//選択したユニットを破棄(技術的な問題につき今は無効化)
 		m_pSelectedUnit->getUser().setActive(false);
 		m_pSelectedUnit = nullptr;
 	}
@@ -113,6 +151,14 @@ void UnitSelector::init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial
 		true);
 	m_pPreviewObjRenderer = pRendererObj->getChildren().at(0)->getComponent<InstancedRenderer<PreviewObjInstance>>();
 	m_pPreviewObjRenderer->setMaterial(pMaterial);
+
+	//攻撃指定時の矢印表示
+	m_pAttackDisplayObj = new GameObject(getUser().getGameMediator());
+	m_pAttackDisplayObj->getTransform().setLocalScale(Vec3::zero());
+	auto pRenderer = m_pAttackDisplayObj->addComponent<SpriteRenderer>();
+	pRenderer->setTexture(GameDevice::getTextureManager().getTexture("BoxFill"));
+	pRenderer->setColor(Color(1.0f, 0.0f, 0.0f, 1.0f));
+	m_pAttackDisplayObj->addComponent<Action::ActionManager>();
 }
 
 void UnitSelector::selectUnit(Unit* pUnit)
@@ -176,8 +222,7 @@ void UnitSelector::updateUnitPlacement()
 	}
 
 	//攻撃中でないなら移動処理終了
-	if (input.isMouseButtonUp(1) &&
-		m_pAttackTargetUnit == nullptr)
+	if (input.isMouseButtonUp(1))
 	{
 		//ユニット配置の記録終了
 		Vec3 unitPlacePosEnd = cursorPoint;
@@ -221,8 +266,7 @@ void UnitSelector::setInstanceInfo(const Vec3& placePos, float angle, int width)
 	m_ObjPlacement.calculateObjectPositions(previewObjPositions);
 
 	const float modelScaling = 0.05f;
-	const Vec3& scale = m_pSelectedUnit->getTransform().getLocalScale();
-	auto scaling = DirectX::XMMatrixScaling(scale.x * modelScaling, 0.1f * modelScaling, scale.z * modelScaling);
+	auto scaling = DirectX::XMMatrixScaling(modelScaling, 0.0f, modelScaling);
 	auto offsetMat = DirectX::XMMatrixTranslation(0.0f, -10.0f, 0.0f);
 
 	//InstancedRenderer用データ作成

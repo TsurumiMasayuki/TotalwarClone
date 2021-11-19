@@ -3,10 +3,10 @@
     {
         "Name" : "NormalCruiser",
         "DisplayName" : "Normal Cruiser",
-        "ObjectCount" : 5,
+        "ObjectCount" : 10,
         "ObjectSize" : [2.5, 2.5, 5],
         "SpacePerObject" : 16.0,
-        "MaxHealthPerObject" : 10000.0,
+        "MaxHealthPerObject" : 2500.0,
         "MaxShieldPerObject" : 0.0,
         "Speed" : 10.0,
         "RotationSpeed" : 10.0,
@@ -17,19 +17,15 @@
     "MainAttacks" : 
     [
         { 
-            "AttackName" : "TestAttack",
+            "AttackName" : "CruiserNormalAttack",
             "Position" : [0.0, 0.0, 0.0]
         },
         { 
-            "AttackName" : "TestAttack",
+            "AttackName" : "CruiserNormalAttack",
             "Position" : [0.0, 0.0, 0.0]
         },
         { 
-            "AttackName" : "TestAttack",
-            "Position" : [0.0, 0.0, 0.0]
-        },
-        { 
-            "AttackName" : "TestAttack",
+            "AttackName" : "CruiserNormalAttack",
             "Position" : [0.0, 0.0, 0.0]
         }
     ]

@@ -14,8 +14,8 @@ Attack::Attack(UnitObject* pOwner, const AttackStats* pAttackStats, TestEffect_B
 	m_pEffect(pEffect),
 	m_CurrentAngle(0.0f)
 {
-	m_pEffect->setWidth(0.5f);
-	m_pEffect->setTime(0.25f);
+	m_pEffect->setWidth(0.5f * std::fmaxf(m_pAttackStats->m_Damage / 100.0f, 1.0f));
+	m_pEffect->setTime(0.5f);
 }
 
 Attack::~Attack()
@@ -26,9 +26,9 @@ Attack::~Attack()
 
 void Attack::update()
 {
-	if (!m_IsActive || m_pTarget == nullptr) return;
-
 	m_AttackTimer.update();
+
+	if (!m_IsActive || m_pTarget == nullptr) return;
 
 	//UŒ‚ŠÔŠu‚Ì•ª‚ÌŠÔ‚ªŒo‚Á‚½‚È‚çUŒ‚
 	if (m_AttackTimer.isTime())
@@ -65,10 +65,6 @@ float Attack::getAttackRange() const
 
 void Attack::attackTarget()
 {
-	if (m_pTarget == nullptr ||
-		m_pTarget->getState() == UnitObject::State::Dead)
-		return;
-
 	m_pTarget->takeDamage(m_pAttackStats->m_Damage);
 
 	//ƒGƒtƒFƒNƒgÄ¶
@@ -84,7 +80,4 @@ void Attack::trackTarget()
 	if (!m_IsActive) return;
 	//’ÇÕ‚µ‚È‚¢‚È‚çreturn
 	if (!m_pAttackStats->m_IsTrackTarget) return;
-
-
-
 }

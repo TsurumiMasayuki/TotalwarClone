@@ -55,11 +55,21 @@ void TestEffect_Beam::playEffect()
 	float angle = MathUtility::toDegree(radian);
 	float distance = diff.length();
 
-	m_pBeamTransform->setLocalPosition(m_BeginPos + diff.normalized() * distance * 0.5f);
-	m_pBeamTransform->setLocalScale(Vec3(0.0f, 0.0f, distance * 0.01f));
+	m_pBeamTransform->setLocalPosition(m_BeginPos);
+	m_pBeamTransform->setLocalScale(Vec3(0.0f));
 	m_pBeamTransform->setLocalAngles(Vec3(0.0f, angle, 0.0f));
 
-	m_pActionManager->enqueueAction(new ScaleBy(Vec3(m_Width, m_Width, 0.0f), m_Time * 0.33f));
-	m_pActionManager->enqueueAction(new WaitForSeconds(m_Time * 0.33f));
-	m_pActionManager->enqueueAction(new ScaleBy(Vec3(-m_Width, -m_Width, 0.0f), m_Time * 0.33f));
+	auto pAnimation = new Spawn(
+		{
+			new MoveBy(diff, m_Time),
+			new Sequence(
+				{
+					new ScaleBy(Vec3(m_Width, m_Width, distance * 0.01f), m_Time * 0.5f),
+					new ScaleBy(Vec3(-m_Width, -m_Width, -distance * 0.01f), m_Time * 0.5f)
+				}
+			)
+		}
+	);
+
+	m_pActionManager->enqueueAction(pAnimation);
 }

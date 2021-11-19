@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <unordered_set>
 #include "Component\Base\AbstractComponent.h"
 #include "Utility\Timer.h"
 
@@ -13,16 +14,6 @@ class EffectRenderHelper;
 class UnitObject
 	: public AbstractComponent
 {
-public:
-	enum class State
-	{
-		StandBy,//待機(通常)
-		Move,	//通常移動
-		Charge,	//突撃(攻撃する位置まで移動)
-		Attack, //戦闘
-		Dead,	//死亡
-	};
-
 public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
@@ -44,9 +35,8 @@ public:
 	void onTriggerStay(UnitObject* pUnitObject);
 	void onTriggerExit(UnitObject* pUnitObject);
 
-	const State& getState() const;
-
 	int getTeamID() const;
+	bool isDead() const;
 
 	void takeDamage(float damage);
 	float getHealth() const;
@@ -55,12 +45,8 @@ public:
 	Unit* getUnit();
 
 private:
-	void stateTransition();
-	void trySetTargetObject(UnitObject* pTargetObject, const State& nextState);
-
-	void setState(const State& newState);
-
 	void updateShield();
+	void updateAttack();
 
 	void move();
 	void rotate();
@@ -79,15 +65,15 @@ private:
 	//自分の所属しているユニット
 	Unit* m_pUnit;
 
-	//ターゲットオブジェクト
-	UnitObject* m_pTargetObject;
+	//攻撃対象の候補
+	std::unordered_set<UnitObject*> m_TargetCandidates;
 
 	ValueMap* m_pValueMap;
 
 	float m_Health;
 	float m_Shield;
 
-	State m_State;
+	bool m_IsDead;
 
 	//シールド回復開始までのタイマー
 	Timer m_ShieldRegenTimer;
@@ -100,7 +86,4 @@ private:
 
 	//攻撃クラス(サブ)
 	std::vector<Attack*> m_SubAttacks;
-
-	//エフェクトクラス
-	std::vector<TestEffect_Beam*> m_AttackEffects;
 };

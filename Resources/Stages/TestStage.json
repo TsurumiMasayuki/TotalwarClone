@@ -3,34 +3,22 @@
     "PlayerEnergy" : 30000,
     "EnemyUnits" : [
         {
-            "EnemyName" : "NormalBattleship",
-            "Position" : [0.0, 0.0, 550.0],
+            "EnemyName" : "NormalCorvette",
+            "Position" : [0.0, 0.0, 100.0],
             "Angle" : 180.0,
-            "Width" : 1
+            "Width" : 25
         },
         {
             "EnemyName" : "NormalCorvette",
-            "Position" : [100.0, 0.0, 550.0],
+            "Position" : [-200.0, 0.0, 100.0],
             "Angle" : 180.0,
-            "Width" : 5
+            "Width" : 25
         },
         {
             "EnemyName" : "NormalCorvette",
-            "Position" : [200.0, 0.0, 550.0],
+            "Position" : [200.0, 0.0, 100.0],
             "Angle" : 180.0,
-            "Width" : 5
-        },
-        {
-            "EnemyName" : "NormalCorvette",
-            "Position" : [-100.0, 0.0, 550.0],
-            "Angle" : 180.0,
-            "Width" : 5
-        },
-        {
-            "EnemyName" : "NormalCorvette",
-            "Position" : [-200.0, 0.0, 550.0],
-            "Angle" : 180.0,
-            "Width" : 5
+            "Width" : 25
         }
     ]
 }

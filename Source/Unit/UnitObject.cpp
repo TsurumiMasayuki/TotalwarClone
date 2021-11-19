@@ -33,82 +33,21 @@ void UnitObject::onUpdate()
 	if (Game::g_GameState == Game::GameState::PreparePhase)
 		return;
 
-	//ステート遷移
-	stateTransition();
-
 	//自分が死んでいたら何も行わない
-	if (m_State == State::Dead)
+	if (m_IsDead)
 		return;
 
-	//ヘルスの値を書き込む
+	//HPの値を書き込む
 	m_pValueMap->writeMap(UnitStatsValues::Health, Value(getTransform().getLocalPosition(), 25.0f, m_Health));
 
 	updateShield();
 
-	//ターゲットが死亡していたらターゲット解除
-	if (m_pTargetObject != nullptr)
-	{
-		if (m_pTargetObject->m_State == State::Dead)
-		{
-			m_pTargetObject = nullptr;
+	move();
+	rotate();
 
-			//攻撃を無効化
-			for (auto pAttacks : m_MainAttacks)
-			{
-				pAttacks->setTarget(nullptr);
-				pAttacks->setActive(false);
-			}
-		}
-	}
+	updateAttack();
 
-	switch (m_State)
-	{
-	case UnitObject::State::StandBy:
-		m_pCollider->setVelocity(0.0f, 0.0f);
-		break;
-	case UnitObject::State::Move:
-		move();
-		rotate();
-		break;
-	case UnitObject::State::Charge:
-		if (m_pTargetObject != nullptr)
-		{
-			//自身の座標
-			const Vec3& myPos = getTransform().getLocalPosition();
-			//ターゲットの座標
-			const Vec3& targetPos = m_pTargetObject->getTransform().getLocalPosition();
-
-			//自身の座標とターゲットの座標から攻撃が当たる最も近い座標を算出して目的地にする
-			float range = m_pLongestMainAttack->getAttackRange();
-			Vec3 diff = targetPos - myPos;
-			if (diff.sqrLength() < range * range)
-			{
-				m_Destination = myPos;
-			}
-			else
-			{
-				m_Destination = targetPos + diff.normalized() * range;
-			}
-		}
-		move();
-		rotate();
-		break;
-	case UnitObject::State::Attack:
-		//メイン攻撃を更新
-		for (auto pAttack : m_MainAttacks)
-		{
-			pAttack->update();
-		}
-		//サブ攻撃を更新
-		for (auto pAttack : m_SubAttacks)
-		{
-			pAttack->update();
-		}
-		m_pCollider->setVelocity(0.0f, 0.0f);
-
-		rotate();
-		break;
-	}
+	m_TargetCandidates.clear();
 }
 
 void UnitObject::onDestroy()
@@ -129,28 +68,24 @@ void UnitObject::onDestroy()
 void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEffectRenderHelper)
 {
 	m_pUnit = pUnit;
-	setState(State::StandBy);
 
 	const UnitStats* pUnitStats = m_pUnit->getUnitStats();
 	m_Health = pUnitStats->m_MaxHealthPerObject;
 	m_Shield = pUnitStats->m_MaxShieldPerObject;
 	m_pValueMap = pValueMap;
 
+	//攻撃の読み込み
 	for (auto& attacks : m_pUnit->getUnitStats()->getMainAttacks())
 	{
 		auto pEffectObj = new GameObject(getUser().getGameMediator());
 
 		//エフェクト生成
-		m_AttackEffects.emplace_back(
-			pEffectObj->addComponent<TestEffect_Beam>()
-		);
-
-		auto pAttackEffect = m_AttackEffects.back();
+		auto pAttackEffect = pEffectObj->addComponent<TestEffect_Beam>();
 		pAttackEffect->init(pEffectRenderHelper);
 
 		//攻撃クラス生成
 		m_MainAttacks.emplace_back(
-			new Attack(this, 
+			new Attack(this,
 				&JsonFileManager<AttackStats>::getInstance().get(attacks.m_AttackName),
 				pAttackEffect)
 		);
@@ -164,9 +99,6 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 		}
 	);
 
-	//最も射程距離が長い攻撃を登録
-	m_pLongestMainAttack = m_MainAttacks.at(0);
-
 	//通常コライダー
 	m_pCollider = getUser().addComponent<CircleColliderB2>();
 	m_pCollider->setTrigger(false);
@@ -177,7 +109,10 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();
 	m_pTrigger->setTrigger(true);
+
 	//射程距離と同じサイズにするためにスケールで割る
+	//最も射程距離が長い攻撃を登録
+	m_pLongestMainAttack = m_MainAttacks.at(0);
 	float scaleX = getTransform().getLocalScale().x;
 	m_pTrigger->setRadius(m_pLongestMainAttack->getAttackRange() / scaleX);
 	m_pTrigger->setGroupIndex(-1);
@@ -185,19 +120,8 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
 {
-	//ターゲットがいて移動命令でないならreturn
-	if (m_pTargetObject != nullptr &&
-		!isMoveCommand &&
-		m_State == State::Attack) return;
-
 	m_Destination = destination;
 	m_Destination.y = 0.0f;
-
-	if (isMoveCommand)
-	{
-		m_pTargetObject = nullptr;
-		setState(State::Move);
-	}
 }
 
 void UnitObject::move()
@@ -207,16 +131,14 @@ void UnitObject::move()
 
 	//徐々に減速
 	float ratio = std::fminf(1.0f, diff.length() / m_pUnit->getUnitStats()->m_Speed);
-	ratio = Easing::easeOutExpo(ratio) * m_pUnit->getUnitStats()->m_Speed;
-	m_pCollider->setVelocity(m_Direction.x * ratio, m_Direction.z * ratio);
+	float speed = Easing::easeOutExpo(ratio) * m_pUnit->getUnitStats()->m_Speed;
+	m_pCollider->setVelocity(m_Direction.x * speed, m_Direction.z * speed);
 }
 
 void UnitObject::rotate()
 {
 	//回転方向を求める
 	Vec3 diff = m_Destination - getTransform().getLocalPosition();
-	if (m_pTargetObject != nullptr)
-		diff = m_pTargetObject->getTransform().getLocalPosition() - getTransform().getLocalPosition();
 	diff.y = 0.0f;
 
 	//方向を角度に変換
@@ -263,19 +185,29 @@ void UnitObject::onTriggerEnter(UnitObject* pUnitObject)
 void UnitObject::onTriggerStay(UnitObject* pUnitObject)
 {
 	//自分が死んでいたら何も行わない
-	if (m_State == State::Dead) return;
+	if (m_IsDead) return;
 
-	trySetTargetObject(pUnitObject, State::Charge);
+	//同じチームなら実行しない
+	if (getTeamID() == pUnitObject->getTeamID()) return;
+
+	//ターゲット候補追加
+	m_TargetCandidates.insert(pUnitObject);
+
+	m_pUnit->onEnterCombat(pUnitObject->getUnit());
 }
 
 void UnitObject::onTriggerExit(UnitObject* pUnitObject)
 {
-	m_pTargetObject = nullptr;
 }
 
 int UnitObject::getTeamID() const
 {
 	return m_pUnit->getTeamID();
+}
+
+bool UnitObject::isDead() const
+{
+	return m_IsDead;
 }
 
 void UnitObject::takeDamage(float damage)
@@ -297,7 +229,11 @@ void UnitObject::takeDamage(float damage)
 
 	//死亡判定
 	if (m_Health <= 0.0f)
-		setState(State::Dead);
+	{
+		m_IsDead = true;
+		m_pCollider->setVelocity(0.0f, 0.0f);
+		m_pCollider->setActive(false);
+	}
 }
 
 float UnitObject::getHealth() const
@@ -315,89 +251,6 @@ Unit* UnitObject::getUnit()
 	return m_pUnit;
 }
 
-const UnitObject::State& UnitObject::getState() const
-{
-	return m_State;
-}
-
-void UnitObject::stateTransition()
-{
-	//死亡処理
-	if (m_Health <= 0.0f)
-	{
-		setState(State::Dead);
-		getUser().setActive(false);
-		return;
-	}
-
-	const Vec3& myPos = getTransform().getLocalPosition();
-
-	//攻撃用ステート遷移
-	if (m_pTargetObject != nullptr)
-	{
-		const Vec3& targetPos = m_pTargetObject->getTransform().getLocalPosition();
-
-		float sqrDistance = myPos.sqrDistance(targetPos);
-		float range = m_MainAttacks.at(0)->getAttackRange();
-		if (sqrDistance < range * range)
-		{
-			setState(State::Attack);
-		}
-		else
-		{
-			setState(State::Charge);
-		}
-	}
-	//移動用ステート遷移
-	else
-	{
-		float distance = myPos.distance(m_Destination);
-		if (distance > 0.15f)
-		{
-			setState(State::Move);
-		}
-		else
-		{
-			setState(State::StandBy);
-		}
-	}
-}
-
-void UnitObject::trySetTargetObject(UnitObject* pTargetObject, const State& nextState)
-{
-	//ターゲットが設定済みなら実行しない
-	if (m_pTargetObject != nullptr) return;
-
-	//同じチームなら実行しない
-	if (getTeamID() == pTargetObject->getTeamID()) return;
-
-	//ステートロック中なら実行しない
-	if (m_pUnit->isStateLocked()) return;
-
-	//ターゲット設定
-	m_pTargetObject = pTargetObject;
-	for (auto pAttack : m_MainAttacks)
-	{
-		//攻撃を有効化
-		pAttack->setActive(true);
-		pAttack->setTarget(m_pTargetObject);
-	}
-}
-
-void UnitObject::setState(const State& newState)
-{
-	if (m_State == State::Dead) return;
-	if (m_State == newState) return;
-
-	m_State = newState;
-
-	if (m_State == State::Attack)
-	{
-		//ユニットに通知
-		m_pUnit->onEnterCombat(m_pTargetObject->m_pUnit);
-	}
-}
-
 void UnitObject::updateShield()
 {
 	m_ShieldRegenTimer.update();
@@ -407,6 +260,55 @@ void UnitObject::updateShield()
 	{
 		//シールドの最大値を超えないように回復
 		m_Shield = std::fminf(m_pUnit->getUnitStats()->m_MaxShieldPerObject,
-			m_Shield + 10.0f * GameDevice::getGameTime().getDeltaTime());
+			m_Shield + 1000.0f * GameDevice::getGameTime().getDeltaTime());
+	}
+}
+
+void UnitObject::updateAttack()
+{
+	//メイン攻撃を更新
+	for (auto pAttack : m_MainAttacks)
+	{
+		pAttack->update();
+	}
+
+	//サブ攻撃を更新
+	for (auto pAttack : m_SubAttacks)
+	{
+		pAttack->update();
+	}
+
+	//ターゲット設定
+	const Vec3& myPosition = getTransform().getLocalPosition();
+
+	//ターゲット候補数が攻撃の数よりも少ないなら攻撃を集中させる
+	bool focusTarget = m_TargetCandidates.size() < m_MainAttacks.size();
+
+	for (auto pAttack : m_MainAttacks)
+	{
+		UnitObject* pTarget = nullptr;
+
+		for (auto pCandidate : m_TargetCandidates)
+		{
+			//死んでいるなら設定しない
+			if (pCandidate->m_IsDead) continue;
+
+			//距離を計算
+			float sqrDistance = myPosition.sqrDistance(pCandidate->getTransform().getLocalPosition());
+			//攻撃範囲内か判定
+			if (pAttack->getAttackRange() * pAttack->getAttackRange() < sqrDistance) continue;
+
+			//攻撃対象を設定
+			pTarget = pCandidate;
+			break;
+		}
+
+		//攻撃対象を設定
+		pAttack->setTarget(pTarget);
+
+		//設定したならリストから削除(攻撃を集中させる場合はしない)
+		if (pTarget != nullptr &&
+			!focusTarget)
+			m_TargetCandidates.erase(pTarget);
 	}
 }

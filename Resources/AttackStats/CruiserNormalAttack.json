@@ -1,7 +1,7 @@
 {
-    "Damage" : 1250.0,
-    "AttackInterval" : 5.0,
-    "AttackRange" : 200.0,
+    "Damage" : 250.0,
+    "AttackInterval" : 2.5,
+    "AttackRange" : 60.0,
     "TrackSpeed" : 10.0,
     "IsTrackTarget" : false,
     "MaxAttackCount" : 0,

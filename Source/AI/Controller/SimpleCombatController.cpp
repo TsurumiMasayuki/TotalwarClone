@@ -1,6 +1,7 @@
 #include "SimpleCombatController.h"
 
 #include "Component\Utility\Transform.h"
+#include "Math\MathUtility.h"
 
 #include "Unit\UnitContainer.h"
 
@@ -22,6 +23,19 @@ void SimpleCombatController::update()
 	{
 		searchTarget();
 	}
+
+	if (pTarget == nullptr) return;
+
+	//ˆÚ“®ˆ—
+	const Vec3& myPosition = m_pUnit->getTransform().getLocalPosition();
+	const Vec3& targetPosition = pTarget->getTransform().getLocalPosition();
+
+	Vec3 diff = targetPosition - myPosition;
+	float radian = std::atan2f(diff.z, diff.x);
+	float angle = MathUtility::toDegree(radian);
+
+	m_pUnit->setDestination(targetPosition, angle, pTarget->getWidth());
+
 }
 
 void SimpleCombatController::searchTarget()

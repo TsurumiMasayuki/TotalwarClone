@@ -26,7 +26,7 @@ public:
 	virtual void onEnable() override;
 	virtual void onDisable() override;
 
-	void init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pUnitRenderHelper, EffectRenderHelper* pEffectRenderHelper);
+	void init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueMap, UnitRenderHelper* pUnitRenderHelper, EffectRenderHelper* pEffectRenderHelper, bool isControlledByHuman = true);
 	void setPosition(const Vec3& position, float angle, int unitWidth);
 	void setDestination(const Vec3& destination, float angle, int unitWidth, bool isMoveCommand = false);
 
@@ -34,7 +34,7 @@ public:
 	float getAngle() const;
 	int getWidth() const;
 
-	void setTarget(Unit* pTarget);
+	void setTarget(Unit* pTarget, bool isPlayerCommand = false);
 	Unit* getTarget();
 
 	float getHealth() const;
@@ -44,17 +44,10 @@ public:
 
 	int getTeamID() const;
 
-	//ステート移行ロック中かどうか
-	bool isStateLocked();
-
 	void onEnterCombat(Unit* pEnemyUnit);
-	//戦闘の中止を強制する
-	void forceEscapeCombat();
-	//戦闘を許可するか設定
-	void setAllowCombat(bool value);
-	//戦闘を許可するかどうか
-	bool isAllowCombat() const;
 	bool isInCombat() const;
+
+	std::vector<UnitObject*>& getUnitObjects();
 
 private:
 	void updateCenterPosition();
@@ -68,13 +61,14 @@ private:
 	Unit* m_pTargetUnit;
 
 	int m_TeamID;
-	bool m_IsAllowCombat;
-
-	Timer m_StateLockTimer;
+	//プレイヤーにコントロールされているかどうか
+	bool m_IsControlledByHuman;
 
 	ValueMap* m_pValueMap;
 	const UnitStats* m_pUnitStats;
 	UnitRenderHelper* m_pUnitRenderHelper;
 
 	ObjectPlacement m_ObjectPlacement;
+
+	float m_MainAttackRange;
 };

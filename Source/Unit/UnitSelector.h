@@ -45,6 +45,8 @@ private:
 	Unit* m_pAttackTargetUnit;
 	CircleColliderB2* m_pCollider;
 
+	GameObject* m_pAttackDisplayObj;
+
 	Vec3 m_UnitPlacePosBegin;
 
 	//入力のインターバル
