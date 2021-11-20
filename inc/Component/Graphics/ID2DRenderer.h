@@ -1,6 +1,6 @@
 #pragma once
 
-class ID2D1DeviceContext2;
+struct ID2D1DeviceContext2;
 
 class ID2DRenderer
 {

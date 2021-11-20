@@ -1,14 +1,15 @@
 #include "UnitObject.h"
-
 #include <algorithm>
 
 #include "Actor\Base\GameObject.h"
-#include "AI\ValueMap.h"
 
 #include "Component\Utility\Transform.h"
-#include "Component\Box2D\CircleColliderB2.h"
 
 #include "Device\GameDevice.h"
+
+#include "AI\ValueMap.h"
+
+#include "Component\Box2D\CircleColliderB2.h"
 
 #include "Unit\Unit.h"
 #include "Unit\UnitStats.h"

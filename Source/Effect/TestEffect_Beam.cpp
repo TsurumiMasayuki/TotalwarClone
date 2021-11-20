@@ -1,8 +1,12 @@
 #include "TestEffect_Beam.h"
 #include "Actor\Base\GameObject.h"
+#include "Component\Audio\AudioSource.h"
 #include "Component\Utility\Action\Actions.h"
 #include "Component\Utility\Action\ActionManager.h"
 #include "Math\MathUtility.h"
+#include "Utility\Random.h"
+
+#include "Sound\SEManager.h"
 
 using namespace Action;
 
@@ -12,6 +16,11 @@ void TestEffect_Beam::onStart()
 	m_pActionManager = getUser().addComponent<ActionManager>();
 
 	m_pBeamTransform->setLocalScale(Vec3::zero());
+
+	m_pSEAudio = getUser().addComponent<AudioSource>();
+	m_pSEAudio->setAudio("Shot1");
+
+	SEManager::getInstance().addSESource(m_pSEAudio);
 }
 
 void TestEffect_Beam::onUpdate()
@@ -72,4 +81,8 @@ void TestEffect_Beam::playEffect()
 	);
 
 	m_pActionManager->enqueueAction(pAnimation);
+
+	//Œø‰Ê‰¹‚ðÄ¶
+	m_pSEAudio->play();
+	m_pSEAudio->setPitch(GameDevice::getRandom().getRandom(1.0f, 2.0f));
 }

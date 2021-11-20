@@ -3,9 +3,8 @@
 #include <Actor\Base\GameObject.h>
 #include <Component\Base\AbstractComponent.h>
 #include <Component\Graphics\IRenderer.h>
-#include <Device\GameDevice.h>
 #include <Device\Resource\DX12Mesh.h>
-#include <Graphics\DX12\DX12GraphicsCore.h>
+#include <Device\GameDevice.h>
 #include <Graphics\DX12\DX12Texture2D.h>
 #include <Graphics\DX12\Material\AbstractMaterial.h>
 #include <Utility\Color.h>
@@ -111,6 +110,9 @@ const CullingInfo& InstancedRenderer<T>::getCullingInfo() const
 template <typename T>
 void InstancedRenderer<T>::draw(Camera* pCamera, ID3D12GraphicsCommandList* pCommandList) const
 {
+	//インスタンスが無いなら描画しない
+	if (m_InstanceCount == 0) return;
+
 	//インスタンスバッファが設定されていないなら描画しない
 	if (m_pInstanceBuffer == nullptr) return;
 
@@ -184,8 +186,11 @@ void InstancedRenderer<T>::setTextureByName(const std::string& key)
 template <typename T>
 void InstancedRenderer<T>::setInstanceInfo(const std::vector<T>& instanceInfo)
 {
-	if (instanceInfo.size() == 0) return;
-
+	if (instanceInfo.size() == 0)
+	{
+		m_InstanceCount = 0;
+		return;
+	}
 	//データの数が同じなら再利用
 	bool reuseBuffer = m_InstanceCount == (int)instanceInfo.size();
 

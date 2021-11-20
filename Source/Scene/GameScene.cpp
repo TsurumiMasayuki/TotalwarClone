@@ -32,9 +32,11 @@
 #include "Blockbench\BlockbenchModel.h"
 #include "Blockbench\BlockbenchLoader.h"
 
+#include "Sound\SEManager.h"
 #include "Stage\Stage.h"
 
 #include "GameState.h"
+
 
 Cursor* g_pCursor;
 
@@ -53,6 +55,9 @@ bool GameScene::isEnd()
 
 void GameScene::start()
 {
+	//SEManagerの設定
+	SEManager::getInstance().setListner(&m_pDefaultCamera->getTransform());
+
 	Game::g_GameState = Game::GameState::PreparePhase;
 
 	//攻撃ステータスの読み込み
@@ -234,6 +239,9 @@ void GameScene::start()
 
 void GameScene::update()
 {
+	//SEManagerの更新
+	SEManager::getInstance().update();
+
 	//CombatPhaseBeginを1フレームで終わらせる
 	if (Game::g_GameState == Game::GameState::CombatPhaseBegin)
 	{

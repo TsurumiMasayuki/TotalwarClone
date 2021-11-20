@@ -39,7 +39,13 @@ void UnitSelector::onUpdate()
 	updateUnitSelecting();
 
 	//何も選択されていないならreturn
-	if (m_pSelectedUnit == nullptr) return;
+	if (m_pSelectedUnit == nullptr)
+	{
+		//空のデータを渡して非表示にする
+		std::vector<PreviewObjInstance> empty;
+		m_pPreviewObjRenderer->setInstanceInfo(empty);
+		return;
+	}
 
 	//左クリックしたら攻撃
 	if (input.isMouseButtonDown(0) &&

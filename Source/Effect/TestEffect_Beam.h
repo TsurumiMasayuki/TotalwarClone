@@ -5,6 +5,7 @@
 #include "Effect\IEffect.h"
 #include "Effect\EffectRenderHelper.h"
 
+class AudioSource;
 class Transform;
 
 namespace Action
@@ -36,6 +37,7 @@ private:
 	float m_Width;
 	float m_Time;
 
+	AudioSource* m_pSEAudio;
 	Transform* m_pBeamTransform;
 	Action::ActionManager* m_pActionManager;
 	EffectRenderHelper* m_pEffectRenderHelper;

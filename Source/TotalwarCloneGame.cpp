@@ -17,6 +17,8 @@ void TotalwarCloneGame::onStart()
 	GameDevice::getModelManager().load("Sphere", "Resources/Models/SpherePBR/", "SpherePBR");
 	GameDevice::getModelManager().load("Cube", "Resources/Models/cube/", "cube");
 
+	GameDevice::getAudioManager().loadWavFile("Shot1", L"Resources/Audio/Shot1.wav");
+
 	g_pGameScene = new GameScene();
 
 	m_SceneManager.addScene("GameScene", g_pGameScene);

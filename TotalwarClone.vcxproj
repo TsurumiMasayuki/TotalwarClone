@@ -166,6 +166,7 @@
     <ClCompile Include="Source\Component\Cursor.cpp" />
     <ClCompile Include="Source\Effect\EffectRenderHelper.cpp" />
     <ClCompile Include="Source\Effect\TestEffect_Beam.cpp" />
+    <ClCompile Include="Source\Sound\SEManager.cpp" />
     <ClCompile Include="Source\Stage\Stage.cpp" />
     <ClCompile Include="Source\Unit\UnitSelector.cpp" />
     <ClCompile Include="Source\Graphics\Material\BBModelMaterial.cpp" />
@@ -205,6 +206,7 @@
     <ClInclude Include="Source\Effect\EffectRenderHelper.h" />
     <ClInclude Include="Source\Effect\IEffect.h" />
     <ClInclude Include="Source\Effect\TestEffect_Beam.h" />
+    <ClInclude Include="Source\Sound\SEManager.h" />
     <ClInclude Include="Source\Stage\Stage.h" />
     <ClInclude Include="Source\Unit\UnitSelector.h" />
     <ClInclude Include="Source\GameState.h" />
