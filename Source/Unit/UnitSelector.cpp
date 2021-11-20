@@ -102,7 +102,7 @@ void UnitSelector::onUpdate()
 	}
 }
 
-void UnitSelector::onTriggerStay(GameObject* pHit)
+void UnitSelector::onTriggerEnter(GameObject* pHit)
 {
 	auto pUnitObject = pHit->getComponent<UnitObject>();
 	if (pUnitObject == nullptr) return;
@@ -110,6 +110,7 @@ void UnitSelector::onTriggerStay(GameObject* pHit)
 	{
 		//違うチームなら攻撃対象候補にする
 		m_pAttackTargetUnit = pUnitObject->getUnit();
+
 		return;
 	}
 	m_pTargetUnit = pUnitObject->getUnit();
@@ -119,7 +120,6 @@ void UnitSelector::onTriggerExit(GameObject* pHit)
 {
 	auto pUnitObject = pHit->getComponent<UnitObject>();
 	if (pUnitObject == nullptr) return;
-	if (pUnitObject->getTeamID() == m_TeamID) return;
 
 	//ターゲット解除
 	if (pUnitObject->getUnit() == m_pTargetUnit)
@@ -144,7 +144,7 @@ void UnitSelector::init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial
 	pCollider->setRadius(1.0f);
 	pCollider->setTrigger(true);
 	pCollider->setBodyType(b2_dynamicBody);
-	pCollider->setGroupIndex(0);
+	pCollider->setGroupIndex(-1);
 
 	auto pRendererObj = ModelGameObjectHelper::instantiateModel<PreviewObjInstance>(getUser().getGameMediator(),
 		GameDevice::getModelManager().getModel("Cube"),
@@ -174,6 +174,8 @@ void UnitSelector::selectUnit(Unit* pUnit)
 	}
 	m_PreviewObjects.clear();
 
+	if (m_pSelectedUnit == nullptr) return;
+
 	//配置補助にオブジェクトを登録
 	for (int i = 0; i < m_pSelectedUnit->getUnitStats()->m_ObjectCount; i++)
 	{
@@ -185,14 +187,17 @@ void UnitSelector::selectUnit(Unit* pUnit)
 
 void UnitSelector::updateUnitSelecting()
 {
+	//攻撃対象を選択しようとしているならreturn
+	if (m_pAttackTargetUnit != nullptr) return;
+
+	if (!m_InputInterval.isTime()) return;
+
 	const Input& input = GameDevice::getInput();
 
 	//左クリックしたら選択
-	if (input.isMouseButtonDown(0) &&
-		m_pTargetUnit != nullptr)
-	{
-		selectUnit(m_pTargetUnit);
-	}
+	if (!input.isMouseButtonDown(0)) return;
+
+	selectUnit(m_pTargetUnit);
 }
 
 void UnitSelector::updateUnitPlacement()

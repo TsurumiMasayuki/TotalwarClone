@@ -190,6 +190,9 @@ void UnitObject::onTriggerStay(UnitObject* pUnitObject)
 	//同じチームなら実行しない
 	if (getTeamID() == pUnitObject->getTeamID()) return;
 
+	//ターゲットが設定済みなら追加しない
+	if (m_pUnit->getTarget() != pUnitObject->getUnit() && m_pUnit->getTarget() != nullptr) return;
+
 	//ターゲット候補追加
 	m_TargetCandidates.insert(pUnitObject);
 

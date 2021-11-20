@@ -23,7 +23,7 @@ public:
 	virtual void onStart() override;
 	virtual void onUpdate() override;
 
-	virtual void onTriggerStay(GameObject* pHit) override;
+	virtual void onTriggerEnter(GameObject* pHit) override;
 	virtual void onTriggerExit(GameObject* pHit) override;
 
 	void init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial);
