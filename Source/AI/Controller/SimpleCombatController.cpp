@@ -31,7 +31,7 @@ void SimpleCombatController::update()
 	const Vec3& targetPos = pTarget->getTransform().getLocalPosition();
 	Vec3 diff = targetPos - myPos;
 
-	float radian = std::atan2f(diff.z, diff.x);
+	float radian = std::atan2f(diff.x, diff.z);
 	float angle = MathUtility::toDegree(radian);
 
 	Vec3 destination = targetPos + -diff.normalized() * m_pUnit->getAttackRange();

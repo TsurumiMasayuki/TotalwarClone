@@ -84,5 +84,5 @@ void TestEffect_Beam::playEffect()
 
 	//Œø‰Ê‰¹‚ðÄ¶
 	m_pSEAudio->play();
-	m_pSEAudio->setPitch(GameDevice::getRandom().getRandom(1.0f, 2.0f));
+	m_pSEAudio->setPitch(GameDevice::getRandom().getRandom(0.1f, 1.0f));
 }

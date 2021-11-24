@@ -41,5 +41,8 @@ private:
 	//ユニット１つにつき１つのコントローラーを割り当てるので、mapで管理
 	std::unordered_map<Unit*, AbstractController*> m_Controllers;
 
+	//移動の中心になっているユニット
+	Unit* m_pBaseUnit;
+
 	bool m_ControllerUpdated;
 };

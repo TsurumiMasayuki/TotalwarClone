@@ -35,11 +35,11 @@ void AIPlayer::onUpdate()
 
 		//一番遅いユニットを取得
 		const auto& units = m_Units.getSortedUnits(UnitStatsValues::Speed);
-		auto pBaseUnit = units.at(0);
+		m_pBaseUnit = units.at(0);
 
 		//コントローラーを生成して登録
-		m_Controllers.at(pBaseUnit) = new SimpleMoveController(pBaseUnit, pEnemyCenterUnit, pBaseUnit->getUnitStats()->m_DefaultWidth);
-		const Vec3& slowestUnitPos = pBaseUnit->getTransform().getLocalPosition();
+		m_Controllers.at(m_pBaseUnit) = new SimpleMoveController(m_pBaseUnit, pEnemyCenterUnit, m_pBaseUnit->getUnitStats()->m_DefaultWidth);
+		const Vec3& slowestUnitPos = m_pBaseUnit->getTransform().getLocalPosition();
 
 		//一番遅いユニット以外に適用
 		for (auto pUnit : units)
@@ -50,7 +50,7 @@ void AIPlayer::onUpdate()
 			//基準にするオブジェクトからの相対座標を算出
 			const Vec3& relativePos = pUnit->getTransform().getLocalPosition() - slowestUnitPos;
 			//コントローラーを生成
-			m_Controllers.at(pUnit) = new MarchController(pUnit, pBaseUnit, relativePos, pUnit->getUnitStats()->m_DefaultWidth);
+			m_Controllers.at(pUnit) = new MarchController(pUnit, m_pBaseUnit, relativePos, pUnit->getUnitStats()->m_DefaultWidth);
 		}
 
 		//初期化処理
@@ -65,7 +65,9 @@ void AIPlayer::onUpdate()
 		//ユニットが戦闘中ならコントローラーを更新
 		for (auto pUnit : m_Units.getUnits())
 		{
-			if (!pUnit->isInCombat()) continue;
+			//移動の中心になるユニットが死亡していたら戦闘AIに切り替える
+			if (!pUnit->isInCombat() &&
+				m_pBaseUnit->getObjectCount() > 0) continue;
 
 			//戦闘中ならcontinue
 			if (m_ControllerUpdated) continue;
