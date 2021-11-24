@@ -2,6 +2,7 @@
 #include "Scene\Base\AbstractScene.h"
 
 class GameScene;
+class UIStageList;
 
 class SelectScene
 	: public AbstractScene
@@ -17,4 +18,5 @@ public:
 
 private:
 	GameScene* m_pGameScene;
+	UIStageList* m_pUIStageList;
 };

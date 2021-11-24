@@ -1,4 +1,7 @@
 #include "TotalwarCloneGame.h"
+
+#include <filesystem>
+
 #include "Scene\TitleScene.h"
 #include "Scene\SelectScene.h"
 #include "Scene\GameScene.h"
@@ -31,8 +34,15 @@ void TotalwarCloneGame::onStart()
 	//ステージの読み込み
 	{
 		auto& stageManager = JsonFileManager<Stage>::getInstance();
-		stageManager.load("TestStage", "Resources/Stages/TestStage.json");
-		stageManager.load("Stage1", "Resources/Stages/Stage1.json");
+		//stageManager.load("TestStage", "Resources/Stages/TestStage.json");
+
+		for (auto& file : std::filesystem::directory_iterator("Resources/Stages"))
+		{
+			//パスを取得
+			std::filesystem::path filename = file.path().filename();
+			filename.replace_extension();
+			stageManager.load(filename.string(), file.path().string());
+		}
 	}
 }
 

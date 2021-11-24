@@ -1,0 +1,36 @@
+{
+    "StageName" : "Stage 3",
+    "PlayerEnergy" : 6000,
+    "EnemyUnits" : [
+        {
+            "EnemyName" : "NormalBattleship",
+            "Position" : [0.0, 0.0, 500.0],
+            "Angle" : 180.0,
+            "Width" : 1
+        },
+        {
+            "EnemyName" : "NormalBattleship",
+            "Position" : [75.0, 0.0, 525.0],
+            "Angle" : 180.0,
+            "Width" : 1
+        },        
+        {
+            "EnemyName" : "NormalBattleship",
+            "Position" : [150.0, 0.0, 525.0],
+            "Angle" : 180.0,
+            "Width" : 1
+        },
+        {
+            "EnemyName" : "NormalBattleship",
+            "Position" : [-75.0, 0.0, 550.0],
+            "Angle" : 180.0,
+            "Width" : 1
+        },
+        {
+            "EnemyName" : "NormalBattleship",
+            "Position" : [-150.0, 0.0, 550.0],
+            "Angle" : 180.0,
+            "Width" : 1
+        }
+    ]
+}

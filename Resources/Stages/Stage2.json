@@ -1,6 +1,6 @@
 {
-    "StageName" : "Stage 1",
-    "PlayerEnergy" : 4000,
+    "StageName" : "Stage 2",
+    "PlayerEnergy" : 6000,
     "EnemyUnits" : [
         {
             "EnemyName" : "NormalCorvette",
@@ -19,6 +19,12 @@
             "Position" : [200.0, 0.0, 500.0],
             "Angle" : 180.0,
             "Width" : 25
+        },
+        {
+            "EnemyName" : "SniperCruiser",
+            "Position" : [0.0, 0.0, 550.0],
+            "Angle" : 180.0,
+            "Width" : 3
         }
     ]
 }

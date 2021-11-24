@@ -21,7 +21,7 @@ bool SelectScene::isEnd()
 void SelectScene::start()
 {
 	auto pObj = new GameObject(this);
-	pObj->addComponent<UIStageList>();
+	m_pUIStageList = pObj->addComponent<UIStageList>();
 }
 
 void SelectScene::update()
@@ -30,5 +30,6 @@ void SelectScene::update()
 
 void SelectScene::shutdown()
 {
-	m_pGameScene->setStage("TestStage");
+	//セレクトされているステージを渡す
+	m_pGameScene->setStage(m_pUIStageList->getSelectedStageName());
 }
