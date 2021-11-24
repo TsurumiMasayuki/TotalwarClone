@@ -19,6 +19,7 @@ public:
 	virtual void removeUnit(Unit* pUnit) override;
 	virtual UnitContainer* getUnitContainer() override;
 	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
+	virtual bool isDefeat() override;
 
 	void setEnergy(int energy);
 	int getEnergy() const;

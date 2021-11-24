@@ -25,6 +25,7 @@ public:
 	virtual UnitContainer* getUnitContainer() override;
 
 	virtual void init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap) override;
+	virtual bool isDefeat() override;
 
 private:
 	void setNewController(Unit* pUnit, AbstractController* pController);

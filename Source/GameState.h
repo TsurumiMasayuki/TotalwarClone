@@ -6,7 +6,8 @@ namespace Game
 	{
 		PreparePhase,
 		CombatPhaseBegin,
-		CombatPhase
+		CombatPhase,
+		Result
 	};
 
 	extern GameState g_GameState;

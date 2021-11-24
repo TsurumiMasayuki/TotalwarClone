@@ -20,6 +20,7 @@ class ValueMapMaterial;
 class Model;
 class Player;
 class AIPlayer;
+class D2DTextRenderer;
 
 class GameScene
 	: public AbstractScene
@@ -57,6 +58,8 @@ private:
 
 	UIUnitList* m_pUIUnitList;
 	UIUnitPlacer* m_pUIUnitPlacer;
+
+	D2DTextRenderer* m_pWinLoseText;
 
 	std::string m_StageName;
 };

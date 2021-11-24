@@ -11,6 +11,7 @@
 #include "Unit\Unit.h"
 #include "Component\Cursor.h"
 #include "Component\Box2D\PhysicsManagerB2.h"
+#include "Component\Graphics\D2DTextRenderer.h"
 #include "Component\Physics\BoxColliderBt.h"
 
 #include "Graphics\DX12\Material\DefaultMaterials.h"
@@ -37,20 +38,19 @@
 
 #include "GameState.h"
 
-
-Cursor* g_pCursor;
-
 int g_TeamID1 = 0;
 int g_TeamID2 = 1;
 
 std::string GameScene::nextScene()
 {
-	return std::string();
+	return "TitleScene";
 }
 
 bool GameScene::isEnd()
 {
-	return false;
+	//どちらかが敗北したら終了
+	return GameDevice::getInput().isKeyDown(DIK_2) && Game::g_GameState == Game::GameState::Result &&
+		(m_pPlayer->isDefeat() || m_pAIPlayer->isDefeat());
 }
 
 void GameScene::start()
@@ -99,11 +99,11 @@ void GameScene::start()
 	auto pCursorObj = ModelGameObjectHelper::instantiateModel<int>(this, GameDevice::getModelManager().getModel("Sphere"));
 	pCursorObj->getTransform().setLocalScale(Vec3(1.0f));
 
-	g_pCursor = pCursorObj->addComponent<Cursor>();
-	g_pCursor->init(m_pDefaultCamera);
+	auto pCursor = pCursorObj->addComponent<Cursor>();
+	pCursor->init(m_pDefaultCamera);
 
 	m_pUnitSelector = pCursorObj->addComponent<UnitSelector>();
-	m_pUnitSelector->init(g_pCursor, g_TeamID1, m_pValueMapMaterial);
+	m_pUnitSelector->init(pCursor, g_TeamID1, m_pValueMapMaterial);
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
@@ -144,7 +144,7 @@ void GameScene::start()
 		auto pUIObj1 = new GameObject(this);
 		pUIObj1->setParent(&m_pDefaultCamera->getUser());
 		m_pUIUnitPlacer = pUIObj1->addComponent<UIUnitPlacer>();
-		m_pUIUnitPlacer->init(g_pCursor, m_pPlayer, m_pUnitSelector, &m_ValueMap1, &m_UnitRenderHelpers, m_pEffectRenderHelper);
+		m_pUIUnitPlacer->init(pCursor, m_pPlayer, m_pUnitSelector, &m_ValueMap1, &m_UnitRenderHelpers, m_pEffectRenderHelper);
 
 		auto pUIObj2 = new GameObject(this);
 		pUIObj2->setParent(&m_pDefaultCamera->getUser());
@@ -180,6 +180,23 @@ void GameScene::start()
 		pPlaneObj->getTransform().setLocalScale(Vec3(3000.0f, 0.1f, 3000.0f));
 		auto pCollider = pPlaneObj->addComponent<BoxColiiderBt>();
 		pCollider->setMass(0.0f);
+	}
+
+	//勝敗テキスト
+	{
+		auto pTextObj = new GameObject(this);
+
+		//TextRendererの設定
+		m_pWinLoseText = pTextObj->addComponent<D2DTextRenderer>();
+		m_pWinLoseText->setFont(L"Meiryo UI", L"ja-jp", 48.0f);
+		m_pWinLoseText->setFontWeight(DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM);
+		m_pWinLoseText->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
+		m_pWinLoseText->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
+		m_pWinLoseText->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		m_pWinLoseText->setTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
+		m_pWinLoseText->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+		m_pWinLoseText->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);
+		m_pWinLoseText->setText(L"");
 	}
 
 	{
@@ -251,6 +268,19 @@ void GameScene::update()
 		Game::g_GameState = Game::GameState::CombatPhaseBegin;
 	}
 
+	//戦闘フェーズ内でどちらかが負けたらステート変更
+	if (Game::g_GameState == Game::GameState::CombatPhase &&
+		(m_pPlayer->isDefeat() || m_pAIPlayer->isDefeat()))
+	{
+		Game::g_GameState = Game::GameState::Result;
+	}
+
+	if (Game::g_GameState == Game::GameState::Result)
+	{
+		//プレイヤーの勝敗によってテキスト表示
+		m_pWinLoseText->setText(!m_pPlayer->isDefeat() ? L"Win!" : L"Lose...");
+	}
+
 	//スペースキーが押されたらカメラ移動
 	if (GameDevice::getInput().isKey(DIK_SPACE))
 	{
@@ -285,9 +315,13 @@ void GameScene::shutdown()
 		delete pair.second;
 	}
 
+	m_UnitRenderHelpers.clear();
+
 	delete m_pEffectRenderHelper;
 
 	SEManager::getInstance().clear();
+
+	Game::g_GameState = Game::GameState::PreparePhase;
 }
 
 void GameScene::lateUpdate()

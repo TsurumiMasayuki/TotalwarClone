@@ -178,6 +178,23 @@ void AIPlayer::init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap)
 	m_pValueMap = pValueMap;
 }
 
+bool AIPlayer::isDefeat()
+{
+	bool isDefeat = true;
+
+	const auto& units = m_Units.getUnits();
+
+	for (const auto pUnit : units)
+	{
+		if (pUnit->getObjectCount() == 0) continue;
+
+		isDefeat = false;
+		break;
+	}
+
+	return isDefeat;
+}
+
 void AIPlayer::setNewController(Unit* pUnit, AbstractController* pController)
 {
 	//null‚Å‚È‚¢‚È‚çdelete
