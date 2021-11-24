@@ -8,6 +8,7 @@ void SEManager::update()
 	const Vec3& listnerPosition = m_pListner->getLocalPosition();
 	const float defaultDistance = 50.0f * 50.0f;
 
+	//SE‚Ì‰¹—Ê‚ð‹——£‚É‰ž‚¶‚Ä’²®
 	for (auto pSource : m_SESources)
 	{
 		const Vec3& sourcePosition = pSource->getTransform().getLocalPosition();
@@ -30,4 +31,10 @@ void SEManager::removeSESource(AudioSource* pSource)
 void SEManager::setListner(Transform* pListner)
 {
 	m_pListner = pListner;
+}
+
+void SEManager::clear()
+{
+	m_SESources.clear();
+	m_pListner = nullptr;
 }

@@ -55,7 +55,7 @@ void TestEffect_Beam::init(EffectRenderHelper* pEffectRenderHelper)
 
 void TestEffect_Beam::playEffect()
 {
-	//アクション実行中なら何もしない
+	//エフェクト実行中なら何もしない
 	if (m_pActionManager->actionCount() > 0) 
 		return;
 

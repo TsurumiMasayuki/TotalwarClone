@@ -23,6 +23,9 @@ public:
 	//SE‚ÌóM‘¤‚ğİ’è
 	void setListner(Transform* pListner);
 
+	//ƒNƒŠƒA
+	void clear();
+
 protected:
 	SEManager() {};
 	virtual ~SEManager() {};

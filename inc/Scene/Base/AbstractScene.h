@@ -19,6 +19,8 @@ public:
 	void baseShutdown();
 	virtual void draw();
 
+	virtual void lateUpdate() {};
+
 	virtual std::string nextScene() = 0;
 	virtual bool isEnd() = 0;
 

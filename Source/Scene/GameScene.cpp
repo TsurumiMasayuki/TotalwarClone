@@ -78,12 +78,6 @@ void GameScene::start()
 		unitStatsManager.load("SniperCruiser", "Resources/UnitStats/SniperCruiser.json");
 	}
 
-	//ステージの読み込み
-	{
-		auto& stageManager = JsonFileManager<Stage>::getInstance();
-		stageManager.load("TestStage", "Resources/Stages/TestStage.json");
-	}
-
 	//マテリアルの生成
 	m_pInstancingMaterial = new InstancingMaterial();
 	m_pInstancingMaterial->init(DX12GraphicsCore::g_pDevice.Get());
@@ -159,11 +153,11 @@ void GameScene::start()
 	}
 
 	//ステージ設定読み込み
-	const Stage& testStage = JsonFileManager<Stage>::getInstance().get("TestStage");
-	m_pPlayer->setEnergy(testStage.m_PlayerEnergy);
+	const Stage& stage = JsonFileManager<Stage>::getInstance().get(m_StageName);
+	m_pPlayer->setEnergy(stage.m_PlayerEnergy);
 
 	//ユニット生成
-	for (const auto& enemy : testStage.getUnitList())
+	for (const auto& enemy : stage.getUnitList())
 	{
 		const UnitStats& unitStats = JsonFileManager<UnitStats>::getInstance().get(enemy.m_Name);
 
@@ -292,6 +286,8 @@ void GameScene::shutdown()
 	}
 
 	delete m_pEffectRenderHelper;
+
+	SEManager::getInstance().clear();
 }
 
 void GameScene::lateUpdate()
@@ -307,4 +303,9 @@ void GameScene::lateUpdate()
 	}
 
 	m_pEffectRenderHelper->sendInstanceInfo();
+}
+
+void GameScene::setStage(const std::string& stageName)
+{
+	m_StageName = stageName;
 }

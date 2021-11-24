@@ -31,7 +31,9 @@ public:
 	virtual void update() override;
 	virtual void shutdown() override;
 
-	void lateUpdate();
+	virtual void lateUpdate() override;
+
+	void setStage(const std::string& stageName);
 
 private:
 	ValueMap m_ValueMap1;
@@ -55,4 +57,6 @@ private:
 
 	UIUnitList* m_pUIUnitList;
 	UIUnitPlacer* m_pUIUnitPlacer;
+
+	std::string m_StageName;
 };
