@@ -1,0 +1,60 @@
+{
+    "UnitStats" :
+    {
+        "Name" : "SuperBattleship",
+        "DisplayName" : "Super Battleship",
+        "ObjectCount" : 1,
+        "ObjectSize" : [24.0, 24.0, 20.0],
+        "SpacePerObject" : 10.0,
+        "MaxHealthPerObject" : 120000.0,
+        "MaxShieldPerObject" : 0.0,
+        "Speed" : 10.0,
+        "RotationSpeed" : 10.0,
+        "DebugColor" : [1.0, 1.0, 0.0],
+        "DefaultUnitWidth" : 1,
+        "EnergyCost" : 4000
+    },
+    "MainAttacks" : 
+    [
+        { 
+            "AttackName" : "TestAttack_Strong",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "TestAttack_Strong",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "TestAttack_Strong",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "TestAttack_Strong",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "TestAttack_Snipe",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "TestAttack_Snipe",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "CruiserNormalAttack",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "CruiserNormalAttack",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "CruiserNormalAttack",
+            "Position" : [0.0, 0.0, 0.0]
+        },
+        { 
+            "AttackName" : "CruiserNormalAttack",
+            "Position" : [0.0, 0.0, 0.0]
+        }
+    ]
+}

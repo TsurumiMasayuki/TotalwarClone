@@ -8,7 +8,9 @@
 #include "AI\ValueMap.h"
 #include "AI\ValueMapRenderer.h"
 
-#include "Unit\Unit.h"
+#include "Blockbench\BlockbenchModel.h"
+#include "Blockbench\BlockbenchLoader.h"
+
 #include "Component\Cursor.h"
 #include "Component\Box2D\PhysicsManagerB2.h"
 #include "Component\Graphics\D2DTextRenderer.h"
@@ -21,17 +23,16 @@
 #include "Player\Player.h"
 #include "Player\AIPlayer\AIPlayer.h"
 
+#include "Unit\Unit.h"
 #include "Unit\UnitRenderHelper.h"
 #include "Unit\UnitSelector.h"
 #include "Unit\UnitStats.h"
 
 #include "Utility\JsonFileManager.h"
 
+#include "UI\UIBattleSlider.h"
 #include "UI\UIUnitList.h"
 #include "UI\UIUnitPlacer.h"
-
-#include "Blockbench\BlockbenchModel.h"
-#include "Blockbench\BlockbenchLoader.h"
 
 #include "Sound\SEManager.h"
 #include "Stage\Stage.h"
@@ -59,24 +60,6 @@ void GameScene::start()
 	SEManager::getInstance().setListner(&m_pDefaultCamera->getTransform());
 
 	Game::g_GameState = Game::GameState::PreparePhase;
-
-	//攻撃ステータスの読み込み
-	{
-		auto& attackStatsManager = JsonFileManager<AttackStats>::getInstance();
-		attackStatsManager.load("TestAttack", "Resources/AttackStats/TestAttack.json");
-		attackStatsManager.load("TestAttack_Strong", "Resources/AttackStats/TestAttack_Strong.json");
-		attackStatsManager.load("TestAttack_Snipe", "Resources/AttackStats/TestAttack_Snipe.json");
-		attackStatsManager.load("CruiserNormalAttack", "Resources/AttackStats/CruiserNormalAttack.json");
-	}
-
-	//ユニットステータスの読み込み
-	{
-		auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
-		unitStatsManager.load("NormalCorvette", "Resources/UnitStats/NormalCorvette.json");
-		unitStatsManager.load("NormalCruiser", "Resources/UnitStats/NormalCruiser.json");
-		unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
-		unitStatsManager.load("SniperCruiser", "Resources/UnitStats/SniperCruiser.json");
-	}
 
 	//マテリアルの生成
 	m_pInstancingMaterial = new InstancingMaterial();
@@ -197,6 +180,15 @@ void GameScene::start()
 		m_pWinLoseText->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 		m_pWinLoseText->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);
 		m_pWinLoseText->setText(L"");
+	}
+
+	//戦力値表示
+	{
+		auto pUIObj = new GameObject(this);
+		pUIObj->setParent(&m_pDefaultCamera->getUser());
+
+		auto pUIBattleSlider = pUIObj->addComponent<UIBattleSlider>();
+		pUIBattleSlider->init(m_pPlayer, m_pAIPlayer);
 	}
 
 	{

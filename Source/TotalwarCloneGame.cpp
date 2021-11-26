@@ -31,16 +31,36 @@ void TotalwarCloneGame::onStart()
 	m_SceneManager.addScene("GameScene", pGameScene);
 	m_SceneManager.changeScene("TitleScene");
 
+	//攻撃ステータスの読み込み
+	{
+		auto& attackStatsManager = JsonFileManager<AttackStats>::getInstance();
+		attackStatsManager.load("TestAttack", "Resources/AttackStats/TestAttack.json");
+		attackStatsManager.load("TestAttack_Strong", "Resources/AttackStats/TestAttack_Strong.json");
+		attackStatsManager.load("TestAttack_Snipe", "Resources/AttackStats/TestAttack_Snipe.json");
+		attackStatsManager.load("CruiserNormalAttack", "Resources/AttackStats/CruiserNormalAttack.json");
+	}
+
+	//ユニットステータスの読み込み
+	{
+		auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
+		unitStatsManager.load("NormalCorvette", "Resources/UnitStats/NormalCorvette.json");
+		unitStatsManager.load("NormalCruiser", "Resources/UnitStats/NormalCruiser.json");
+		unitStatsManager.load("NormalBattleship", "Resources/UnitStats/NormalBattleship.json");
+		unitStatsManager.load("SniperCruiser", "Resources/UnitStats/SniperCruiser.json");
+		unitStatsManager.load("SuperBattleship", "Resources/UnitStats/SuperBattleship.json");
+	}
+
 	//ステージの読み込み
 	{
 		auto& stageManager = JsonFileManager<Stage>::getInstance();
-		//stageManager.load("TestStage", "Resources/Stages/TestStage.json");
 
 		for (auto& file : std::filesystem::directory_iterator("Resources/Stages"))
 		{
 			//パスを取得
 			std::filesystem::path filename = file.path().filename();
+			//拡張子を削除
 			filename.replace_extension();
+			//ファイルをロード
 			stageManager.load(filename.string(), file.path().string());
 		}
 	}

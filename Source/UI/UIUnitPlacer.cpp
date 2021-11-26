@@ -44,9 +44,10 @@ void UIUnitPlacer::init(Cursor* pCursor,
 	m_pRenderHelpers = pRenderHelpers;
 
 	const float unitCardWidth = 60.0f;
-	const float unitCardHeight = 96.0f;
+	const float unitCardHeight = 60.0f;
 	const float sliderHeight = 8.0f;
 	const float spacePerUnitCard = 8.0f;
+	const float unitCardY = 200.0f;
 
 	std::vector<UnitStats> unitStatsList;
 	auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
@@ -70,7 +71,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		const auto& unitStats = unitStatsList.at(i);
 
 		auto pButtonObj = new GameObject(getUser().getGameMediator());
-		pButtonObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f, 1.0f));
+		pButtonObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, unitCardY, 1.0f));
 		pButtonObj->getTransform().setLocalScale(Vec3(unitCardWidth, unitCardHeight, 1.0f));
 		pButtonObj->setParent(&getUser());
 
@@ -100,7 +101,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		//ユニットの画像(今は色だけ)
 		auto pUnitCardObj = new GameObject(getUser().getGameMediator());
 		pUnitCardObj->setParent(&getUser());
-		pUnitCardObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f, 1.0f));
+		pUnitCardObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, unitCardY, 1.0f));
 		pUnitCardObj->getTransform().setLocalScale(Vec3(unitCardWidth, unitCardHeight, 1.0f));
 		auto pUnitCard = pUnitCardObj->addComponent<UIUnitCard>();
 		pUnitCard->init(&unitStats);
@@ -108,7 +109,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		//ユニット名
 		auto pUnitNameObj = new GameObject(getUser().getGameMediator());
 		pUnitNameObj->setParent(&getUser());
-		pUnitNameObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f - unitCardHeight * 0.75f, 1.0f));
+		pUnitNameObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, unitCardY - unitCardHeight * 0.75f, 1.0f));
 		pUnitNameObj->getTransform().setLocalScale(Vec3(1.0f, 1.0f, 1.0f));
 		D2DTextRenderer* pNameRenderer = pUnitNameObj->addComponent<D2DTextRenderer>();
 		pNameRenderer->setFont(L"Meiryo UI",
@@ -128,7 +129,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		//ユニットコスト
 		auto pUnitCostObj = new GameObject(getUser().getGameMediator());
 		pUnitCostObj->setParent(&getUser());
-		pUnitCostObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, 300.0f - unitCardHeight, 1.0f));
+		pUnitCostObj->getTransform().setLocalPosition(Vec3((unitCardWidth + spacePerUnitCard) * i - positionOffset, unitCardY - unitCardHeight, 1.0f));
 		pUnitCostObj->getTransform().setLocalScale(Vec3(1.0f, 1.0f, 1.0f));
 		D2DTextRenderer* pCostRenderer = pUnitCostObj->addComponent<D2DTextRenderer>();
 		pCostRenderer->setFont(L"Meiryo UI",

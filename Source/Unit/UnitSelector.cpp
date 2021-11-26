@@ -183,7 +183,7 @@ void UnitSelector::selectUnit(Unit* pUnit)
 	if (m_pSelectedUnit == nullptr) return;
 
 	//配置補助にオブジェクトを登録
-	for (int i = 0; i < m_pSelectedUnit->getUnitStats()->m_ObjectCount; i++)
+	for (int i = 0; i < m_pSelectedUnit->getObjectCount(); i++)
 	{
 		auto pObj = new GameObject(getUser().getGameMediator());
 		m_PreviewObjects.emplace_back(pObj);

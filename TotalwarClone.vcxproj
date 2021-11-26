@@ -170,6 +170,7 @@
     <ClCompile Include="Source\Scene\TitleScene.cpp" />
     <ClCompile Include="Source\Sound\SEManager.cpp" />
     <ClCompile Include="Source\Stage\Stage.cpp" />
+    <ClCompile Include="Source\UI\UIBattleSlider.cpp" />
     <ClCompile Include="Source\UI\UIStageCard.cpp" />
     <ClCompile Include="Source\UI\UIStageList.cpp" />
     <ClCompile Include="Source\Unit\UnitSelector.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Source\Scene\TitleScene.h" />
     <ClInclude Include="Source\Sound\SEManager.h" />
     <ClInclude Include="Source\Stage\Stage.h" />
+    <ClInclude Include="Source\UI\UIBattleSlider.h" />
     <ClInclude Include="Source\UI\UIStageCard.h" />
     <ClInclude Include="Source\UI\UIStageList.h" />
     <ClInclude Include="Source\Unit\UnitSelector.h" />
