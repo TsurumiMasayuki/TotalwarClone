@@ -1,5 +1,8 @@
 #include "UIStageList.h"
 #include "Actor\Base\GameObject.h"
+#include "Component\Utility\Action\Actions.h"
+#include "Component\Utility\Action\ActionManager.h"
+#include "Component\Utility\Action\EasingActions.h"
 #include "Device\GameDevice.h"
 
 #include "Stage\Stage.h"
@@ -25,10 +28,15 @@ void UIStageList::onStart()
 		auto& tr = pObj->getTransform();
 		tr.setLocalPosition(Vec3(g_StageCardWidth * count, 0.0f, 1.0f));
 		tr.setLocalScale(Vec3(1.0f));
+
 		m_StageCardList.emplace_back(&tr);
+
 		auto pStageCard = pObj->addComponent<UIStageCard>();
 		pStageCard->setStage(pair.first);
 		m_StageNameList.emplace_back(pair.first);
+
+		auto pActionManager = pObj->addComponent<Action::ActionManager>();
+		m_ActionManagers.emplace_back(pActionManager);
 
 		count++;
 	}
@@ -62,11 +70,12 @@ void UIStageList::shiftStageCard(float direction)
 	m_CurrentIndex = newIndex;
 
 	//ステージ表示をずらす
-	int count = 0;
-	for (auto tr : m_StageCardList)
+	for (auto pActionManager : m_ActionManagers)
 	{
-		const Vec3& position = tr->getLocalPosition();
-		tr->setLocalPosition(position + Vec3(g_StageCardWidth * -direction, 0.0f, 0.0f));
-		count++;
+		pActionManager->enqueueAction(
+			new Action::EaseOutQuint(
+				new Action::MoveBy(Vec3(g_StageCardWidth * -direction, 0.0f, 0.0f), 1.0f)
+			)
+		);
 	}
 }

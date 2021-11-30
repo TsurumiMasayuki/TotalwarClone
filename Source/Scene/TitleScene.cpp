@@ -30,10 +30,10 @@ void TitleScene::start()
 	pTextRenderer->setFontWeight(DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM);
 	pTextRenderer->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 	pTextRenderer->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
-	pTextRenderer->setColor(Color(0.0f, 1.0f, 0.0f, 1.0f));
 	pTextRenderer->setTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
 	pTextRenderer->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 	pTextRenderer->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);
+	pTextRenderer->setColor(Color(0.0f, 1.0f, 0.0f, 1.0f));
 	pTextRenderer->setText(L"ƒ^ƒCƒgƒ‹");
 
 	//”Â‚Ì•
@@ -68,7 +68,7 @@ void TitleScene::start()
 		}
 	}
 
-	m_SceneChangeTimer.setMaxTime(7.5f);
+	m_SceneChangeTimer.setMaxTime(5.0f);
 	m_SceneChangeTimer.reset();
 
 	m_IsSceneChangeBegin = false;
