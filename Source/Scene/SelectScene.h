@@ -4,6 +4,11 @@
 class GameScene;
 class UIStageList;
 
+namespace Action
+{
+	class ActionManager;
+}
+
 class SelectScene
 	: public AbstractScene
 {
@@ -19,4 +24,7 @@ public:
 private:
 	GameScene* m_pGameScene;
 	UIStageList* m_pUIStageList;
+
+	bool m_IsChangeScene;
+	Action::ActionManager* m_pActionManager;
 };
