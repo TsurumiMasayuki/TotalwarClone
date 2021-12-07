@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DX12Main.cpp" />
+    <ClCompile Include="Source\AI\Controller\FlankerController.cpp" />
     <ClCompile Include="Source\AI\Controller\MarchController.cpp" />
     <ClCompile Include="Source\AI\Controller\SimpleCombatController.cpp" />
     <ClCompile Include="Source\AI\Controller\SimpleMoveController.cpp" />
@@ -202,6 +203,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AI\Controller\AbstractController.h" />
+    <ClInclude Include="Source\AI\Controller\FlankerController.h" />
     <ClInclude Include="Source\AI\Controller\MarchController.h" />
     <ClInclude Include="Source\AI\Controller\SimpleCombatController.h" />
     <ClInclude Include="Source\AI\Controller\SimpleMoveController.h" />
