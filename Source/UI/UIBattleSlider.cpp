@@ -1,6 +1,9 @@
 #include "UIBattleSlider.h"
 
 #include "Actor\Base\GameObject.h"
+#include "Component\Utility\Action\Actions.h"
+#include "Component\Utility\Action\ActionManager.h"
+#include "Device\GameDevice.h"
 
 #include "Player\Player.h"
 #include "UI\UISlider.h"
@@ -37,6 +40,36 @@ void UIBattleSlider::onUpdate()
 
 	m_pPlayerSlider->setMaxValue(battleValueSum);
 	m_pEnemySlider->setMaxValue(battleValueSum);
+
+	//負けそうなら赤色に点滅
+	if ((float)playerBattleValue / (float)battleValueSum < 0.3f)
+	{
+		Color sliderColor(DirectX::Colors::Orange);
+		float sin = std::fabsf(std::sinf(GameDevice::getGameTime().getUnscaledTotalTime() * 5.0f));
+		sliderColor.r -= sin;
+		sliderColor.g -= sin;
+		sliderColor.b -= sin;
+		m_pPlayerSlider->setColor(sliderColor);
+	}
+	else
+	{
+		m_pPlayerSlider->setColor(Color(DirectX::Colors::Orange));
+	}
+
+	//勝ちそうなら白く点滅
+	if ((float)enemyBattleValue / (float)battleValueSum < 0.3f)
+	{
+		Color sliderColor(DirectX::Colors::Red);
+		float sin = std::fabsf(std::sinf(GameDevice::getGameTime().getUnscaledTotalTime() * 5.0f));
+		sliderColor.r += sin;
+		sliderColor.g += sin;
+		sliderColor.b += sin;
+		m_pEnemySlider->setColor(sliderColor);
+	}
+	else
+	{
+		m_pEnemySlider->setColor(Color(DirectX::Colors::Red));
+	}
 
 	//現在値を設定
 	m_pPlayerSlider->setCurrentValue(playerBattleValue);

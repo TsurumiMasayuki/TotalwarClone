@@ -8,6 +8,8 @@ struct VS_IN
 	uint4 boneIndices : BONEINDICES;
 	float4 boneWeights : BONEWEIGHTS;
 
+	uint vertexID : SV_VERTEXID;
+
 	//インスタンシング用
 	float4x4 instanceMat : INSTANCEMAT;
 	float4 instanceColor : INSTANCECOLOR;
@@ -24,8 +26,7 @@ struct VS_OUT
 	float4 color : TEXCOORD2;
 };
 
-shared static int vertexCount = 12;
-shared static float2 uvMultPatterns[6] = 
+static float2 uvMultPatterns[6] = 
 {
 	//左上
 	float2(0.0, 0.0),
@@ -49,12 +50,9 @@ VS_OUT main(VS_IN input)
 	output.pos = mul(input.pos, mat);
 	output.normal = normalize(mul(input.normal, (float3x3)input.instanceMat));
 
-	int uvIndex = vertexCount / 12;
+	int uvIndex = (input.vertexID + 1) / 12;
 	int indexOffset = step(uvIndex, 3) * 2;
-	int multPatternIndex = vertexCount % 6;
-
-	vertexCount++;
-	vertexCount = vertexCount % 35;
+	int multPatternIndex = (input.vertexID + 1) % 6;
 
 	//UVの原点 + 頂点毎のUVパターン * UVのサイズ
 	float2 uvOrigin = float2(input.instanceUVOrigins[indexOffset][uvIndex], input.instanceUVOrigins[1 + indexOffset][uvIndex]);
