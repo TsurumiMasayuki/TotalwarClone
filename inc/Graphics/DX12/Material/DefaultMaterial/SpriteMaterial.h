@@ -21,6 +21,7 @@ public:
 	SpriteMaterial();
 
 	virtual D3D12_RASTERIZER_DESC createRasterizerState() override;
+	virtual D3D12_RENDER_TARGET_BLEND_DESC createBlendDesc() override;
 	virtual void setMaterial(ID3D12GraphicsCommandList* pCommandList) override;
 
 	void setMainTexture(DX12Texture2D* pMainTexture);

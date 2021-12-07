@@ -36,6 +36,77 @@ void SelectScene::start()
 
 	m_IsChangeScene = false;
 	m_pActionManager = nullptr;
+
+	//”Â‚Ì•
+	const float plateWidth = 64.0f;
+	//”Â‚Ì‚‚³
+	const float plateHeight = 64.0f;
+
+	//”Â‚Ì”(‰¡)
+	const int plateCountX = WindowWidth / plateWidth;
+	//”Â‚Ì”(c)
+	const int plateCountY = WindowHeight / plateHeight + 1;
+
+	const float offsetX = -plateWidth * plateCountX / 2 + plateWidth * 0.5f;
+	const float offsetY = -plateHeight * plateCountY / 2 + plateHeight * 0.5f;
+
+	m_SpriteRenderers.clear();
+	m_ActionManagers.clear();
+
+	//”Â‚ğ•À‚×‚é
+	for (int y = 0; y < plateCountY; y++)
+	{
+		for (int x = 0; x < plateCountX; x++)
+		{
+			auto pObj = new GameObject(this);
+			pObj->getTransform().setLocalPosition(Vec3(offsetX + x * plateWidth, offsetY + y * plateWidth));
+			pObj->getTransform().setLocalScale(Vec3(plateWidth, plateHeight, 1.0f));
+
+			auto pSpriteRenderer = pObj->addComponent<SpriteRenderer>();
+			pSpriteRenderer->setTextureByName("BoxFill");
+			pSpriteRenderer->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+			m_SpriteRenderers.emplace_back(pSpriteRenderer);
+
+			auto pActionManager = pObj->addComponent<Action::ActionManager>();
+			m_ActionManagers.emplace_back(pActionManager);
+		}
+	}
+
+	//ŠÔZo—p‚ÌÅ‘å‹——£
+	const float sqrDistanceMax = Vec3(WindowWidth / 2, WindowHeight / 2, 0.0f).sqrLength() * 0.5f;
+
+	for (int i = 0; i < (int)m_ActionManagers.size(); i++)
+	{
+		auto pActionManager = m_ActionManagers.at(i);
+
+		auto pObj = &pActionManager->getUser();
+		float sqrDistanceFromCenter = pObj->getTransform().getLocalPosition().sqrLength();
+		float time = sqrDistanceFromCenter / sqrDistanceMax + 1.0f;
+		const Vec3& localScale = pObj->getTransform().getLocalScale();
+
+		pActionManager->enqueueAction(
+			new Action::Spawn(
+				{
+					new Action::Sequence(
+						{
+							new Action::WaitForSeconds(time),
+							new Action::ScaleTo(Vec3(0.0f, 0.0f, 1.0f), 0.5f)
+						}
+					),
+					new Action::Sequence(
+						{
+							new Action::WaitForSeconds(time),
+							new Action::ColorTo(Color(1.0f, 1.0f, 1.0f, 1.0f), m_SpriteRenderers.at(i), 0.5f),	//”’‚­‚·‚é
+						}
+					),
+				}
+			)
+		);
+
+		pActionManager->enqueueAction(
+			new Action::Destroy(0.0f)
+		);
+	}
 }
 
 void SelectScene::update()

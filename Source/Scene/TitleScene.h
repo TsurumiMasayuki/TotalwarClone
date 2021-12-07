@@ -9,6 +9,7 @@ namespace Action
 }
 
 class SpriteRenderer;
+class D2DTextRenderer;
 
 class TitleScene
 	: public AbstractScene
@@ -23,6 +24,7 @@ public:
 private:
 	std::vector<SpriteRenderer*> m_SpriteRenderers;
 	std::vector<Action::ActionManager*> m_ActionManagers;
+	D2DTextRenderer* m_pTextRenderer;
 	bool m_IsSceneChangeBegin;
 	Timer m_SceneChangeTimer;
 };

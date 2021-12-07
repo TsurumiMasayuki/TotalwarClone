@@ -54,7 +54,7 @@ std::string GameScene::nextScene()
 bool GameScene::isEnd()
 {
 	//どちらかが敗北したら終了
-	return GameDevice::getInput().isKeyDown(DIK_2) && Game::g_GameState == Game::GameState::Result &&
+	return m_SceneChangeTimer.isTime() && Game::g_GameState == Game::GameState::Result &&
 		(m_pPlayer->isDefeat() || m_pAIPlayer->isDefeat());
 }
 
@@ -66,9 +66,9 @@ void GameScene::start()
 	const float plateHeight = 64.0f;
 
 	//板の数(横)
-	const int plateCountX = WindowWidth / plateWidth;
+	const int plateCountX = (int)(WindowWidth / plateWidth);
 	//板の数(縦)
-	const int plateCountY = WindowHeight / plateHeight + 1;
+	const int plateCountY = (int)(WindowHeight / plateHeight) + 1;
 
 	const float offsetX = -plateWidth * plateCountX / 2 + plateWidth * 0.5f;
 	const float offsetY = -plateHeight * plateCountY / 2 + plateHeight * 0.5f;
@@ -83,7 +83,7 @@ void GameScene::start()
 
 			auto pObj = new GameObject(this);
 			pObj->setParent(&m_pDefaultCamera->getUser());
-			pObj->getTransform().setLocalPosition(Vec3(offsetX + plateWidth * x, offsetY + plateHeight * y, 1.0f));
+			pObj->getTransform().setLocalPosition(Vec3(offsetX + plateWidth * x, offsetY + plateHeight * y, 0.3f));
 			pObj->getTransform().setLocalScale(Vec3(plateWidth, plateHeight, 1.0f));
 
 			//黒い画像を設定
@@ -124,6 +124,29 @@ void GameScene::start()
 			);
 
 			pActionManager->enqueueAction(new Action::Destroy(0.0f));
+		}
+	}
+
+	m_SpriteRenderers.clear();
+	m_ActionManagers.clear();
+
+	//板を並べる
+	for (int y = 0; y < plateCountY; y++)
+	{
+		for (int x = 0; x < plateCountX; x++)
+		{
+			auto pObj = new GameObject(this);
+			pObj->setParent(&m_pDefaultCamera->getUser());
+			pObj->getTransform().setLocalPosition(Vec3(offsetX + x * plateWidth, offsetY + y * plateHeight, 0.5f));
+			pObj->getTransform().setLocalScale(Vec3(plateWidth, plateHeight, 1.0f));
+
+			auto pSpriteRenderer = pObj->addComponent<GUISpriteRenderer>();
+			pSpriteRenderer->setTextureByName("BoxFill");
+			pSpriteRenderer->setColor(Color(1.0f, 1.0f, 1.0f, 0.0f));
+			m_SpriteRenderers.emplace_back(pSpriteRenderer);
+
+			auto pActionManager = pObj->addComponent<Action::ActionManager>();
+			m_ActionManagers.emplace_back(pActionManager);
 		}
 	}
 
@@ -309,6 +332,10 @@ void GameScene::start()
 	//	pInstancedRenderer->setInstanceInfo(instances);
 	//	loader.unLoadModels();
 	}
+	
+	m_IsSceneChangeBegin = false;
+	m_SceneChangeTimer.setMaxTime(5.5f);
+	m_SceneChangeTimer.reset();
 }
 
 void GameScene::update()
@@ -364,6 +391,44 @@ void GameScene::update()
 		move = move.multMatrix(cameraTr.getRotationMatrix());
 		cameraTr.setLocalPosition(cameraTr.getLocalPosition() + move);
 	}
+
+	//シーン終了演出
+	if (GameDevice::getInput().isKeyDown(DIK_2) &&
+		Game::g_GameState == Game::GameState::Result &&
+		!m_IsSceneChangeBegin)
+	{
+		m_IsSceneChangeBegin = true;
+
+		//時間算出用の最大距離
+		const float sqrDistanceMax = Vec3(WindowWidth / 2, WindowHeight / 2, 0.0f).sqrLength() * 0.5f;
+
+		for (int i = 0; i < (int)m_ActionManagers.size(); i++)
+		{
+			auto pActionManager = m_ActionManagers.at(i);
+
+			auto pObj = &pActionManager->getUser();
+			float sqrDistanceFromCenter = pObj->getTransform().getLocalPosition().sqrLength();
+			float time = (1.0f - sqrDistanceFromCenter / sqrDistanceMax) + 1.0f;
+			const Vec3& localScale = pObj->getTransform().getLocalScale();
+
+			pActionManager->enqueueAction(
+				new Action::Spawn(
+					{
+						new Action::Sequence(
+							{
+								new Action::WaitForSeconds(time),
+								new Action::ColorTo(Color(0.0f, 0.0f, 0.0f, 1.0f), m_SpriteRenderers.at(i), 0.5f),	//黒くする
+							}
+						),
+					}
+				)
+			);
+		}
+	}
+
+	if (!m_IsSceneChangeBegin) return;
+
+	m_SceneChangeTimer.update();
 }
 
 void GameScene::shutdown()

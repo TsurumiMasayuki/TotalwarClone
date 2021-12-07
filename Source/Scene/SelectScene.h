@@ -4,6 +4,8 @@
 class GameScene;
 class UIStageList;
 
+class SpriteRenderer;
+
 namespace Action
 {
 	class ActionManager;
@@ -22,6 +24,9 @@ public:
 	virtual void shutdown() override;
 
 private:
+	std::vector<SpriteRenderer*> m_SpriteRenderers;
+	std::vector<Action::ActionManager*> m_ActionManagers;
+
 	GameScene* m_pGameScene;
 	UIStageList* m_pUIStageList;
 

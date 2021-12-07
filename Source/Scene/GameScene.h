@@ -1,8 +1,10 @@
 #pragma once
+#include <vector>
 #include <unordered_map>
 #include "AI\ValueMap.h"
 #include "Scene\Base\AbstractScene.h"
 #include "Effect\EffectRenderHelper.h"
+#include "Utility\Timer.h"
 
 class GameObject;
 
@@ -20,6 +22,8 @@ class ValueMapMaterial;
 class Model;
 class Player;
 class AIPlayer;
+
+class GUISpriteRenderer;
 class D2DTextRenderer;
 
 class GameScene
@@ -62,4 +66,10 @@ private:
 	D2DTextRenderer* m_pWinLoseText;
 
 	std::string m_StageName;
+
+	//ÉVÅ[ÉìëJà⁄ån
+	std::vector<GUISpriteRenderer*> m_SpriteRenderers;
+	std::vector<Action::ActionManager*> m_ActionManagers;
+	bool m_IsSceneChangeBegin;
+	Timer m_SceneChangeTimer;
 };
