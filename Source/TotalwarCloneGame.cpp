@@ -29,7 +29,7 @@ void TotalwarCloneGame::onStart()
 	m_SceneManager.addScene("TitleScene", new TitleScene());
 	m_SceneManager.addScene("SelectScene", new SelectScene(pGameScene));
 	m_SceneManager.addScene("GameScene", pGameScene);
-	m_SceneManager.changeScene("TitleScene");
+	m_SceneManager.changeScene("SelectScene");
 
 	//攻撃ステータスの読み込み
 	{

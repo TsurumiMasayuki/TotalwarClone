@@ -15,32 +15,42 @@ void UISlider::onUpdate()
 
 	//スライダーの方向に合わせてサイズと座標更新
 	Vec3 size(0.0f, 0.0f, 1.0f);
+	Vec3 backGroundSize(0.0f, 0.0f, 1.0f);
 	switch (m_SliderDirection)
 	{
 	case UISlider::Direction::RIGHT:
 		transform.setLocalPosition(Vec3(-position, 0.0f, 0.0f));
 		size.x = ratio;
 		size.y = m_SliderWidth;
+		backGroundSize.x = 1.0f;
+		backGroundSize.y = m_SliderWidth;
 		break;
 	case UISlider::Direction::LEFT:
 		transform.setLocalPosition(Vec3(position, 0.0f, 0.0f));
 		size.x = -ratio;
 		size.y = m_SliderWidth;
+		backGroundSize.x = -1.0f;
+		backGroundSize.y = m_SliderWidth;
 		break;
 	case UISlider::Direction::UP:
 		transform.setLocalPosition(Vec3(0.0f, -position, 0.0f));
 		size.x = m_SliderWidth;
 		size.y = ratio;
+		backGroundSize.x = m_SliderWidth;
+		backGroundSize.y = 1.0f;
 		break;
 	case UISlider::Direction::DOWN:
 		transform.setLocalPosition(Vec3(0.0f, position, 0.0f));
 		size.x = m_SliderWidth;
 		size.y = -ratio;
+		backGroundSize.x = m_SliderWidth;
+		backGroundSize.y = -1.0f;
 		break;
 	}
 
 	//サイズ更新
 	m_pRendererObj->getTransform().setLocalScale(size);
+	m_pBackGroundObj->getTransform().setLocalScale(backGroundSize);
 }
 
 void UISlider::setCurrentValue(float currentValue)
@@ -103,4 +113,11 @@ void UISlider::tryInitRenderer()
 	m_pRendererObj = new GameObject(getUser().getGameMediator());
 	m_pRendererObj->setParent(&getUser());
 	m_pRenderer = m_pRendererObj->addComponent<GUISpriteRenderer>();
+
+	m_pBackGroundObj = new GameObject(getUser().getGameMediator());
+	m_pBackGroundObj->setParent(&getUser());
+	m_pBackGroundObj->getTransform().setLocalPosition(Vec3(0.0f, 0.0f, 1.0f));
+	auto pBGRenderer = m_pBackGroundObj->addComponent<GUISpriteRenderer>();
+	pBGRenderer->setTextureByName("BoxFill");
+	pBGRenderer->setColor(Color(DirectX::Colors::Black));
 }

@@ -17,6 +17,8 @@
 #include "Unit\UnitObject.h"
 #include "Unit\UnitStats.h"
 
+#include "UI\UIUnitInfo.h"
+
 void UnitSelector::onStart()
 {
 	m_InputInterval.setUseUnscaledTime(true);
@@ -47,8 +49,8 @@ void UnitSelector::onUpdate()
 		return;
 	}
 
-	//左クリックしたら攻撃
-	if (input.isMouseButtonDown(0) &&
+	//右クリックしたら攻撃
+	if (input.isMouseButtonDown(1) &&
 		m_pAttackTargetUnit != nullptr &&
 		Game::g_GameState == Game::GameState::CombatPhase)
 	{
@@ -84,6 +86,9 @@ void UnitSelector::onUpdate()
 		float modelScaling = 0.05f;
 		auto scaling = DirectX::XMMatrixScaling(modelScaling, 0.0f, modelScaling);
 		auto offsetMat = DirectX::XMMatrixTranslation(0.0f, -10.0f, 0.0f);
+
+		const DirectX::XMVECTOR& color = m_pSelectedUnit->getTeamID() == 0 ? DirectX::Colors::Orange : DirectX::Colors::Red;
+
 		for (auto object : objects)
 		{
 			if (object->isDead()) continue;
@@ -92,7 +97,7 @@ void UnitSelector::onUpdate()
 			auto& instance = instances.back();
 			DirectX::XMMATRIX world = scaling * object->getTransform().getTranslateMatrix() * offsetMat;
 			DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(world));
-			DirectX::XMStoreFloat4(&instance.instanceColor, DirectX::Colors::Orange);
+			DirectX::XMStoreFloat4(&instance.instanceColor, color);
 		}
 
 		m_pPreviewObjRenderer->setInstanceInfo(instances);
@@ -140,7 +145,7 @@ void UnitSelector::onTriggerExit(GameObject* pHit)
 	}
 }
 
-void UnitSelector::init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial)
+void UnitSelector::init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial, UIUnitInfo* pUIUnitInfo)
 {
 	m_pCursor = pCursor;
 	m_TeamID = teamID;
@@ -165,6 +170,9 @@ void UnitSelector::init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial
 	pRenderer->setTexture(GameDevice::getTextureManager().getTexture("BoxFill"));
 	pRenderer->setColor(Color(1.0f, 0.0f, 0.0f, 1.0f));
 	m_pAttackDisplayObj->addComponent<Action::ActionManager>();
+
+	//UIユニット情報表示
+	m_pUIUnitInfo = pUIUnitInfo;
 }
 
 void UnitSelector::selectUnit(Unit* pUnit)
@@ -189,13 +197,13 @@ void UnitSelector::selectUnit(Unit* pUnit)
 		m_PreviewObjects.emplace_back(pObj);
 		m_ObjPlacement.addObject(&pObj->getTransform());
 	}
+
+	//ユニット情報表示
+	m_pUIUnitInfo->setUnit(m_pSelectedUnit);
 }
 
 void UnitSelector::updateUnitSelecting()
 {
-	//攻撃対象を選択しようとしているならreturn
-	if (m_pAttackTargetUnit != nullptr) return;
-
 	if (!m_InputInterval.isTime()) return;
 
 	const Input& input = GameDevice::getInput();
@@ -203,11 +211,17 @@ void UnitSelector::updateUnitSelecting()
 	//左クリックしたら選択
 	if (!input.isMouseButtonDown(0)) return;
 
-	selectUnit(m_pTargetUnit);
+	if (m_pTargetUnit != nullptr)
+		selectUnit(m_pTargetUnit);
+	else
+		selectUnit(m_pAttackTargetUnit);
 }
 
 void UnitSelector::updateUnitPlacement()
 {
+	//攻撃対象を選択しようとしているならreturn
+	if (m_pAttackTargetUnit != nullptr) return;
+
 	//3D空間上でカーソルが指している場所を取得
 	const Vec3& cursorPoint = m_pCursor->getCursorPoint();
 
@@ -280,6 +294,9 @@ void UnitSelector::setInstanceInfo(const Vec3& placePos, float angle, int width)
 	auto scaling = DirectX::XMMatrixScaling(modelScaling, 0.0f, modelScaling);
 	auto offsetMat = DirectX::XMMatrixTranslation(0.0f, -10.0f, 0.0f);
 
+	//味方ならオレンジ、敵なら赤
+	const DirectX::XMVECTOR& color = m_pSelectedUnit->getTeamID() == 0 ? DirectX::Colors::Orange : DirectX::Colors::Red;
+
 	//InstancedRenderer用データ作成
 	std::vector<PreviewObjInstance> instances;
 	for (auto& position : previewObjPositions)
@@ -288,7 +305,7 @@ void UnitSelector::setInstanceInfo(const Vec3& placePos, float angle, int width)
 		auto translate = DirectX::XMMatrixTranslationFromVector(position.toXMVector());
 		auto world = DirectX::XMMatrixTranspose(scaling * translate * offsetMat);
 		DirectX::XMStoreFloat4x4(&instances.back().instanceMat, world);
-		DirectX::XMStoreFloat4(&instances.back().instanceColor, DirectX::Colors::Orange);
+		DirectX::XMStoreFloat4(&instances.back().instanceColor, color);
 	}
 
 	//InstancedRendererにデータを渡す

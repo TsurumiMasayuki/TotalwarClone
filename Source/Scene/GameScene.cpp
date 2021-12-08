@@ -37,6 +37,7 @@
 #include "UI\UIBattleSlider.h"
 #include "UI\UIUnitList.h"
 #include "UI\UIUnitPlacer.h"
+#include "UI\UIUnitInfo.h"
 
 #include "Sound\SEManager.h"
 #include "Stage\Stage.h"
@@ -179,8 +180,14 @@ void GameScene::start()
 	auto pCursor = pCursorObj->addComponent<Cursor>();
 	pCursor->init(m_pDefaultCamera);
 
+	//ユニット情報表示UI
+	auto pUnitInfoObj = new GameObject(this);
+	pUnitInfoObj->setParent(&m_pDefaultCamera->getUser());
+	auto pUIUnitInfo = pUnitInfoObj->addComponent<UIUnitInfo>();
+
+	//ユニット選択補助
 	m_pUnitSelector = pCursorObj->addComponent<UnitSelector>();
-	m_pUnitSelector->init(pCursor, g_TeamID1, m_pValueMapMaterial);
+	m_pUnitSelector->init(pCursor, g_TeamID1, m_pValueMapMaterial, pUIUnitInfo);
 
 	//AIプレイヤー1の生成
 	auto pPlayer1Obj = new GameObject(this);
@@ -249,7 +256,7 @@ void GameScene::start()
 	//情報マップ描画の生成
 	//auto pValueMapRendererObj = new GameObject(this);
 	//auto pValueMapRenderer = pValueMapRendererObj->addComponent<ValueMapRenderer<UnitStatsValues::Health>>();
-	//pValueMapRenderer->init(&m_ValueMap2, m_pValueMapMaterial, Color(DirectX::Colors::LightGreen));
+	//pValueMapRenderer->setUnit(&m_ValueMap2, m_pValueMapMaterial, Color(DirectX::Colors::LightGreen));
 
 	//レイキャスト判定用平面オブジェクト
 	{

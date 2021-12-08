@@ -9,6 +9,7 @@ class Cursor;
 class Unit;
 class CircleColliderB2;
 class ValueMapMaterial;
+class UIUnitInfo;
 
 struct PreviewObjInstance
 {
@@ -26,7 +27,7 @@ public:
 	virtual void onTriggerEnter(GameObject* pHit) override;
 	virtual void onTriggerExit(GameObject* pHit) override;
 
-	void init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial);
+	void init(Cursor* pCursor, int teamID, ValueMapMaterial* pMaterial, UIUnitInfo* pUIUnitInfo);
 	void selectUnit(Unit* pUnit);
 
 private:
@@ -54,6 +55,9 @@ private:
 
 	//配置予測用のオブジェクト配置補助
 	ObjectPlacement m_ObjPlacement;
+
+	//ユニット情報表示用UI
+	UIUnitInfo* m_pUIUnitInfo;
 
 	//配置予測用のオブジェクト
 	std::vector<GameObject*> m_PreviewObjects;

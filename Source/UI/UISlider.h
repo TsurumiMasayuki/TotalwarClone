@@ -46,6 +46,8 @@ private:
 	GameObject* m_pRendererObj;
 	GUISpriteRenderer* m_pRenderer;
 
+	GameObject* m_pBackGroundObj;
+
 	float m_SliderWidth;
 	Direction m_SliderDirection;
 };
