@@ -6,6 +6,7 @@
 class Cursor;
 class Player;
 class UnitSelector;
+class Stage;
 class UIUnitCard;
 class ValueMap;
 class UnitRenderHelper;
@@ -21,6 +22,7 @@ public:
 	void init(Cursor* pCursor,
 		Player* pPlayer,
 		UnitSelector* pUnitSelector,
+		const Stage& stage,
 		ValueMap* pValueMap,
 		const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers,
 		EffectRenderHelper* pEffectRenderHelper);

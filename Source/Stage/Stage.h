@@ -28,9 +28,12 @@ struct Stage
 	//プレイヤーのエネルギー
 	const int m_PlayerEnergy;
 
-	const std::vector<UnitInfo> getUnitList() const;
+	const std::vector<std::string>& getAvailableUnitList() const;
+	const std::vector<UnitInfo>& getUnitList() const;
 
 private:
+	//配置可能なユニット名のリスト
+	std::vector<std::string> m_AvailableUnitList;
 	//ユニットのリスト
 	std::vector<UnitInfo> m_UnitList;
 };

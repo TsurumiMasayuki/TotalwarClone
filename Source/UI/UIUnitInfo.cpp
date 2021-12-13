@@ -7,14 +7,22 @@
 #include "Unit\Unit.h"
 #include "UI\UISlider.h"
 
+#include "GameState.h"
+
 void UIUnitInfo::onStart()
 {
 }
 
 void UIUnitInfo::onUpdate()
 {
+	if (Game::g_GameState == Game::GameState::Result) 
+	{
+		getUser().setActive(false);
+	}
+
 	if (m_pUnit == nullptr) return;
 
+	m_pHealthValue->setText(std::to_wstring((int)m_pUnit->getHealth()));
 	m_pHealthSlider->setCurrentValue(m_pUnit->getHealth());
 }
 
@@ -28,7 +36,9 @@ void UIUnitInfo::setUnit(Unit* pUnit)
 
 	m_pName->setText(StringUtility::ToWString(pUnitStats->m_DisplayName));
 
+	//HPのテキスト設定
 	m_pHealthValue->setText(std::to_wstring((int)m_pUnit->getHealth()));
+	//HPバー設定
 	m_pHealthSlider->setCurrentValue(m_pUnit->getHealth());
 	m_pHealthSlider->setMaxValue(pUnitStats->m_MaxHealthPerObject * pUnitStats->m_ObjectCount);
 

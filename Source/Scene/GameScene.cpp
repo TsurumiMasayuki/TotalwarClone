@@ -61,6 +61,9 @@ bool GameScene::isEnd()
 
 void GameScene::start()
 {
+	//ステージ設定読み込み
+	const Stage& stage = JsonFileManager<Stage>::getInstance().get(m_StageName);
+
 	//板の幅
 	const float plateWidth = 64.0f;
 	//板の高さ
@@ -228,7 +231,7 @@ void GameScene::start()
 		auto pUIObj1 = new GameObject(this);
 		pUIObj1->setParent(&m_pDefaultCamera->getUser());
 		m_pUIUnitPlacer = pUIObj1->addComponent<UIUnitPlacer>();
-		m_pUIUnitPlacer->init(pCursor, m_pPlayer, m_pUnitSelector, &m_ValueMap1, &m_UnitRenderHelpers, m_pEffectRenderHelper);
+		m_pUIUnitPlacer->init(pCursor, m_pPlayer, m_pUnitSelector, stage, &m_ValueMap1, &m_UnitRenderHelpers, m_pEffectRenderHelper);
 
 		auto pUIObj2 = new GameObject(this);
 		pUIObj2->setParent(&m_pDefaultCamera->getUser());
@@ -236,8 +239,6 @@ void GameScene::start()
 		pUIObj2->setActive(false);
 	}
 
-	//ステージ設定読み込み
-	const Stage& stage = JsonFileManager<Stage>::getInstance().get(m_StageName);
 	m_pPlayer->setEnergy(stage.m_PlayerEnergy);
 
 	//ユニット生成

@@ -1,5 +1,7 @@
 #include "UIUnitList.h"
 
+#include "Component\Utility\Action\Actions.h"
+#include "Component\Utility\Action\ActionManager.h"
 
 #include "Player\IPlayer.h"
 #include "Unit\Unit.h"
@@ -30,6 +32,10 @@ void UIUnitList::init(IPlayer* pPlayer, UnitSelector* pSelector)
 	const auto& units = m_pPlayer->getUnitContainer()->getUnits();
 	const float positionOffset = (unitCardWidth + spacePerUnitCard) * (float)(units.size() - 1) * 0.5f;
 
+	Camera* pCamera = getUser().getGameMediator()->getMainCamera();
+	Transform* pCameraTr = &pCamera->getTransform();
+	Action::ActionManager* pActionManager = pCamera->getUser().addComponent<Action::ActionManager>();
+
 	int i = 0;
 	for (auto pUnit : units)
 	{
@@ -44,6 +50,21 @@ void UIUnitList::init(IPlayer* pPlayer, UnitSelector* pSelector)
 				pSelector->selectUnit(pUnit);
 			}
 		);
+
+		//カメラをユニットにフォーカスする
+		pButton->setOnMouseButtonDoubleClick(UIButton::MouseButtons::Left, [pCameraTr, pUnit, pActionManager]()
+			{
+				Vec3 destination = pUnit->getTransform().getLocalPosition();
+				destination.y = pCameraTr->getLocalPosition().y;
+
+				//前のActionがあったら中断
+				if (pActionManager->actionCount() != 0)
+					pActionManager->forceNext();
+
+				pActionManager->enqueueAction(new Action::EaseOutQuart(new Action::MoveTo(destination, 1.0f)));
+			}
+		);
+
 
 		//ステータス表示用親オブジェクト
 		auto pStatsDisplayObj = new GameObject(getUser().getGameMediator());

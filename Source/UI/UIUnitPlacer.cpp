@@ -11,6 +11,8 @@
 
 #include "Player\Player.h"
 
+#include "Stage\Stage.h"
+
 #include "UI\UIButton.h"
 #include "UI\UIUnitCard.h"
 #include "Utility\JsonFileManager.h"
@@ -36,6 +38,7 @@ void UIUnitPlacer::onUpdate()
 void UIUnitPlacer::init(Cursor* pCursor,
 	Player* pPlayer,
 	UnitSelector* pUnitSelector,
+	const Stage& stage,
 	ValueMap* pValueMap,
 	const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers,
 	EffectRenderHelper* pEffectRenderHelper)
@@ -52,14 +55,26 @@ void UIUnitPlacer::init(Cursor* pCursor,
 	std::vector<UnitStats> unitStatsList;
 	auto& unitStatsManager = JsonFileManager<UnitStats>::getInstance();
 
-	//Resources/UnitStatsの中を走査
-	for (const auto& directory : std::filesystem::directory_iterator("Resources/UnitStats"))
+	auto& availableUnits = stage.getAvailableUnitList();
+
+	//使用可能ユニットが設定されていなかったら全種類使えるようにする
+	if (availableUnits.size() == 0)
 	{
-		const auto& path = directory.path();
-		auto fileName = path.filename();
-		//拡張子無しに変換
-		std::string noExt = fileName.string().substr(0, fileName.string().size() - (size_t)5);
-		unitStatsList.emplace_back(unitStatsManager.get(noExt));
+		//Resources/UnitStatsの中を走査
+		for (const auto& directory : std::filesystem::directory_iterator("Resources/UnitStats"))
+		{
+			const auto& path = directory.path();
+			auto fileName = path.filename();
+			//拡張子無しに変換
+			std::string noExt = fileName.string().substr(0, fileName.string().size() - (size_t)5);
+			unitStatsList.emplace_back(unitStatsManager.get(noExt));
+		}
+	}
+
+	//使用可能ユニットを読み込み
+	for (const auto& unitName : availableUnits)
+	{
+		unitStatsList.emplace_back(unitStatsManager.get(unitName));
 	}
 
 	const float positionOffset = (unitCardWidth + spacePerUnitCard) * (float)(unitStatsList.size() - 1) * 0.5f;
