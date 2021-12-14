@@ -4,14 +4,17 @@ Stage::Stage(const nlohmann::json& json)
 	: m_Name(json["StageName"]),
 	m_PlayerEnergy(json["PlayerEnergy"])
 {
-	auto& availableUnits = json["AvailableUnits"];
-	//使用可能ユニットリストが書かれているなら読み込み
-	if (!availableUnits.is_null())
+	if (json.contains("AvailableUnits"))
 	{
-		//使用可能ユニットリスト読み込み
-		for (auto& unit : availableUnits)
+		auto& availableUnits = json["AvailableUnits"];
+		//使用可能ユニットリストが書かれているなら読み込み
+		if (!availableUnits.is_null())
 		{
-			m_AvailableUnitList.emplace_back((std::string)unit);
+			//使用可能ユニットリスト読み込み
+			for (auto& unit : availableUnits)
+			{
+				m_AvailableUnitList.emplace_back((std::string)unit);
+			}
 		}
 	}
 

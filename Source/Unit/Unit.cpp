@@ -26,7 +26,11 @@ void Unit::onUpdate()
 	//ターゲット解除処理
 	if (m_pTargetUnit != nullptr)
 	{
-		if (m_pTargetUnit->getObjectCount() == 0)
+		float sqrDistance = m_pTargetUnit->getTransform().getLocalPosition().sqrDistance(getTransform().getLocalPosition());
+
+		//ターゲットが全滅しているor攻撃範囲から出たなら解除
+		if (m_pTargetUnit->getObjectCount() == 0 ||
+			sqrDistance < m_MainAttackRange * m_MainAttackRange)
 			m_pTargetUnit = nullptr;
 	}
 

@@ -17,6 +17,8 @@ void TotalwarCloneGame::onStart()
 {
 	GameDevice::getTextureManager().load("BoxFill", L"Resources/BoxFill.png");
 	GameDevice::getTextureManager().load("CircleFill", L"Resources/CircleFill.png");
+	GameDevice::getTextureManager().load("CombatIcon", L"Resources/Textures/CombatIcon.png");
+	GameDevice::getTextureManager().load("Energy", L"Resources/Textures/Energy.png");
 
 	GameDevice::getModelManager().startLoading();
 	GameDevice::getModelManager().load("Sphere", "Resources/Models/SpherePBR/", "SpherePBR");
