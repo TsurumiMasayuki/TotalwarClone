@@ -294,14 +294,47 @@ void GameScene::start()
 	}
 
 	{
-		GameDevice::getModelManager().load("BBCube", "Resources/Models/BBCube", "BBCube");
+		DX12Mesh::MeshVertex baseVertices[8] =
+		{
+			{ { 0.0f, 1.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.625f, 0.5f } },
+			{ { 0.0f, 0.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.375f, 0.5f } },
+			{ { 0.0f, 1.0f, 0.0f }, { -1.0f,  0.0f, 0.0f }, { 0.625f, 0.75f } },
+			{ { 0.0f, 0.0f, 0.0f }, { -1.0f,  0.0f, 0.0f }, { 0.375f, 0.75f } },
+			{ { 1.0f, 1.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.625f, 0.25f } },
+			{ { 1.0f, 0.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.375f, 0.25f } },
+			{ { 1.0f, 1.0f, 0.0f }, {  1.0f,  0.0f, 0.0f }, { 0.625f, 0.0f } },
+			{ { 1.0f, 0.0f, 0.0f }, {  0.0f, -1.0f, 0.0f }, { 0.125f, 0.75f } }
+		};
 
-		std::string filePath = "Resources/Hoge.json";
-		GameDevice::getTextureManager().load("Hoge", L"Resources/Hoge.png");
+		int baseIndices[36] =
+		{
+			0, 4, 6, 6, 2, 0,
+			3, 2, 6, 6, 7, 3, 
+			7, 6, 4, 4, 5, 7,
+			5, 1, 3, 3, 7, 5, 
+			1, 0, 2, 2, 3, 1,
+			5, 4, 0, 0, 1, 5
+		};
+
+		std::vector<DX12Mesh::MeshVertex> vertices;
+		std::vector<USHORT> indices;
+		vertices.resize(36);
+		indices.resize(36);
+		for (int i = 0; i < 36; i++)
+		{
+			vertices[i] = baseVertices[baseIndices[i]];
+			indices[i] = i;
+		}
+
+		m_pBBCube = new DX12Mesh();
+		m_pBBCube->init(DX12GraphicsCore::g_pDevice.Get(), vertices, indices, "BoxFill");
+
+		std::string filePath = "Resources/TextureTest.json";
+		GameDevice::getTextureManager().load("TextureTest", L"Resources/TextureTest.png");
 
 		BlockbenchLoader loader;
-		loader.load(filePath, "Hoge", "Hoge");
-		auto& matrices = loader.getModel("Hoge")->getCubeMatrices();
+		loader.load(filePath, "TextureTest", "TextureTest");
+		auto& matrices = loader.getModel("TextureTest")->getCubeMatrices();
 
 		std::vector<UnitInstanceInfo> instances;
 		for (auto& matrix : matrices)
@@ -313,8 +346,8 @@ void GameScene::start()
 			instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 		}
 
-		auto& uvOrigins = loader.getModel("Hoge")->getUVOrigins();
-		auto& uvSizes = loader.getModel("Hoge")->getUVSizes();
+		auto& uvOrigins = loader.getModel("TextureTest")->getUVOrigins();
+		auto& uvSizes = loader.getModel("TextureTest")->getUVSizes();
 		for (int i = 0; i < (int)instances.size(); i++)
 		{
 			for (int j = 0; j < BlockbenchModel::cubeFaceCount / 2; j++)
@@ -333,11 +366,11 @@ void GameScene::start()
 			}
 		}
 
-		m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("Hoge"));
+		m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("TextureTest"));
 
-		auto pModel = GameDevice::getModelManager().getModel("BBCube");
-		auto pModelObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pModel, true);
-		auto pInstancedRenderer = pModelObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
+		GameObject* pModelObj = new GameObject(this);
+		auto pInstancedRenderer = pModelObj->addComponent<InstancedRenderer<UnitInstanceInfo>>();
+		pInstancedRenderer->setMesh(m_pBBCube);
 		pInstancedRenderer->setMaterial(m_pBBModelMaterial);
 		pInstancedRenderer->setInstanceInfo(instances);
 		loader.unLoadModels();
@@ -447,6 +480,8 @@ void GameScene::shutdown()
 	delete m_pInstancingMaterial;
 	delete m_pValueMapMaterial;
 	delete m_pBBModelMaterial;
+
+	delete m_pBBCube;
 
 	for (auto& pair : m_UnitRenderHelpers)
 	{

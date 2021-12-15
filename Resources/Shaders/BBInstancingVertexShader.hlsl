@@ -28,16 +28,16 @@ struct VS_OUT
 
 static float2 uvMultPatterns[6] = 
 {
+	//左下
+	float2(0.0, 1.0),
 	//左上
 	float2(0.0, 0.0),
+	//右上
+	float2(1.0, 0.0),
+	//右上
+	float2(1.0, 0.0),
 	//右下
 	float2(1.0, 1.0),
-	//右上
-	float2(1.0, 0.0),
-	//右上
-	float2(1.0, 0.0),
-	//左上
-	float2(0.0, 0.0),
 	//左下
 	float2(0.0, 1.0)
 };
@@ -50,9 +50,9 @@ VS_OUT main(VS_IN input)
 	output.pos = mul(input.pos, mat);
 	output.normal = normalize(mul(input.normal, (float3x3)input.instanceMat));
 
-	int uvIndex = (input.vertexID + 1) / 12;
-	int indexOffset = step(uvIndex, 3) * 2;
-	int multPatternIndex = (input.vertexID + 1) % 6;
+	int uvIndex = input.vertexID / 12;
+	int indexOffset = step(uvIndex, 2) * 2;
+	int multPatternIndex = input.vertexID % 6;
 
 	//UVの原点 + 頂点毎のUVパターン * UVのサイズ
 	float2 uvOrigin = float2(input.instanceUVOrigins[indexOffset][uvIndex], input.instanceUVOrigins[1 + indexOffset][uvIndex]);

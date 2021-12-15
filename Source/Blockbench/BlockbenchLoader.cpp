@@ -136,30 +136,30 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 
 			Face faces[6] = 
 			{
-				//+ZÇÃñ 
-				Face(UV(originX + zSize / textureWidth, originY + zSize / textureHeight),
-					xSize / textureWidth,
-					ySize / textureHeight),
-				//+XÇÃñ 
-				Face(UV(originX, originY + zSize / textureHeight),
-					zSize / textureWidth,
-					ySize / textureHeight),
-				//-XÇÃñ 
-				Face(UV(originX + (xSize + zSize) / textureWidth, originY + zSize / textureHeight),
-					zSize / textureWidth,
-					ySize / textureHeight),
-				//-ZÇÃñ 
-				Face(UV(originX + (xSize + zSize * 2) / textureWidth, originY + zSize / textureHeight),
-					xSize / textureWidth,
-					ySize / textureHeight),
 				//+YÇÃñ 
 				Face(UV(originX + zSize / textureWidth, originY),
 					xSize / textureWidth,
 					zSize / textureHeight),
+				//-ZÇÃñ 
+				Face(UV(originX + zSize / textureWidth, originY + zSize / textureHeight),
+					xSize / textureWidth,
+					ySize / textureHeight),
+				//+XÇÃñ 
+				Face(UV(originX + (xSize + zSize), originY + zSize / textureHeight),
+					zSize / textureWidth,
+					ySize / textureHeight),
 				//-YÇÃñ 
 				Face(UV(originX + (xSize + zSize) / textureWidth, originY),
 					xSize / textureWidth,
-					zSize / textureHeight)
+					zSize / textureHeight),
+				//-XÇÃñ 
+				Face(UV(originX / textureWidth, originY + zSize / textureHeight),
+					zSize / textureWidth,
+					ySize / textureHeight),
+				//+ZÇÃñ 
+				Face(UV(originX + (xSize + zSize * 2) / textureWidth, originY + zSize / textureHeight),
+					xSize / textureWidth,
+					ySize / textureHeight)
 			};
 
 			//ñ Ç≤Ç∆Ç…ÉãÅ[Év

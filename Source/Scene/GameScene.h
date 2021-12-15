@@ -7,6 +7,7 @@
 #include "Utility\Timer.h"
 
 class GameObject;
+class DX12Mesh;
 
 class Unit;
 class UnitRenderHelper;
@@ -48,7 +49,7 @@ private:
 	BBModelMaterial* m_pBBModelMaterial;
 	ValueMapMaterial* m_pValueMapMaterial;
 
-	Model* m_pBBCube;
+	DX12Mesh* m_pBBCube;
 
 	std::unordered_map<std::string, UnitRenderHelper*> m_UnitRenderHelpers;
 	EffectRenderHelper* m_pEffectRenderHelper;
