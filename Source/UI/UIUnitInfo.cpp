@@ -42,7 +42,28 @@ void UIUnitInfo::setUnit(Unit* pUnit)
 	m_pHealthSlider->setCurrentValue(m_pUnit->getHealth());
 	m_pHealthSlider->setMaxValue(pUnitStats->m_MaxHealthPerObject * pUnitStats->m_ObjectCount);
 
-	m_pCost->setText(L"コスト：" + std::to_wstring(m_pUnit->getUnitStats()->m_EnergyCost));
+	m_pCost->setText(L"コスト：" + std::to_wstring(pUnitStats->m_EnergyCost));
+
+	m_pSpeedSlider->setCurrentValue(pUnitStats->m_Speed);
+	m_pSpeedSlider->setMaxValue(25.0f);
+}
+
+void UIUnitInfo::setUnitInfoDirect(const UnitStats* pUnitStats)
+{
+	if (m_pName == nullptr)
+		initUIObjects();
+
+	m_pName->setText(StringUtility::ToWString(pUnitStats->m_DisplayName));
+
+	float health = pUnitStats->m_MaxHealthPerObject * pUnitStats->m_ObjectCount;
+
+	//HPのテキスト設定
+	m_pHealthValue->setText(std::to_wstring((int)health));
+	//HPバー設定
+	m_pHealthSlider->setCurrentValue(health);
+	m_pHealthSlider->setMaxValue(health);
+
+	m_pCost->setText(L"コスト：" + std::to_wstring(pUnitStats->m_EnergyCost));
 
 	m_pSpeedSlider->setCurrentValue(pUnitStats->m_Speed);
 	m_pSpeedSlider->setMaxValue(25.0f);

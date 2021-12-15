@@ -231,7 +231,7 @@ void GameScene::start()
 		auto pUIObj1 = new GameObject(this);
 		pUIObj1->setParent(&m_pDefaultCamera->getUser());
 		m_pUIUnitPlacer = pUIObj1->addComponent<UIUnitPlacer>();
-		m_pUIUnitPlacer->init(pCursor, m_pPlayer, m_pUnitSelector, stage, &m_ValueMap1, &m_UnitRenderHelpers, m_pEffectRenderHelper);
+		m_pUIUnitPlacer->init(pCursor, m_pPlayer, m_pUnitSelector, stage, pUIUnitInfo, &m_ValueMap1, &m_UnitRenderHelpers, m_pEffectRenderHelper);
 
 		auto pUIObj2 = new GameObject(this);
 		pUIObj2->setParent(&m_pDefaultCamera->getUser());

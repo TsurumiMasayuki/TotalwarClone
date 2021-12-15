@@ -15,6 +15,7 @@
 
 #include "UI\UIButton.h"
 #include "UI\UIUnitCard.h"
+#include "UI\UIUnitInfo.h"
 #include "Utility\JsonFileManager.h"
 #include "Utility\ModelGameObjectHelper.h"
 
@@ -39,6 +40,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 	Player* pPlayer,
 	UnitSelector* pUnitSelector,
 	const Stage& stage,
+	UIUnitInfo* pUnitInfo,
 	ValueMap* pValueMap,
 	const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers,
 	EffectRenderHelper* pEffectRenderHelper)
@@ -91,8 +93,16 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		pButtonObj->setParent(&getUser());
 
 		auto pButton = pButtonObj->addComponent<UIButton>();
-		//ユニット配置関数を設定
+		//ユニット情報表示関数を設定
 		pButton->setOnMouseButtonDown(UIButton::MouseButtons::Left,
+			[pUnitInfo, unitStats]()
+			{
+				pUnitInfo->setUnitInfoDirect(&unitStats);
+			}
+		);
+
+		//ユニット配置関数を設定
+		pButton->setOnMouseButtonDoubleClick(UIButton::MouseButtons::Left,
 			[pGameMediator, pUnitSelector, pPlayer, unitStats, pValueMap, pRenderHelpers, pEffectRenderHelper]()
 			{
 				//配置用エネルギーが無かったらreturn

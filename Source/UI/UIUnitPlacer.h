@@ -8,6 +8,7 @@ class Player;
 class UnitSelector;
 class Stage;
 class UIUnitCard;
+class UIUnitInfo;
 class ValueMap;
 class UnitRenderHelper;
 class EffectRenderHelper;
@@ -23,6 +24,7 @@ public:
 		Player* pPlayer,
 		UnitSelector* pUnitSelector,
 		const Stage& stage,
+		UIUnitInfo* pUnitInfo,
 		ValueMap* pValueMap,
 		const std::unordered_map<std::string, UnitRenderHelper*>* pRenderHelpers,
 		EffectRenderHelper* pEffectRenderHelper);
