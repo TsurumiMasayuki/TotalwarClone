@@ -24,6 +24,7 @@ class Model;
 class Player;
 class AIPlayer;
 
+class Transform;
 class GUISpriteRenderer;
 class D2DTextRenderer;
 
@@ -42,30 +43,45 @@ public:
 	void setStage(const std::string& stageName);
 
 private:
+	//情報マップ
 	ValueMap m_ValueMap1;
 	ValueMap m_ValueMap2;
 
+	//マテリアル
 	InstancingMaterial* m_pInstancingMaterial;
 	BBModelMaterial* m_pBBModelMaterial;
 	ValueMapMaterial* m_pValueMapMaterial;
 
+	//Blockbenchモデル用キューブ
 	DX12Mesh* m_pBBCube;
 
+	//Unit描画補助
 	std::unordered_map<std::string, UnitRenderHelper*> m_UnitRenderHelpers;
+	//エフェクト描画補助
 	EffectRenderHelper* m_pEffectRenderHelper;
+
+	//ユニット選択
 	UnitSelector* m_pUnitSelector;
 
+	//プレイヤー
 	Player* m_pPlayer;
 	AIPlayer* m_pAIPlayer;
 
+	//前フレームのカメラ位置
 	Vec3 m_PreCameraPos;
+	//前フレームのカメラ回転
 	Vec3 m_PreCameraAngles;
 
+	//UI系
 	UIUnitList* m_pUIUnitList;
 	UIUnitPlacer* m_pUIUnitPlacer;
 
+	//背景スプライトのTransform
+	Transform* m_pBGSpriteTr;
+	//勝敗表示テキスト
 	D2DTextRenderer* m_pWinLoseText;
 
+	//ステージ名
 	std::string m_StageName;
 
 	//シーン遷移系

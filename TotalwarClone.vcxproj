@@ -165,6 +165,7 @@
     <ClCompile Include="Source\Blockbench\BlockbenchLoader.cpp" />
     <ClCompile Include="Source\Blockbench\BlockbenchModel.cpp" />
     <ClCompile Include="Source\Component\Cursor.cpp" />
+    <ClCompile Include="Source\Component\Skybox.cpp" />
     <ClCompile Include="Source\Effect\EffectRenderHelper.cpp" />
     <ClCompile Include="Source\Effect\GamePlayBackGround.cpp" />
     <ClCompile Include="Source\Effect\TestEffect_Beam.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="Source\Blockbench\BlockbenchLoader.h" />
     <ClInclude Include="Source\Blockbench\BlockbenchModel.h" />
     <ClInclude Include="Source\Component\Cursor.h" />
+    <ClInclude Include="Source\Component\Skybox.h" />
     <ClInclude Include="Source\Effect\EffectRenderHelper.h" />
     <ClInclude Include="Source\Effect\GamePlayBackGround.h" />
     <ClInclude Include="Source\Effect\IEffect.h" />

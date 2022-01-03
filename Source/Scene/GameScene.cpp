@@ -20,6 +20,8 @@
 #include "Component\Utility\Action\ActionManager.h"
 #include "Component\Utility\Action\Actions.h"
 
+#include "Component\Skybox.h"
+
 #include "Graphics\DX12\Material\DefaultMaterials.h"
 #include "Graphics\Material\ValueMapMaterial.h"
 #include "Graphics\Material\BBModelMaterial.h"
@@ -61,6 +63,10 @@ bool GameScene::isEnd()
 
 void GameScene::start()
 {
+	//スカイボックス
+	auto pBGObject = new GameObject(this);
+	auto pBGSprite = pBGObject->addComponent<Skybox>();
+
 	//ステージ設定読み込み
 	const Stage& stage = JsonFileManager<Stage>::getInstance().get(m_StageName);
 
@@ -239,6 +245,7 @@ void GameScene::start()
 		pUIObj2->setActive(false);
 	}
 
+	//プレイヤーの使用エネルギー設定
 	m_pPlayer->setEnergy(stage.m_PlayerEnergy);
 
 	//ユニット生成

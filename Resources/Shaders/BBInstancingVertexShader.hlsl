@@ -54,10 +54,10 @@ VS_OUT main(VS_IN input)
 	int indexOffset = step(uvIndex, 2) * 2;
 	int multPatternIndex = input.vertexID % 6;
 
-	//UVの原点 + 頂点毎のUVパターン * UVのサイズ
 	float2 uvOrigin = float2(input.instanceUVOrigins[indexOffset][uvIndex], input.instanceUVOrigins[1 + indexOffset][uvIndex]);
 	float2 uvSize = float2(input.instanceUVSizes[indexOffset][uvIndex], input.instanceUVSizes[1 + indexOffset][uvIndex]);
 
+	//UVの原点 + 頂点毎のUVパターン * UVのサイズ
 	output.uv = uvOrigin + uvMultPatterns[multPatternIndex] * uvSize;
 
 	output.worldPos = mul(input.pos, input.instanceMat).xyz;

@@ -20,6 +20,14 @@ void TotalwarCloneGame::onStart()
 	GameDevice::getTextureManager().load("CombatIcon", L"Resources/Textures/CombatIcon.png");
 	GameDevice::getTextureManager().load("Energy", L"Resources/Textures/Energy.png");
 
+	//スカイボックス用
+	GameDevice::getTextureManager().load("SkyboxFront", L"Resources/Textures/Skybox/Front_1K_TEX.png");
+	GameDevice::getTextureManager().load("SkyboxBack", L"Resources/Textures/Skybox/Back_1K_TEX.png");
+	GameDevice::getTextureManager().load("SkyboxRight", L"Resources/Textures/Skybox/Right_1K_TEX.png");
+	GameDevice::getTextureManager().load("SkyboxLeft", L"Resources/Textures/Skybox/Left_1K_TEX.png");
+	GameDevice::getTextureManager().load("SkyboxUp", L"Resources/Textures/Skybox/Up_1K_TEX.png");
+	GameDevice::getTextureManager().load("SkyboxDown", L"Resources/Textures/Skybox/Down_1K_TEX.png");
+
 	GameDevice::getModelManager().startLoading();
 	GameDevice::getModelManager().load("Sphere", "Resources/Models/SpherePBR/", "SpherePBR");
 	GameDevice::getModelManager().load("Cube", "Resources/Models/cube/", "cube");
