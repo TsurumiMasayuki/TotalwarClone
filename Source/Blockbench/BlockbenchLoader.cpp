@@ -22,9 +22,7 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 	std::unordered_map<std::string, BoneInfo> boneInfo;
 
 	//結果用vector
-	std::vector<XMMATRIX> resultMatrices;
-	std::vector<UV> resultUVOrigins;
-	std::vector<UV> resultUVSizes;
+	std::vector<Cube> resultCubes;
 
 	//モデルの情報を取得
 	auto& description = jsonFile["minecraft:geometry"][0]["description"];
@@ -106,9 +104,9 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 			if (safeGet(cube, rotation, "rotation"))
 			{
 				rotationMat = XMMatrixRotationRollPitchYaw(
-					MathUtility::toRadian(rotation[0]),
+					-MathUtility::toRadian(rotation[0]),
 					MathUtility::toRadian(rotation[1]),
-					MathUtility::toRadian(rotation[2])
+					-MathUtility::toRadian(rotation[2])
 				);
 			}
 
@@ -123,59 +121,66 @@ void BlockbenchLoader::load(const std::string& filePath, const std::string& text
 			}
 
 			//行列を全て合成
-			XMMATRIX world = scalingMat * pivotMat * rotationMat * pivotReverseMat * translateMat;
-			resultMatrices.emplace_back(world);
+			XMMATRIX world = scalingMat * translateMat * pivotReverseMat * rotationMat * pivotMat;
 
 			//UVを読み込み
-			float originX = (float)cube["uv"][0] / textureWidth;
-			float originY = (float)cube["uv"][1] / textureHeight;
+			float originX = (float)cube["uv"][0];
+			float originY = (float)cube["uv"][1];
 
-			float xSize = (float)size[0];
-			float ySize = (float)size[1];
-			float zSize = (float)size[2];
+			//切り捨てしながらピクセル数算出
+			float xSize = (float)(int)size[0];
+			float ySize = (float)(int)size[1];
+			float zSize = (float)(int)size[2];
 
 			Face faces[6] = 
 			{
 				//+Yの面
-				Face(UV(originX + zSize / textureWidth, originY),
+				Face(UV((originX + zSize) / textureWidth, originY / textureHeight),
 					xSize / textureWidth,
 					zSize / textureHeight),
 				//-Zの面
-				Face(UV(originX + zSize / textureWidth, originY + zSize / textureHeight),
+				Face(UV((originX + zSize) / textureWidth, (originY + zSize) / textureHeight),
 					xSize / textureWidth,
 					ySize / textureHeight),
 				//+Xの面
-				Face(UV(originX + (xSize + zSize), originY + zSize / textureHeight),
+				Face(UV((originX + xSize + zSize) / textureWidth, (originY + zSize) / textureHeight),
 					zSize / textureWidth,
 					ySize / textureHeight),
 				//-Yの面
-				Face(UV(originX + (xSize + zSize) / textureWidth, originY),
+				Face(UV((originX + xSize + zSize) / textureWidth, originY / textureHeight),
 					xSize / textureWidth,
 					zSize / textureHeight),
 				//-Xの面
-				Face(UV(originX / textureWidth, originY + zSize / textureHeight),
+				Face(UV(originX / textureWidth, (originY + zSize) / textureHeight),
 					zSize / textureWidth,
 					ySize / textureHeight),
 				//+Zの面
-				Face(UV(originX + (xSize + zSize * 2) / textureWidth, originY + zSize / textureHeight),
+				Face(UV((originX + xSize + zSize * 2) / textureWidth, (originY + zSize) / textureHeight),
 					xSize / textureWidth,
 					ySize / textureHeight)
 			};
 
-			//面ごとにループ
-			for (int i = 0; i < BlockbenchModel::cubeFaceCount; i++)
-			{
-				resultUVOrigins.emplace_back();
-				resultUVSizes.emplace_back();
+			UV resultUVs[36];
 
-				resultUVOrigins.back() = faces[i].uvUL;
-				resultUVSizes.back() = UV(faces[i].uvDR.x - faces[i].uvUL.x, faces[i].uvDR.y - faces[i].uvUL.y);
+			for (int i = 0; i < 36; i += 6)
+			{
+				//1ポリゴン分設定
+				resultUVs[i + 0] = faces[i / 6].uvDL;
+				resultUVs[i + 1] = faces[i / 6].uvUL;
+				resultUVs[i + 2] = faces[i / 6].uvUR;
+
+				//1ポリゴン分設定
+				resultUVs[i + 3] = faces[i / 6].uvUR;
+				resultUVs[i + 4] = faces[i / 6].uvDR;
+				resultUVs[i + 5] = faces[i / 6].uvDL;
 			}
+
+			resultCubes.emplace_back(Cube(resultUVs, world));
 		}
 	}
 
 	//モデルを登録
-	m_Models.emplace(key, new BlockbenchModel(resultMatrices, resultUVOrigins, resultUVSizes, textureName));
+	m_Models.emplace(key, new BlockbenchModel(resultCubes, textureName, (unsigned int)resultCubes.size()));
 }
 
 void BlockbenchLoader::unLoadModels()

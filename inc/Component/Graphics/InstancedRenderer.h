@@ -36,6 +36,7 @@ public:
 	void setTextureByName(const std::string& key);
 
 	void setInstanceInfo(const std::vector<T>& instanceInfo);
+	void setInstanceCount(int count);
 
 private:
 	virtual void setColor(const Color& color) override;
@@ -113,9 +114,6 @@ void InstancedRenderer<T>::draw(Camera* pCamera, ID3D12GraphicsCommandList* pCom
 	//インスタンスが無いなら描画しない
 	if (m_InstanceCount == 0) return;
 
-	//インスタンスバッファが設定されていないなら描画しない
-	if (m_pInstanceBuffer == nullptr) return;
-
 	//マテリアルが設定されていないなら描画しない
 	if (m_pMaterial == nullptr) return;
 
@@ -144,9 +142,17 @@ void InstancedRenderer<T>::draw(Camera* pCamera, ID3D12GraphicsCommandList* pCom
 
 	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	D3D12_VERTEX_BUFFER_VIEW vbv[2] = { m_pMesh->getVertexBuffer().getVertexBufferView(), m_pInstanceBuffer->getVertexBufferView() };
+	if (m_pInstanceBuffer == nullptr)
+	{
+		D3D12_VERTEX_BUFFER_VIEW vbv[1] = { m_pMesh->getVertexBuffer().getVertexBufferView() };
+		pCommandList->IASetVertexBuffers(0, _countof(vbv), vbv);
+	}
+	else
+	{
+		D3D12_VERTEX_BUFFER_VIEW vbv[2] = { m_pMesh->getVertexBuffer().getVertexBufferView(), m_pInstanceBuffer->getVertexBufferView() };
+		pCommandList->IASetVertexBuffers(0, _countof(vbv), vbv);
+	}
 
-	pCommandList->IASetVertexBuffers(0, _countof(vbv), vbv);
 	pCommandList->IASetIndexBuffer(&m_pMesh->getIndexBuffer().getIndexBufferView());
 	pCommandList->DrawIndexedInstanced(m_pMesh->getIndexBuffer().getIndexCount(), m_InstanceCount, 0, 0, 0);
 }
@@ -208,4 +214,10 @@ void InstancedRenderer<T>::setInstanceInfo(const std::vector<T>& instanceInfo)
 		m_pInstanceBuffer->init(DX12GraphicsCore::g_pDevice.Get(), instanceInfo);
 		m_InstanceCount = (int)instanceInfo.size();
 	}
+}
+
+template<typename T>
+inline void InstancedRenderer<T>::setInstanceCount(int count)
+{
+	m_InstanceCount = count;
 }

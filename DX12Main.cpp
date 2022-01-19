@@ -1,6 +1,8 @@
 #include <Windows.h>
 #include "TotalwarCloneGame.h"
 
+#include <crtdbg.h>
+
 LRESULT WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	switch (msg)

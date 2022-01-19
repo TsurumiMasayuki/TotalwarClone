@@ -35,11 +35,17 @@ public:
 	//表示名
 	const std::string m_DisplayName;
 
+	//モデル名
+	const std::string m_ModelName;
+
 	//オブジェクト数
 	const int m_ObjectCount;
 
 	//オブジェクトの大きさ
 	const Vec3 m_ObjectSize;
+
+	//モデルの大きさ
+	const Vec3 m_ModelSize;
 
 	//オブジェクト毎の間隔
 	const float m_SpacePerObject;

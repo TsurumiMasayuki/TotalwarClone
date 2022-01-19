@@ -4,6 +4,7 @@
 #include "AI\ValueMap.h"
 #include "Scene\Base\AbstractScene.h"
 #include "Effect\EffectRenderHelper.h"
+#include "Blockbench\BlockbenchLoader.h"
 #include "Utility\Timer.h"
 
 class GameObject;
@@ -49,7 +50,6 @@ private:
 
 	//マテリアル
 	InstancingMaterial* m_pInstancingMaterial;
-	BBModelMaterial* m_pBBModelMaterial;
 	ValueMapMaterial* m_pValueMapMaterial;
 
 	//Blockbenchモデル用キューブ
@@ -89,4 +89,6 @@ private:
 	std::vector<Action::ActionManager*> m_ActionManagers;
 	bool m_IsSceneChangeBegin;
 	Timer m_SceneChangeTimer;
+
+	BlockbenchLoader m_BBModelLoader;
 };

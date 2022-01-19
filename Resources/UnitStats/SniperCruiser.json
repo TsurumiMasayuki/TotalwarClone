@@ -3,8 +3,10 @@
     {
         "Name" : "SniperCruiser",
         "DisplayName" : "Sniper Cruiser",
+        "ModelName" : "HogeHoge",
         "ObjectCount" : 5,
         "ObjectSize" : [3.0, 1.5, 6.0],
+        "ModelSize" : [0.1, 0.1, 0.1],
         "SpacePerObject" : 10.0,
         "MaxHealthPerObject" : 200.0,
         "MaxShieldPerObject" : 0.0,

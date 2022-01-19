@@ -174,10 +174,6 @@ void GameScene::start()
 	m_pValueMapMaterial->init(DX12GraphicsCore::g_pDevice.Get());
 	m_pValueMapMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("CircleFill"));
 
-	//マテリアルの生成
-	m_pBBModelMaterial = new BBModelMaterial();
-	m_pBBModelMaterial->init(DX12GraphicsCore::g_pDevice.Get());
-
 	//物理マネージャーの生成
 	auto pPhysicsManagerObj = new GameObject(this);
 	pPhysicsManagerObj->addComponent<PhysicsManagerB2>();
@@ -211,14 +207,59 @@ void GameScene::start()
 
 	auto pSphereModel = GameDevice::getModelManager().getModel("Sphere");
 
+	{
+		DX12Mesh::MeshVertex baseVertices[8] =
+		{
+			{ { 0.0f, 1.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.625f, 0.5f } },
+			{ { 0.0f, 0.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.375f, 0.5f } },
+			{ { 0.0f, 1.0f, 0.0f }, { -1.0f,  0.0f, 0.0f }, { 0.625f, 0.75f } },
+			{ { 0.0f, 0.0f, 0.0f }, { -1.0f,  0.0f, 0.0f }, { 0.375f, 0.75f } },
+			{ { 1.0f, 1.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.625f, 0.25f } },
+			{ { 1.0f, 0.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.375f, 0.25f } },
+			{ { 1.0f, 1.0f, 0.0f }, {  1.0f,  0.0f, 0.0f }, { 0.625f, 0.0f } },
+			{ { 1.0f, 0.0f, 0.0f }, {  0.0f, -1.0f, 0.0f }, { 0.125f, 0.75f } }
+		};
+
+		int baseIndices[36] =
+		{
+			0, 4, 6, 6, 2, 0,
+			3, 2, 6, 6, 7, 3,
+			7, 6, 4, 4, 5, 7,
+			5, 1, 3, 3, 7, 5,
+			1, 0, 2, 2, 3, 1,
+			5, 4, 0, 0, 1, 5
+		};
+
+		std::vector<DX12Mesh::MeshVertex> vertices;
+		std::vector<USHORT> indices;
+		vertices.resize(36);
+		indices.resize(36);
+		for (int i = 0; i < 36; i++)
+		{
+			vertices[i] = baseVertices[baseIndices[i]];
+			indices[i] = i;
+		}
+
+		m_pBBCube = new DX12Mesh();
+		m_pBBCube->init(DX12GraphicsCore::g_pDevice.Get(), vertices, indices, "BoxFill");
+	}
+
+	GameDevice::getTextureManager().load("Hoge", L"Resources/Hoge.png");
+	m_BBModelLoader.load("Resources/Hoge.json", "Hoge", "Hoge");
+
+	GameDevice::getTextureManager().load("HogeHoge", L"Resources/HogeHoge.png");
+	m_BBModelLoader.load("Resources/HogeHoge.json", "HogeHoge", "HogeHoge");
+
 	//ユニット描画用オブジェクト生成
 	for (const auto& pair : JsonFileManager<UnitStats>::getInstance().getAll())
 	{
-		auto pRendererObj = ModelGameObjectHelper::instantiateModel<UnitInstanceInfo>(this, pSphereModel, true);
-		auto pRenderer = pRendererObj->getChildren().at(0)->getComponent<InstancedRenderer<UnitInstanceInfo>>();
-		pRenderer->setMaterial(m_pInstancingMaterial);
+		const auto bbModel = m_BBModelLoader.getModel(pair.second.m_ModelName);
 
-		m_UnitRenderHelpers.emplace(pair.first, new UnitRenderHelper(&pair.second, nullptr, pRenderer));
+		auto pRendererObj = new GameObject(this);
+		auto pRenderer = pRendererObj->addComponent<InstancedRenderer<UnitInstanceInfo>>();
+		pRenderer->setMesh(m_pBBCube);
+
+		m_UnitRenderHelpers.emplace(pair.first, new UnitRenderHelper(&pair.second, bbModel, pRenderer));
 	}
 	
 	auto pCubeModel = GameDevice::getModelManager().getModel("Cube");
@@ -298,89 +339,6 @@ void GameScene::start()
 
 		auto pUIBattleSlider = pUIObj->addComponent<UIBattleSlider>();
 		pUIBattleSlider->init(m_pPlayer, m_pAIPlayer);
-	}
-
-	{
-		DX12Mesh::MeshVertex baseVertices[8] =
-		{
-			{ { 0.0f, 1.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.625f, 0.5f } },
-			{ { 0.0f, 0.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.375f, 0.5f } },
-			{ { 0.0f, 1.0f, 0.0f }, { -1.0f,  0.0f, 0.0f }, { 0.625f, 0.75f } },
-			{ { 0.0f, 0.0f, 0.0f }, { -1.0f,  0.0f, 0.0f }, { 0.375f, 0.75f } },
-			{ { 1.0f, 1.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.625f, 0.25f } },
-			{ { 1.0f, 0.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.375f, 0.25f } },
-			{ { 1.0f, 1.0f, 0.0f }, {  1.0f,  0.0f, 0.0f }, { 0.625f, 0.0f } },
-			{ { 1.0f, 0.0f, 0.0f }, {  0.0f, -1.0f, 0.0f }, { 0.125f, 0.75f } }
-		};
-
-		int baseIndices[36] =
-		{
-			0, 4, 6, 6, 2, 0,
-			3, 2, 6, 6, 7, 3, 
-			7, 6, 4, 4, 5, 7,
-			5, 1, 3, 3, 7, 5, 
-			1, 0, 2, 2, 3, 1,
-			5, 4, 0, 0, 1, 5
-		};
-
-		std::vector<DX12Mesh::MeshVertex> vertices;
-		std::vector<USHORT> indices;
-		vertices.resize(36);
-		indices.resize(36);
-		for (int i = 0; i < 36; i++)
-		{
-			vertices[i] = baseVertices[baseIndices[i]];
-			indices[i] = i;
-		}
-
-		m_pBBCube = new DX12Mesh();
-		m_pBBCube->init(DX12GraphicsCore::g_pDevice.Get(), vertices, indices, "BoxFill");
-
-		std::string filePath = "Resources/TextureTest.json";
-		GameDevice::getTextureManager().load("TextureTest", L"Resources/TextureTest.png");
-
-		BlockbenchLoader loader;
-		loader.load(filePath, "TextureTest", "TextureTest");
-		auto& matrices = loader.getModel("TextureTest")->getCubeMatrices();
-
-		std::vector<UnitInstanceInfo> instances;
-		for (auto& matrix : matrices)
-		{
-			instances.emplace_back();
-			auto& instance = instances.back();
-
-			DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(matrix));
-			instance.instanceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-		}
-
-		auto& uvOrigins = loader.getModel("TextureTest")->getUVOrigins();
-		auto& uvSizes = loader.getModel("TextureTest")->getUVSizes();
-		for (int i = 0; i < (int)instances.size(); i++)
-		{
-			for (int j = 0; j < BlockbenchModel::cubeFaceCount / 2; j++)
-			{
-				//原点をセット
-				instances[i].instanceUVOrigins.m[j][0] = uvOrigins.at(j).x;
-				instances[i].instanceUVOrigins.m[j][1] = uvOrigins.at(j).y;
-				instances[i].instanceUVOrigins.m[j][2] = uvOrigins.at(j + 3).x;
-				instances[i].instanceUVOrigins.m[j][3] = uvOrigins.at(j + 3).y;
-
-				//サイズをセット
-				instances[i].instanceUVSizes.m[j][0] = uvSizes.at(j).x;
-				instances[i].instanceUVSizes.m[j][1] = uvSizes.at(j).y;
-				instances[i].instanceUVSizes.m[j][2] = uvSizes.at(j + 3).x;
-				instances[i].instanceUVSizes.m[j][3] = uvSizes.at(j + 3).y;
-			}
-		}
-
-		m_pBBModelMaterial->setMainTexture(GameDevice::getTextureManager().getTexture("TextureTest"));
-
-		GameObject* pModelObj = new GameObject(this);
-		auto pInstancedRenderer = pModelObj->addComponent<InstancedRenderer<UnitInstanceInfo>>();
-		pInstancedRenderer->setMesh(m_pBBCube);
-		pInstancedRenderer->setMaterial(m_pBBModelMaterial);
-		pInstancedRenderer->setInstanceInfo(instances);
-		loader.unLoadModels();
 	}
 	
 	m_IsSceneChangeBegin = false;
@@ -486,7 +444,6 @@ void GameScene::shutdown()
 	//マテリアルの削除
 	delete m_pInstancingMaterial;
 	delete m_pValueMapMaterial;
-	delete m_pBBModelMaterial;
 
 	delete m_pBBCube;
 
@@ -502,6 +459,8 @@ void GameScene::shutdown()
 	SEManager::getInstance().clear();
 
 	Game::g_GameState = Game::GameState::PreparePhase;
+
+	m_BBModelLoader.unLoadModels();
 }
 
 void GameScene::lateUpdate()

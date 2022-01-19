@@ -23,6 +23,30 @@ struct UV
 	float y;
 };
 
+//キューブの情報UV保存用構造体
+struct Cube
+{
+	Cube()
+		: m_Matrix(DirectX::XMMatrixIdentity())
+	{
+
+	}
+
+	Cube(const UV uvArray[36], 
+		const DirectX::XMMATRIX& matrix)
+	{
+		for (int i = 0; i < 36; i++)
+		{
+			m_UVArray[i] = uvArray[i];
+		}
+
+		m_Matrix = matrix;
+	}
+
+	UV m_UVArray[36];
+	DirectX::XMMATRIX m_Matrix;
+};
+
 //Blockbenchモデル保持用クラス
 class BlockbenchModel
 {
@@ -30,27 +54,25 @@ public:
 	static const int cubeFaceCount = 6;
 
 public:
-	BlockbenchModel(const std::vector<DirectX::XMMATRIX>& cubeMatrices,
-		const std::vector<UV>& uvOrigins,
-		const std::vector<UV>& uvSizes,
-		const std::string& textureName);
+	BlockbenchModel(const std::vector<Cube>& cubes,
+		const std::string& textureName,
+		unsigned int cubeCount);
 
 	const std::string& getTextureName() const;
-	const std::vector<DirectX::XMMATRIX>& getCubeMatrices() const;
-	const std::vector<UV>& getUVOrigins() const;
-	const std::vector<UV>& getUVSizes() const;
+	const std::vector<Cube>& getCubes() const;
+
+	unsigned int getCubeCount() const;
 
 private:
 	//マテリアル
 	AbstractMaterial* m_pMaterial;
 
-	//立方体の行列
-	std::vector<DirectX::XMMATRIX> m_CubeMatrices;
 	//UVの行列
-	std::vector<UV> m_CubeUVOrigins;
-	//UVの行列
-	std::vector<UV> m_CubeUVSizes;
+	std::vector<Cube> m_Cubes;
 
 	//テクスチャ名
 	std::string m_TextureName;
+
+	//Cubeの数
+	unsigned int m_CubeCount;
 };

@@ -219,6 +219,7 @@
     <ClInclude Include="Source\Effect\GamePlayBackGround.h" />
     <ClInclude Include="Source\Effect\IEffect.h" />
     <ClInclude Include="Source\Effect\TestEffect_Beam.h" />
+    <ClInclude Include="Source\Graphics\DX12\DX12StructuredBuffer.h" />
     <ClInclude Include="Source\Scene\SelectScene.h" />
     <ClInclude Include="Source\Scene\TitleScene.h" />
     <ClInclude Include="Source\Sound\SEManager.h" />

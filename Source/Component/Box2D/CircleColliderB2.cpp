@@ -39,15 +39,15 @@ void CircleColliderB2::init()
 	m_pBody = PhysicsManagerB2::getInstance()->createBody(bodyDef, this);
 
 #ifdef _DEBUG
-	if (m_Radius * scale.x < 1.0f) 
+	if (m_Radius < 1.0f) 
 	{
-		assert(!"1.0以下のサイズは安定性が低下します");
+		assert(!"1.0未満のサイズは安定性が低下します");
 	}
 #endif
 
 	//円の形状を指定
 	b2CircleShape circleShape;
-	circleShape.m_radius = m_Radius * scale.x;
+	circleShape.m_radius = m_Radius;
 
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &circleShape;

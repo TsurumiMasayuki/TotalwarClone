@@ -103,7 +103,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 	//通常コライダー
 	m_pCollider = getUser().addComponent<CircleColliderB2>();
 	m_pCollider->setTrigger(false);
-	m_pCollider->setRadius(1.0f);
+	m_pCollider->setRadius(pUnitStats->m_ObjectSize.x);
 	m_pCollider->setBodyType(b2BodyType::b2_dynamicBody);
 	m_pCollider->setGroupIndex(0);
 
@@ -114,7 +114,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 	//射程距離と同じサイズにするためにスケールで割る
 	//最も射程距離が長い攻撃を登録
 	m_pLongestMainAttack = m_MainAttacks.at(0);
-	float scaleX = getTransform().getLocalScale().x;
+	float scaleX = pUnitStats->m_ObjectSize.x;
 	m_pTrigger->setRadius(m_pLongestMainAttack->getAttackRange() / scaleX);
 	m_pTrigger->setGroupIndex(-1);
 }

@@ -3,8 +3,10 @@
     {
         "Name" : "NormalCorvette",
         "DisplayName" : "Normal Corvette",
+        "ModelName" : "HogeHoge",
         "ObjectCount" : 60,
-        "ObjectSize" : [1, 1, 2],
+        "ObjectSize" : [1.0, 1.0, 2.0],
+        "ModelSize" : [0.1, 0.1, 0.1],
         "SpacePerObject" : 8.0,
         "MaxHealthPerObject" : 100.0,
         "MaxShieldPerObject" : 0.0,

@@ -10,11 +10,7 @@ struct VS_IN
 
 	uint vertexID : SV_VERTEXID;
 
-	//インスタンシング用
-	float4x4 instanceMat : INSTANCEMAT;
-	float4 instanceColor : INSTANCECOLOR;
-	float4x3 instanceUVOrigins : INSTANCEUVORIGINS;
-	float4x3 instanceUVSizes : INSTANCEUVSIZES;
+	uint instanceID : SV_INSTANCEID;
 };
 
 struct VS_OUT
@@ -26,42 +22,44 @@ struct VS_OUT
 	float4 color : TEXCOORD2;
 };
 
-static float2 uvMultPatterns[6] = 
+//モデルのキューブごとのデータの定義
+struct DataPerCube
 {
-	//左下
-	float2(0.0, 1.0),
-	//左上
-	float2(0.0, 0.0),
-	//右上
-	float2(1.0, 0.0),
-	//右上
-	float2(1.0, 0.0),
-	//右下
-	float2(1.0, 1.0),
-	//左下
-	float2(0.0, 1.0)
+	float2 cubeUVArray[36];
+	float4x4 cubeMatrix;
+	uint objectDataIndex;
 };
+
+//モデルのキューブごとのデータ(StructuredBuffer)
+StructuredBuffer<DataPerCube> DataPerCubeBuffer : register(t1);
+
+//オブジェクトごとのデータの定義
+struct DataPerObject
+{
+	float4x4 objectMatrix;
+};
+
+//オブジェクトごとのデータ(StructuredBuffer)
+StructuredBuffer<DataPerObject> DataPerObjectBuffer : register(t2);
 
 VS_OUT main(VS_IN input)
 {
+	//キューブごとのデータ
+	DataPerCube dataPerCube = DataPerCubeBuffer[input.instanceID];
+
 	VS_OUT output;
+	//モデル用行列とオブジェクト行列を掛けてインスタンス用行列を計算
+	float4x4 worldMat = mul(dataPerCube.cubeMatrix, DataPerObjectBuffer[dataPerCube.objectDataIndex].objectMatrix);
 	//インスタンス用行列 * view * proj
-	float4x4 mat = mul(mul(input.instanceMat, view), projection);
+	float4x4 mat = mul(mul(worldMat, view), projection);
 	output.pos = mul(input.pos, mat);
-	output.normal = normalize(mul(input.normal, (float3x3)input.instanceMat));
+	output.normal = normalize(mul(input.normal, (float3x3)worldMat));
 
-	int uvIndex = input.vertexID / 12;
-	int indexOffset = step(uvIndex, 2) * 2;
-	int multPatternIndex = input.vertexID % 6;
+	//UVをStructuredBufferから取り出す
+	output.uv = dataPerCube.cubeUVArray[input.vertexID];
 
-	float2 uvOrigin = float2(input.instanceUVOrigins[indexOffset][uvIndex], input.instanceUVOrigins[1 + indexOffset][uvIndex]);
-	float2 uvSize = float2(input.instanceUVSizes[indexOffset][uvIndex], input.instanceUVSizes[1 + indexOffset][uvIndex]);
-
-	//UVの原点 + 頂点毎のUVパターン * UVのサイズ
-	output.uv = uvOrigin + uvMultPatterns[multPatternIndex] * uvSize;
-
-	output.worldPos = mul(input.pos, input.instanceMat).xyz;
-	output.color = input.instanceColor;
+	output.worldPos = mul(input.pos, worldMat).xyz;
+	output.color = float4(1.0, 1.0, 1.0, 1.0);
 
 	return output;
 }

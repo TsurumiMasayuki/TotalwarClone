@@ -3,8 +3,10 @@
     {
         "Name" : "NormalBattleship",
         "DisplayName" : "Normal Battleship",
+        "ModelName" : "HogeHoge",
         "ObjectCount" : 1,
         "ObjectSize" : [5.0, 5.0, 10.0],
+        "ModelSize" : [0.1, 0.1, 0.1],
         "SpacePerObject" : 0.0,
         "MaxHealthPerObject" : 40000.0,
         "MaxShieldPerObject" : 0.0,

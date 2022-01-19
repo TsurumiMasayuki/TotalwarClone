@@ -1,34 +1,18 @@
 #include "BlockbenchModel.h"
 
-BlockbenchModel::BlockbenchModel(const std::vector<DirectX::XMMATRIX>& cubeMatrices,
-	const std::vector<UV>& uvOrigins,
-	const std::vector<UV>& uvSizes,
-	const std::string& textureName)
-	: m_TextureName(textureName)
+BlockbenchModel::BlockbenchModel(const std::vector<Cube>& cubes,
+	const std::string& textureName,
+	unsigned int cubeCount)
+	: m_TextureName(textureName),
+	m_CubeCount(cubeCount)
 {
-	//vectorのメモリ確保
-	m_CubeMatrices.reserve(cubeMatrices.size());
-	m_CubeUVOrigins.reserve(uvOrigins.size());
-	m_CubeUVSizes.reserve(uvSizes.size());
+	m_Cubes.reserve(cubes.size());
 
-	//行列を移し替える
-	for (auto& matrix : cubeMatrices)
+	//キューブ情報を移し替える
+	for (auto& cube : cubes)
 	{
-		m_CubeMatrices.emplace_back();
-		m_CubeMatrices.back() = matrix;
-	}
-
-	//UVを移し替える
-	for (auto& uvOrigin : uvOrigins)
-	{
-		m_CubeUVOrigins.emplace_back();
-		m_CubeUVOrigins.back() = uvOrigin;
-	}
-
-	for (auto& uvSize : uvSizes)
-	{
-		m_CubeUVSizes.emplace_back();
-		m_CubeUVSizes.back() = uvSize;
+		m_Cubes.emplace_back();
+		m_Cubes.back() = cube;
 	}
 }
 
@@ -37,17 +21,12 @@ const std::string& BlockbenchModel::getTextureName() const
 	return m_TextureName;
 }
 
-const std::vector<DirectX::XMMATRIX>& BlockbenchModel::getCubeMatrices() const
+const std::vector<Cube>& BlockbenchModel::getCubes() const
 {
-	return m_CubeMatrices;
+	return m_Cubes;
 }
 
-const std::vector<UV>& BlockbenchModel::getUVOrigins() const
+unsigned int BlockbenchModel::getCubeCount() const
 {
-	return m_CubeUVOrigins;
-}
-
-const std::vector<UV>& BlockbenchModel::getUVSizes() const
-{
-	return m_CubeUVSizes;
+	return m_CubeCount;
 }

@@ -8,11 +8,13 @@
 
 struct UnitStats;
 class BlockbenchModel;
+class BBModelMaterial;
 
 class UnitRenderHelper
 {
 public:
-	UnitRenderHelper(const UnitStats* pUnitStats, BlockbenchModel* pModel, InstancedRenderer<UnitInstanceInfo>* pInstancedRenderer);
+	UnitRenderHelper(const UnitStats* pUnitStats, const BlockbenchModel* pModel, InstancedRenderer<UnitInstanceInfo>* pInstancedRenderer);
+	~UnitRenderHelper();
 
 	//インスタンス用情報を連結する(Transpose不要)
 	void appendInstanceInfo(const std::vector<DirectX::XMMATRIX>& objMatrices);
@@ -22,10 +24,17 @@ public:
 private:
 	//ユニットのステータス
 	const UnitStats* m_pUnitStats;
-	//モデル
-	BlockbenchModel* m_pModel;
-	//InstancedRendererに送る用の情報
-	std::vector<UnitInstanceInfo> m_InstanceInfo;
+	//オブジェクトごとのデータ
+	std::vector<DirectX::XMMATRIX> m_DataPerObject;
 	//描画するInstancedRenderer
 	InstancedRenderer<UnitInstanceInfo>* m_pInstancedRenderer;
+
+	//Blockbenchモデル
+	const BlockbenchModel* m_pBBModel;
+	//Blockbenchモデル用マテリアル
+	BBModelMaterial* m_pMaterial;
+
+
+	//前フレームのオブジェクト数
+	int m_PreviousObjectCount;
 };

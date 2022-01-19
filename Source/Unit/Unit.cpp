@@ -101,7 +101,7 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 		auto pObj = m_GameObjects.back();
 		pObj = new GameObject(getUser().getGameMediator());
 		auto& transform = pObj->getTransform();
-		transform.setLocalScale(m_pUnitStats->m_ObjectSize);
+		transform.setLocalScale(m_pUnitStats->m_ModelSize);
 
 		//コンポーネントを追加
 		m_UnitObjects.emplace_back();
