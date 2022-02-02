@@ -34,7 +34,7 @@ void UIUnitInfo::setUnit(Unit* pUnit)
 	if (m_pName == nullptr)
 		initUIObjects();
 
-	m_pName->setText(StringUtility::ToWString(pUnitStats->m_DisplayName));
+	m_pName->setText(pUnitStats->m_DisplayName);
 
 	//HPのテキスト設定
 	m_pHealthValue->setText(std::to_wstring((int)m_pUnit->getHealth()));
@@ -53,7 +53,7 @@ void UIUnitInfo::setUnitInfoDirect(const UnitStats* pUnitStats)
 	if (m_pName == nullptr)
 		initUIObjects();
 
-	m_pName->setText(StringUtility::ToWString(pUnitStats->m_DisplayName));
+	m_pName->setText(pUnitStats->m_DisplayName);
 
 	float health = pUnitStats->m_MaxHealthPerObject * pUnitStats->m_ObjectCount;
 

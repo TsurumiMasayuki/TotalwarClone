@@ -34,12 +34,16 @@ public:
 	//ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ğ“o˜^(Šù‚É“o˜^‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ÍƒNƒŠƒA‚³‚ê‚é)
 	void setRenderTarget(DX12RenderTarget* pRenderTarget);
 
-	//“o˜^‚³‚ê‚½‚à‚Ì‚ğ‘S‚Ä•`‰æ
-	void draw();
+	//“o˜^‚³‚ê‚½‚à‚Ì‚ğ‘S‚Ä•`‰æ(D2DŒn‚ğ•`‰æ‚·‚é‚©‘I‘ğ‰Â)
+	void draw(bool isDrawD2D = true);
 	//w’è‚³‚ê‚½Renderer‚Ì‚İ•`‰æ
-	void drawSingle(IRenderer* pRenderer);
+	void drawSingle(IRenderer* pRenderer, bool isDrawD2D = true);
 	//ƒEƒBƒ“ƒhƒEã‚É•\¦
 	void present();
+
+private:
+	//D2DŒn•`‰æ
+	void drawD2D();
 
 private:
 	ManagerHelper<Camera*> m_CameraList;
@@ -55,8 +59,5 @@ private:
 	bool m_RTVFlag;
 
 	DX12RenderTarget m_BackBuffers[2];
-	Microsoft::WRL::ComPtr<ID3D11Resource> m_WrappedBackBuffers[2];
-	Microsoft::WRL::ComPtr<ID2D1Bitmap1> m_D2DRenderTargets[2];
-
 	DX12RenderTarget* m_pRenderTarget;
 };

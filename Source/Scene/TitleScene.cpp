@@ -34,7 +34,7 @@ void TitleScene::start()
 	m_pTextRenderer->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 	m_pTextRenderer->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);
 	m_pTextRenderer->setColor(Color(0.0f, 1.0f, 0.0f, 1.0f));
-	m_pTextRenderer->setText(L"ƒ^ƒCƒgƒ‹");
+	m_pTextRenderer->setText(L"SPACE BATTLE SIMULATOR");
 
 	//”Â‚Ì•
 	const float plateWidth = 64.0f;

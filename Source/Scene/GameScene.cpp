@@ -1,6 +1,13 @@
 #include "GameScene.h"
+
+#include "Component\Graphics\PostEffectRenderer.h"
 #include "Component\Graphics\InstancedRenderer.h"
+#include "Component\Graphics\D2DTextRenderer.h"
+#include "Component\Graphics\GUI\GUISpriteRenderer.h"
 #include "Component\Physics\BoxColliderBt.h"
+#include "Component\Utility\Action\ActionManager.h"
+#include "Component\Utility\Action\Actions.h"
+
 #include "Def\Screen.h"
 #include "Device\GameDevice.h"
 #include "Utility\ModelGameObjectHelper.h"
@@ -13,14 +20,10 @@
 #include "Blockbench\BlockbenchLoader.h"
 
 #include "Component\Cursor.h"
-#include "Component\Box2D\PhysicsManagerB2.h"
-#include "Component\Graphics\D2DTextRenderer.h"
-#include "Component\Graphics\GUI\GUISpriteRenderer.h"
-#include "Component\Physics\BoxColliderBt.h"
-#include "Component\Utility\Action\ActionManager.h"
-#include "Component\Utility\Action\Actions.h"
-
 #include "Component\Skybox.h"
+#include "Component\Box2D\PhysicsManagerB2.h"
+
+#include "Effect\BloomPostEffect.h"
 
 #include "Graphics\DX12\Material\DefaultMaterials.h"
 #include "Graphics\Material\ValueMapMaterial.h"
@@ -250,6 +253,9 @@ void GameScene::start()
 	GameDevice::getTextureManager().load("HogeHoge", L"Resources/HogeHoge.png");
 	m_BBModelLoader.load("Resources/HogeHoge.json", "HogeHoge", "HogeHoge");
 
+	GameDevice::getTextureManager().load("NormalCruiser", L"Resources/BBModel/NormalCruiser.png");
+	m_BBModelLoader.load("Resources/BBModel/NormalCruiser.json", "NormalCruiser", "NormalCruiser");
+
 	//ユニット描画用オブジェクト生成
 	for (const auto& pair : JsonFileManager<UnitStats>::getInstance().getAll())
 	{
@@ -261,7 +267,7 @@ void GameScene::start()
 
 		m_UnitRenderHelpers.emplace(pair.first, new UnitRenderHelper(&pair.second, bbModel, pRenderer));
 	}
-	
+
 	auto pCubeModel = GameDevice::getModelManager().getModel("Cube");
 
 	//エフェクト描画用オブジェクト生成
@@ -340,10 +346,21 @@ void GameScene::start()
 		auto pUIBattleSlider = pUIObj->addComponent<UIBattleSlider>();
 		pUIBattleSlider->init(m_pPlayer, m_pAIPlayer);
 	}
-	
+
 	m_IsSceneChangeBegin = false;
 	m_SceneChangeTimer.setMaxTime(5.5f);
 	m_SceneChangeTimer.reset();
+
+	//ポストエフェクト用レンダラー生成
+	auto pObj = new GameObject(this);
+	pObj->setParent(&m_pDefaultCamera->getUser());
+	pObj->getTransform().setLocalPosition(Vec3(0.0f, 0.0f, 1.0f));
+	pObj->getTransform().setLocalScale(Vec3(1280.0f, 720.0f, 1.0f));
+	auto pPostEffectRenderer = pObj->addComponent<PostEffectRenderer>();
+
+	//ポストエフェクトのインスタンス生成
+	m_pBloomPostEffect = new BloomPostEffect(pPostEffectRenderer);
+	m_pBloomPostEffect->init();
 }
 
 void GameScene::update()
@@ -441,6 +458,9 @@ void GameScene::update()
 
 void GameScene::shutdown()
 {
+	//ブルームポストエフェクト削除
+	delete m_pBloomPostEffect;
+
 	//マテリアルの削除
 	delete m_pInstancingMaterial;
 	delete m_pValueMapMaterial;
@@ -461,6 +481,11 @@ void GameScene::shutdown()
 	Game::g_GameState = Game::GameState::PreparePhase;
 
 	m_BBModelLoader.unLoadModels();
+}
+
+void GameScene::draw()
+{
+	m_pBloomPostEffect->draw();
 }
 
 void GameScene::lateUpdate()

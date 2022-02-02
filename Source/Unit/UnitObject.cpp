@@ -22,6 +22,7 @@
 #include "GameState.h"
 
 #include "Effect\TestEffect_Beam.h"
+#include "Effect\CubeTrailEffect.h"
 
 void UnitObject::onStart()
 {
@@ -117,6 +118,9 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 	float scaleX = pUnitStats->m_ObjectSize.x;
 	m_pTrigger->setRadius(m_pLongestMainAttack->getAttackRange() / scaleX);
 	m_pTrigger->setGroupIndex(-1);
+
+	//軌跡エフェクトコンポーネント追加
+	getUser().addComponent<CubeTrailEffect>()->init(pEffectRenderHelper);
 }
 
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)

@@ -149,7 +149,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		pNameRenderer->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
 		pNameRenderer->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);
-		pNameRenderer->setText(StringUtility::ToWString(unitStats.m_DisplayName));
+		pNameRenderer->setText(unitStats.m_DisplayName);
 
 		//ユニットコスト
 		auto pUnitCostObj = new GameObject(getUser().getGameMediator());

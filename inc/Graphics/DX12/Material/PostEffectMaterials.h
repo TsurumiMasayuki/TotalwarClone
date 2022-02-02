@@ -41,6 +41,7 @@ public:
 	static Microsoft::WRL::ComPtr<ID3D12PipelineState> g_pPipelineState;
 
 	DX12Texture2D* m_pTexture2D;
+	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureSRV;
 };
 
 class LuminanceExtractMaterial
@@ -58,12 +59,12 @@ public:
 	void setTexture(DX12Texture2D* pTexture2D);
 
 private:
+	DX12Texture2D* m_pTexture2D;
+	D3D12_GPU_DESCRIPTOR_HANDLE m_TextureSRV;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pDescriptorHeap;
 
 	static Microsoft::WRL::ComPtr<ID3D12RootSignature> g_pRootSignature;
 	static Microsoft::WRL::ComPtr<ID3D12PipelineState> g_pPipelineState;
-
-	DX12Texture2D* m_pTexture2D;
 };
 
 class AdditiveMaterial

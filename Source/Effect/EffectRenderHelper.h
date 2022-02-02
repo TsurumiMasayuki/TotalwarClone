@@ -18,9 +18,9 @@ public:
 	EffectRenderHelper(InstancedRenderer<EffectInstanceInfo>* pInstancedRenderer);
 
 	//インスタンス用情報を連結する(単体。Transpose不要)
-	void appendInstanceInfoSingle(const DirectX::XMMATRIX& objMatrix);
+	void appendInstanceInfoSingle(const DirectX::XMMATRIX& objMatrix, const Color& color = Color(DirectX::Colors::Yellow));
 	//インスタンス用情報を連結する(Transpose不要)
-	void appendInstanceInfo(const std::vector<DirectX::XMMATRIX>& objMatrices);
+	void appendInstanceInfo(const std::vector<DirectX::XMMATRIX>& objMatrices, const Color& color = Color(DirectX::Colors::Yellow));
 	//インスタンス用情報をRendererに転送
 	void sendInstanceInfo();
 

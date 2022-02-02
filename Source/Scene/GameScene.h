@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "AI\ValueMap.h"
 #include "Scene\Base\AbstractScene.h"
+#include "Effect\BloomPostEffect.h"
 #include "Effect\EffectRenderHelper.h"
 #include "Blockbench\BlockbenchLoader.h"
 #include "Utility\Timer.h"
@@ -38,6 +39,8 @@ public:
 	virtual void start() override;
 	virtual void update() override;
 	virtual void shutdown() override;
+
+	virtual void draw() override;
 
 	virtual void lateUpdate() override;
 
@@ -91,4 +94,7 @@ private:
 	Timer m_SceneChangeTimer;
 
 	BlockbenchLoader m_BBModelLoader;
+
+	//ブルームポストエフェクト
+	BloomPostEffect* m_pBloomPostEffect;
 };

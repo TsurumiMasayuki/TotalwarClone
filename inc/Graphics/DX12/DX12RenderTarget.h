@@ -1,7 +1,12 @@
 #pragma once
 #include <wrl.h>
 #include <vector>
+#include <d3d11on12.h>
 #include <d3d12.h>
+#include <dxgi1_6.h>
+#include <d2d1_3.h>
+#include <dwrite.h>
+
 #include <Utility\INonCopyable.h>
 #include <Graphics\DX12\DX12Texture2D.h>
 
@@ -17,6 +22,8 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE getDSVCPUDescriptorHandle();
 	void getClearColor(float clearColor[4]) const;
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& getResource(int index);
+	const Microsoft::WRL::ComPtr<ID3D11Resource>& getWrappedResource(int index);
+	const Microsoft::WRL::ComPtr<ID2D1Bitmap1>& getD2DRenderTarget(int index);
 	DX12Texture2D& getTexture(int index) { return m_Textures.at(index); }
 	int getRenderTargetCount() const;
 
@@ -30,8 +37,19 @@ private:
 	float m_ClearColor[4];
 	bool m_IsInitWithResource;
 
+	//テクスチャのリスト
 	std::vector<DX12Texture2D> m_Textures;
+	//D2D用リソースのリスト
+	std::vector<Microsoft::WRL::ComPtr<ID3D11Resource>> m_WrappedResources;
+	//D2D用レンダーターゲットのリスト
+	std::vector<Microsoft::WRL::ComPtr<ID2D1Bitmap1>> m_D2DRenderTargets;
+
+	//リソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_pTextureResource;
+	//D2D用リソース
+	Microsoft::WRL::ComPtr<ID3D11Resource> m_pWrappedResource;
+	//D2D用レンダーターゲット
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1> m_pD2DRenderTarget;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pSRVHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pRTVHeap;

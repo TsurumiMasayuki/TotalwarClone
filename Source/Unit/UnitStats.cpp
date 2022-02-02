@@ -1,8 +1,9 @@
 #include "UnitStats.h"
+#include "Utility\StringUtility.h"
 
 UnitStats::UnitStats(nlohmann::json& json)
 	:  m_Name(json["UnitStats"]["Name"]),
-	m_DisplayName(json["UnitStats"]["DisplayName"]),
+	m_DisplayName(L"•Û—¯"),
 	m_ModelName(json["UnitStats"]["ModelName"]),
 	m_ObjectCount((int)json["UnitStats"]["ObjectCount"]),
 	m_ObjectSize(Vec3((float)json["UnitStats"]["ObjectSize"][0],

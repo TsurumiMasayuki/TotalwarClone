@@ -2,7 +2,7 @@
     "UnitStats" :
     {
         "Name" : "NormalBattleship",
-        "DisplayName" : "Normal Battleship",
+        "DisplayName" : "戦艦",
         "ModelName" : "HogeHoge",
         "ObjectCount" : 1,
         "ObjectSize" : [5.0, 5.0, 10.0],

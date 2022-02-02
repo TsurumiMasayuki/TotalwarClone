@@ -5,17 +5,17 @@ EffectRenderHelper::EffectRenderHelper(InstancedRenderer<EffectInstanceInfo>* pI
 {
 }
 
-void EffectRenderHelper::appendInstanceInfoSingle(const DirectX::XMMATRIX& objMatrix)
+void EffectRenderHelper::appendInstanceInfoSingle(const DirectX::XMMATRIX& objMatrix, const Color& color)
 {
 	m_InstanceInfo.emplace_back();
 	auto& instance = m_InstanceInfo.back();
 
 	//インスタンシング用情報を設定(UV系は後ほど)
 	DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(objMatrix));
-	DirectX::XMStoreFloat4(&instance.instanceColor, DirectX::Colors::Yellow);
+	DirectX::XMStoreFloat4(&instance.instanceColor, color.toXMVECTOR());
 }
 
-void EffectRenderHelper::appendInstanceInfo(const std::vector<DirectX::XMMATRIX>& objMatrices)
+void EffectRenderHelper::appendInstanceInfo(const std::vector<DirectX::XMMATRIX>& objMatrices, const Color& color)
 {
 	//インスタンシング用情報を連結
 	for (const auto& matrix : objMatrices)
@@ -24,7 +24,7 @@ void EffectRenderHelper::appendInstanceInfo(const std::vector<DirectX::XMMATRIX>
 		auto& instance = m_InstanceInfo.back();
 
 		DirectX::XMStoreFloat4x4(&instance.instanceMat, DirectX::XMMatrixTranspose(matrix));
-		DirectX::XMStoreFloat4(&instance.instanceColor, DirectX::Colors::Yellow);
+		DirectX::XMStoreFloat4(&instance.instanceColor, color.toXMVECTOR());
 	}
 }
 

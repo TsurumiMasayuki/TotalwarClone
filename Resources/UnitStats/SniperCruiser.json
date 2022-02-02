@@ -1,7 +1,7 @@
 {
     "UnitStats" :
     {
-        "Name" : "SniperCruiser",
+        "Name" : "狙撃巡洋艦",
         "DisplayName" : "Sniper Cruiser",
         "ModelName" : "HogeHoge",
         "ObjectCount" : 5,
