@@ -264,8 +264,17 @@ void GameScene::start()
 	GameDevice::getTextureManager().load("HogeHoge", L"Resources/HogeHoge.png");
 	m_BBModelLoader.load("Resources/HogeHoge.json", "HogeHoge", "HogeHoge");
 
-	GameDevice::getTextureManager().load("NormalCruiser", L"Resources/BBModel/NormalCruiser.png");
-	m_BBModelLoader.load("Resources/BBModel/NormalCruiser.json", "NormalCruiser", "NormalCruiser");
+	//Blockbenchモデル読み込み
+	{
+		GameDevice::getTextureManager().load("Corvette", L"Resources/BBModel/Corvette.png");
+		m_BBModelLoader.load("Resources/BBModel/Corvette.json", "Corvette", "Corvette");
+
+		GameDevice::getTextureManager().load("NormalCruiser", L"Resources/BBModel/NormalCruiser.png");
+		m_BBModelLoader.load("Resources/BBModel/NormalCruiser.json", "NormalCruiser", "NormalCruiser");
+
+		GameDevice::getTextureManager().load("SniperCruiser", L"Resources/BBModel/SniperCruiser.png");
+		m_BBModelLoader.load("Resources/BBModel/SniperCruiser.json", "SniperCruiser", "SniperCruiser");
+	}
 
 	//ユニット描画用オブジェクト生成
 	for (const auto& pair : JsonFileManager<UnitStats>::getInstance().getAll())

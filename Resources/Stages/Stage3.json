@@ -1,6 +1,10 @@
 {
     "StageName" : "Stage 3",
-    "PlayerEnergy" : 6000,
+    "PlayerEnergy" : 14000,
+    "AvailableUnits" : [
+        "NormalCorvette",
+        "NormalCruiser"
+    ],
     "EnemyUnits" : [
         {
             "EnemyName" : "NormalCruiser",

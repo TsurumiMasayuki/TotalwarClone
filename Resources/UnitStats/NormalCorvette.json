@@ -3,7 +3,7 @@
     {
         "Name" : "NormalCorvette",
         "DisplayName" : "コルベット",
-        "ModelName" : "HogeHoge",
+        "ModelName" : "Corvette",
         "ObjectCount" : 60,
         "ObjectSize" : [1.0, 1.0, 2.0],
         "ModelSize" : [0.1, 0.1, 0.1],
