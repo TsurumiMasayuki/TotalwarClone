@@ -31,6 +31,8 @@ void UnitObject::onStart()
 
 void UnitObject::onUpdate()
 {
+	updateTrailEffect();
+
 	//準備フェーズ中なら何も行わない
 	if (Game::g_GameState == Game::GameState::PreparePhase)
 		return;
@@ -48,7 +50,6 @@ void UnitObject::onUpdate()
 	rotate();
 
 	updateAttack();
-	updateTrailEffect();
 
 	m_TargetCandidates.clear();
 }
@@ -327,7 +328,8 @@ void UnitObject::updateAttack()
 void UnitObject::updateTrailEffect()
 {
 	Vec3 diff = m_Destination - getTransform().getLocalPosition();
+	diff.y = 0.0f;
 
-	//目的地に着いた場合はエフェクトを切ってreturn
-	m_pCubeTrailEffect->setActive(diff.sqrLength() >= 0.5f);
+	//目的地に着いたor死んでいる場合はエフェクトを切る
+	m_pCubeTrailEffect->setActive(diff.sqrLength() >= 3.0f && !m_IsDead);
 }
