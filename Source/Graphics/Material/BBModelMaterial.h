@@ -46,7 +46,9 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE m_MainTextureSRV;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pDescriptorHeap;
 
+	//立方体ごとのStructuredBuffer
 	DX12StructuredBuffer<DataPerCube> m_DataPerCubeBuffer;
+	//オブジェクトごとのStructuredBuffer
 	DX12StructuredBuffer<DataPerObject> m_DataPerObjectBuffer;
 
 	const BlockbenchModel* m_pBBModel;

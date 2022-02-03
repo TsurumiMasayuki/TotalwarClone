@@ -18,7 +18,7 @@ void CubeTrailEffect::onUpdate()
 	m_Timer.reset();
 
 	auto pEffectObject = new GameObject(getUser().getGameMediator());
-	pEffectObject->getTransform().setLocalPosition(getTransform().getLocalPosition());
+	pEffectObject->getTransform().setLocalPosition(getTransform().getLocalPosition() - Vec3(0.0f, 0.5f, 0.0f));
 	pEffectObject->getTransform().setLocalScale(Vec3::zero());
 
 	auto pCubeTrailParticle = pEffectObject->addComponent<CubeTrailParticle>();

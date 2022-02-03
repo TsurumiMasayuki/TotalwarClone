@@ -48,6 +48,7 @@ void UnitObject::onUpdate()
 	rotate();
 
 	updateAttack();
+	updateTrailEffect();
 
 	m_TargetCandidates.clear();
 }
@@ -120,7 +121,8 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 	m_pTrigger->setGroupIndex(-1);
 
 	//軌跡エフェクトコンポーネント追加
-	getUser().addComponent<CubeTrailEffect>()->init(pEffectRenderHelper);
+	m_pCubeTrailEffect = getUser().addComponent<CubeTrailEffect>();
+	m_pCubeTrailEffect->init(pEffectRenderHelper);
 }
 
 void UnitObject::setDestination(const Vec3& destination, bool isMoveCommand)
@@ -242,6 +244,7 @@ void UnitObject::takeDamage(float damage)
 		m_pCollider->setVelocity(0.0f, 0.0f);
 		m_pCollider->setActive(false);
 		m_pTrigger->setActive(false);
+		m_pCubeTrailEffect->setActive(false);
 	}
 }
 
@@ -320,4 +323,12 @@ void UnitObject::updateAttack()
 			!focusTarget)
 			m_TargetCandidates.erase(pTarget);
 	}
+}
+
+void UnitObject::updateTrailEffect()
+{
+	Vec3 diff = m_Destination - getTransform().getLocalPosition();
+
+	//目的地に着いた場合はエフェクトを切ってreturn
+	m_pCubeTrailEffect->setActive(diff.sqrLength() >= 0.5f);
 }

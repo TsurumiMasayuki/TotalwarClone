@@ -9,6 +9,7 @@ class Attack;
 class CircleColliderB2;
 class ValueMap;
 class TestEffect_Beam;
+class CubeTrailEffect;
 class EffectRenderHelper;
 
 class UnitObject
@@ -47,6 +48,7 @@ public:
 private:
 	void updateShield();
 	void updateAttack();
+	void updateTrailEffect();
 
 	void move();
 	void rotate();
@@ -86,4 +88,7 @@ private:
 
 	//攻撃クラス(サブ)
 	std::vector<Attack*> m_SubAttacks;
+
+	//エフェクト
+	CubeTrailEffect* m_pCubeTrailEffect;
 };
