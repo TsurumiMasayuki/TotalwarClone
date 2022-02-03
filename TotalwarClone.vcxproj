@@ -169,7 +169,6 @@
     <ClCompile Include="Source\Effect\BloomPostEffect.cpp" />
     <ClCompile Include="Source\Effect\CubeTrailEffect.cpp" />
     <ClCompile Include="Source\Effect\EffectRenderHelper.cpp" />
-    <ClCompile Include="Source\Effect\GamePlayBackGround.cpp" />
     <ClCompile Include="Source\Effect\TestEffect_Beam.cpp" />
     <ClCompile Include="Source\Scene\SelectScene.cpp" />
     <ClCompile Include="Source\Scene\TitleScene.cpp" />
@@ -220,7 +219,6 @@
     <ClInclude Include="Source\Effect\BloomPostEffect.h" />
     <ClInclude Include="Source\Effect\CubeTrailEffect.h" />
     <ClInclude Include="Source\Effect\EffectRenderHelper.h" />
-    <ClInclude Include="Source\Effect\GamePlayBackGround.h" />
     <ClInclude Include="Source\Effect\IEffect.h" />
     <ClInclude Include="Source\Effect\TestEffect_Beam.h" />
     <ClInclude Include="Source\Graphics\DX12\DX12StructuredBuffer.h" />

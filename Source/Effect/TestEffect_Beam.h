@@ -27,7 +27,7 @@ public:
 	void setWidth(float width);
 	void setTime(float time);
 
-	void init(EffectRenderHelper* pEffectRenderHelper);
+	void init(EffectRenderHelper* pEffectRenderHelper, const Color& color);
 	virtual void playEffect() override;
 
 private:
@@ -41,4 +41,5 @@ private:
 	Transform* m_pBeamTransform;
 	Action::ActionManager* m_pActionManager;
 	EffectRenderHelper* m_pEffectRenderHelper;
+	Color m_Color;
 };

@@ -84,7 +84,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 
 		//エフェクト生成
 		auto pAttackEffect = pEffectObj->addComponent<TestEffect_Beam>();
-		pAttackEffect->init(pEffectRenderHelper);
+		pAttackEffect->init(pEffectRenderHelper, Color(m_pUnit->getTeamID() == 0 ? DirectX::Colors::Cyan : DirectX::Colors::Orange));
 
 		//攻撃クラス生成
 		m_MainAttacks.emplace_back(
@@ -116,8 +116,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 	//射程距離と同じサイズにするためにスケールで割る
 	//最も射程距離が長い攻撃を登録
 	m_pLongestMainAttack = m_MainAttacks.at(0);
-	float scaleX = pUnitStats->m_ObjectSize.x;
-	m_pTrigger->setRadius(m_pLongestMainAttack->getAttackRange() / scaleX);
+	m_pTrigger->setRadius(m_pLongestMainAttack->getAttackRange());
 	m_pTrigger->setGroupIndex(-1);
 
 	//軌跡エフェクトコンポーネント追加

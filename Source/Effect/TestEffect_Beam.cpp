@@ -25,7 +25,7 @@ void TestEffect_Beam::onStart()
 
 void TestEffect_Beam::onUpdate()
 {
-	m_pEffectRenderHelper->appendInstanceInfoSingle(m_pBeamTransform->getWorldMatrix());
+	m_pEffectRenderHelper->appendInstanceInfoSingle(m_pBeamTransform->getWorldMatrix(), m_Color);
 }
 
 void TestEffect_Beam::setBeginPos(const Vec3& position)
@@ -48,9 +48,10 @@ void TestEffect_Beam::setTime(float time)
 	m_Time = time;
 }
 
-void TestEffect_Beam::init(EffectRenderHelper* pEffectRenderHelper)
+void TestEffect_Beam::init(EffectRenderHelper* pEffectRenderHelper, const Color& color)
 {
 	m_pEffectRenderHelper = pEffectRenderHelper;
+	m_Color = color;
 }
 
 void TestEffect_Beam::playEffect()

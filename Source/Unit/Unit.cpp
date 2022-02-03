@@ -182,7 +182,8 @@ void Unit::setTarget(Unit* pTarget, bool isPlayerCommand)
 	const Vec3& targetPos = m_pTargetUnit->getTransform().getLocalPosition();
 	Vec3 diff = targetPos - myPos;
 
-	Vec3 destination = targetPos + -diff.normalized() * m_MainAttackRange;
+	//UŒ‚”ÍˆÍ‚ÌƒMƒŠƒMƒŠ‚ğ–Ú“I’n‚Éİ’è
+	Vec3 destination = targetPos + -diff.normalized() * (m_MainAttackRange - 5.0f);
 	float radian = atan2f(diff.x, diff.z);
 
 	//–Ú“I’nİ’è
