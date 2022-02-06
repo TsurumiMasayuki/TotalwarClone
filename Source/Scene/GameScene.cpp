@@ -274,6 +274,9 @@ void GameScene::start()
 
 		GameDevice::getTextureManager().load("SniperCruiser", L"Resources/BBModel/SniperCruiser.png");
 		m_BBModelLoader.load("Resources/BBModel/SniperCruiser.json", "SniperCruiser", "SniperCruiser");
+
+		GameDevice::getTextureManager().load("NormalBattleship", L"Resources/BBModel/NormalBattleship.png");
+		m_BBModelLoader.load("Resources/BBModel/NormalBattleship.json", "NormalBattleship", "NormalBattleship");
 	}
 
 	//ユニット描画用オブジェクト生成

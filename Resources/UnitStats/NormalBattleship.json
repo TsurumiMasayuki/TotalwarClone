@@ -3,10 +3,10 @@
     {
         "Name" : "NormalBattleship",
         "DisplayName" : "戦艦",
-        "ModelName" : "HogeHoge",
+        "ModelName" : "NormalBattleship",
         "ObjectCount" : 1,
         "ObjectSize" : [5.0, 5.0, 10.0],
-        "ModelSize" : [0.1, 0.1, 0.1],
+        "ModelSize" : [0.5, 0.5, 0.5],
         "SpacePerObject" : 0.0,
         "MaxHealthPerObject" : 40000.0,
         "MaxShieldPerObject" : 0.0,
