@@ -24,6 +24,9 @@ public:
 	Vec3 getMousePosition() const;
 	Vec3 getMouseMove() const;
 
+	//マウスホイールの動きを返します
+	float getMouseWheelMove() const;
+
 private:
 	IDirectInput8* m_pDInput;
 	IDirectInputDevice8* m_pDevKeyBoard;

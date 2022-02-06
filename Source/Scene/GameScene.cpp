@@ -419,26 +419,33 @@ void GameScene::update()
 		m_pWinLoseText->setText(!m_pPlayer->isDefeat() ? L"Win!" : L"Lose...");
 	}
 
-	//スペースキーが押されたらカメラ移動
+	auto& cameraTr = m_pDefaultCamera->getTransform();
+	Vec3 mousePos = GameDevice::getInput().getMouseMove();
+
+	//スペースキーが押されたらカメラ回転
 	if (GameDevice::getInput().isKey(DIK_SPACE))
 	{
-		auto& cameraTr = m_pDefaultCamera->getTransform();
-
-		auto mousePos = GameDevice::getInput().getMouseMove();
 		cameraTr.setLocalAngles(cameraTr.getLocalAngles() + Vec3(mousePos.y, mousePos.x, 0.0f).normalized());
-
-		const auto& input = GameDevice::getInput();
-		Vec3 move;
-		if (input.isKey(DIK_W)) move.z += 1.0f;
-		if (input.isKey(DIK_S)) move.z -= 1.0f;
-		if (input.isKey(DIK_E)) move.y += 1.0f;
-		if (input.isKey(DIK_Q)) move.y -= 1.0f;
-		if (input.isKey(DIK_A)) move.x -= 1.0f;
-		if (input.isKey(DIK_D)) move.x += 1.0f;
-
-		move = move.multMatrix(cameraTr.getRotationMatrix());
-		cameraTr.setLocalPosition(cameraTr.getLocalPosition() + move);
 	}
+
+	const auto& input = GameDevice::getInput();
+	float mouseWheelMove = mousePos.z;
+
+	//移動量
+	float moveValue = 30.0f;
+
+	Vec3 move;
+	if (input.isKey(DIK_W)) move.z += moveValue;
+	if (input.isKey(DIK_S)) move.z -= moveValue;
+	if (mouseWheelMove > 0.0f) move.y -= moveValue * 20.0f;
+	if (mouseWheelMove < 0.0f) move.y += moveValue * 20.0f;
+	if (input.isKey(DIK_A)) move.x -= moveValue;
+	if (input.isKey(DIK_D)) move.x += moveValue;
+
+	DirectX::XMMATRIX rotMat = DirectX::XMMatrixRotationRollPitchYaw(0.0f, MathUtility::toRadian(cameraTr.getLocalAngles().y), 0.0f);
+
+	move = move.multMatrix(rotMat);
+	cameraTr.setLocalPosition(cameraTr.getLocalPosition() + move * GameDevice::getGameTime().getDeltaTime());
 
 	//シーン終了演出
 	if (GameDevice::getInput().isKeyDown(DIK_2) &&
