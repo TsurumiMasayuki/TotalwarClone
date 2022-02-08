@@ -34,7 +34,7 @@ void UIUnitInfo::setUnit(Unit* pUnit)
 	if (m_pName == nullptr)
 		initUIObjects();
 
-	m_pName->setText(pUnitStats->m_DisplayName);
+	m_pName->setText(StringUtility::ToWString(pUnitStats->m_DisplayName));
 
 	//HPのテキスト設定
 	m_pHealthValue->setText(std::to_wstring((int)m_pUnit->getHealth()));
@@ -53,7 +53,7 @@ void UIUnitInfo::setUnitInfoDirect(const UnitStats* pUnitStats)
 	if (m_pName == nullptr)
 		initUIObjects();
 
-	m_pName->setText(pUnitStats->m_DisplayName);
+	m_pName->setText(StringUtility::ToWString(pUnitStats->m_DisplayName));
 
 	float health = pUnitStats->m_MaxHealthPerObject * pUnitStats->m_ObjectCount;
 
@@ -86,7 +86,7 @@ void UIUnitInfo::initUIObjects()
 		m_pName->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
 		m_pName->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 		m_pName->setTextRect(0.0f, 0.0f, WindowWidth, WindowHeight);
-		m_pName->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		m_pName->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
 	//説明表示用
@@ -101,7 +101,7 @@ void UIUnitInfo::initUIObjects()
 		m_pDescription->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
 		m_pDescription->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 		m_pDescription->setTextRect(0.0f, 0.0f, WindowWidth, WindowHeight);
-		m_pDescription->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		m_pDescription->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
 	//HP表示用
@@ -116,7 +116,7 @@ void UIUnitInfo::initUIObjects()
 		m_pHealth->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
 		m_pHealth->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 		m_pHealth->setTextRect(0.0f, 0.0f, WindowWidth, WindowHeight);
-		m_pHealth->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		m_pHealth->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 		auto pHealthValueObj = new GameObject(pMediator);
 		pHealthValueObj->setParent(&getUser());
@@ -152,7 +152,7 @@ void UIUnitInfo::initUIObjects()
 		m_pCost->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
 		m_pCost->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 		m_pCost->setTextRect(0.0f, 0.0f, WindowWidth, WindowHeight);
-		m_pCost->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		m_pCost->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
 	//速度表示用
@@ -167,7 +167,7 @@ void UIUnitInfo::initUIObjects()
 		m_pSpeed->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
 		m_pSpeed->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 		m_pSpeed->setTextRect(0.0f, 0.0f, WindowWidth, WindowHeight);
-		m_pSpeed->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		m_pSpeed->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
 		auto pSliderObj = new GameObject(pMediator);
 		pSliderObj->getTransform().setLocalPosition(Vec3(500.0f, -120.0f, 1.0f));

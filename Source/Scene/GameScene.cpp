@@ -354,7 +354,7 @@ void GameScene::start()
 		m_pWinLoseText->setFontWeight(DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM);
 		m_pWinLoseText->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 		m_pWinLoseText->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
-		m_pWinLoseText->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		m_pWinLoseText->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pWinLoseText->setTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
 		m_pWinLoseText->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 		m_pWinLoseText->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);

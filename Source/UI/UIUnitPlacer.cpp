@@ -144,12 +144,12 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		pNameRenderer->setFontWeight(DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM);
 		pNameRenderer->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 		pNameRenderer->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
-		pNameRenderer->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		pNameRenderer->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 		pNameRenderer->setTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
 		pNameRenderer->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
 		pNameRenderer->setTextRect(0.0f, 0.0f, 1280.0f, 720.0f);
-		pNameRenderer->setText(unitStats.m_DisplayName);
+		pNameRenderer->setText(StringUtility::ToWString(unitStats.m_DisplayName));
 
 		//ユニットコスト
 		auto pUnitCostObj = new GameObject(getUser().getGameMediator());
@@ -164,7 +164,7 @@ void UIUnitPlacer::init(Cursor* pCursor,
 		pCostRenderer->setFontWeight(DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM);
 		pCostRenderer->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 		pCostRenderer->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
-		pCostRenderer->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+		pCostRenderer->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 		pCostRenderer->setTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
 		pCostRenderer->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 

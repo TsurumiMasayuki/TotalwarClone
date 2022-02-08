@@ -33,7 +33,7 @@ public:
 	const std::string m_Name;
 
 	//•\Ž¦–¼
-	const std::wstring m_DisplayName;
+	const std::string m_DisplayName;
 
 	//ƒ‚ƒfƒ‹–¼
 	const std::string m_ModelName;
