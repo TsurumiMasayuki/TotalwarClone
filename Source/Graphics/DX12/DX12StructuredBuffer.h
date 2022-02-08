@@ -2,6 +2,7 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include <Utility\INonCopyable.h>
+#include <vector>
 
 template<typename T>
 class DX12StructuredBuffer

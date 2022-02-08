@@ -2,7 +2,7 @@
     "UnitStats" :
     {
         "Name" : "NormalCruiser",
-        "DisplayName" : "巡洋艦",
+        "DisplayName" : "Cruiser",
         "ModelName" : "NormalCruiser",
         "ObjectCount" : 10,
         "ObjectSize" : [2.5, 2.5, 5],

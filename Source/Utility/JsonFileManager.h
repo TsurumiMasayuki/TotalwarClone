@@ -48,7 +48,7 @@ inline void JsonFileManager<T>::load(const std::string& key, const std::string& 
 	//ステータス読み込み
 	T file(json);
 
-	//攻撃クラスを登録
+	//jsonファイルを登録
 	m_FileList.emplace(key, file);
 }
 

@@ -2,7 +2,7 @@
     "UnitStats" :
     {
         "Name" : "NormalCorvette",
-        "DisplayName" : "コルベット",
+        "DisplayName" : "Corvette",
         "ModelName" : "Corvette",
         "ObjectCount" : 60,
         "ObjectSize" : [1.0, 1.0, 2.0],
