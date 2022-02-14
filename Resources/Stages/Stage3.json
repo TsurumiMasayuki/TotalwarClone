@@ -3,24 +3,49 @@
     "PlayerEnergy" : 14000,
     "AvailableUnits" : [
         "NormalCorvette",
-        "NormalCruiser"
+        "NormalCruiser",
+        "SniperCruiser"
     ],
     "EnemyUnits" : [
+        {
+            "EnemyName" : "NormalCorvette",
+            "Position" : [0.0, 0.0, 450.0],
+            "Angle" : 180.0,
+            "Width" : 25
+        },
+        {
+            "EnemyName" : "NormalCorvette",
+            "Position" : [200.0, 0.0, 450.0],
+            "Angle" : 180.0,
+            "Width" : 25
+        },
+        {
+            "EnemyName" : "NormalCorvette",
+            "Position" : [-200.0, 0.0, 450.0],
+            "Angle" : 180.0,
+            "Width" : 25
+        },
+        {
+            "EnemyName" : "NormalCorvette",
+            "Position" : [400.0, 0.0, 450.0],
+            "Angle" : 180.0,
+            "Width" : 25
+        },
+        {
+            "EnemyName" : "NormalCorvette",
+            "Position" : [-400.0, 0.0, 450.0],
+            "Angle" : 180.0,
+            "Width" : 25
+        },
         {
             "EnemyName" : "NormalCruiser",
             "Position" : [150.0, 0.0, 500.0],
             "Angle" : 180.0,
-            "Width" : 5
+            "Width" : 3
         },
         {
             "EnemyName" : "NormalCruiser",
             "Position" : [-150.0, 0.0, 500.0],
-            "Angle" : 180.0,
-            "Width" : 5
-        },
-        {
-            "EnemyName" : "SniperCruiser",
-            "Position" : [0.0, 0.0, 500.0],
             "Angle" : 180.0,
             "Width" : 3
         }

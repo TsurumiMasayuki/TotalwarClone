@@ -69,7 +69,7 @@ void TestEffect_Beam::playEffect()
 	m_pBeamTransform->setLocalScale(Vec3(0.0f));
 	m_pBeamTransform->setLocalAngles(Vec3(0.0f, angle, 0.0f));
 
-	auto pAnimation = new Spawn(
+	auto pBeamAnimation = new Spawn(
 		{
 			new MoveBy(diff, m_Time),
 			new Sequence(
@@ -81,7 +81,7 @@ void TestEffect_Beam::playEffect()
 		}
 	);
 
-	m_pActionManager->enqueueAction(pAnimation);
+	m_pActionManager->enqueueAction(pBeamAnimation);
 
 	//Œø‰Ê‰¹‚ðÄ¶
 	m_pSEAudio->play();

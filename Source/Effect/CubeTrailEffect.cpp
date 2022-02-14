@@ -5,7 +5,7 @@
 
 void CubeTrailEffect::onStart()
 {
-	m_Timer.setMaxTime(0.5f);
+	m_Timer.setMaxTime(1.0f);
 }
 
 void CubeTrailEffect::onUpdate()
@@ -44,7 +44,7 @@ void CubeTrailParticle::onStart()
 
 void CubeTrailParticle::onUpdate()
 {
-	m_pEffectRenderHelper->appendInstanceInfoSingle(getTransform().getWorldMatrix(), Color(DirectX::Colors::Red));
+	m_pEffectRenderHelper->appendInstanceInfoSingle(getTransform().getWorldMatrix(), Color(DirectX::Colors::Orange));
 }
 
 void CubeTrailParticle::init(EffectRenderHelper* pEffectRenderHelper)

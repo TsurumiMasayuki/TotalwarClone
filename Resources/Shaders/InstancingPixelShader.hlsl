@@ -19,9 +19,11 @@ PS_OUT main(PS_IN input) : SV_TARGET
 {
 	PS_OUT result;
 	
+	float brightness = dot(float3(-0.5, -0.5, 0.0), normalize(input.normal));
 	float4 color = tex.Sample(smp, input.uv) * input.color;
 
 	result.target0 = color;
+	color.xyz *= brightness;
 
 	return result;
 }

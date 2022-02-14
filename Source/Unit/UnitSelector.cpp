@@ -73,8 +73,12 @@ void UnitSelector::onUpdate()
 		m_pAttackDisplayObj->getComponent<Action::ActionManager>()->enqueueAction(new Action::ScaleTo(Vec3(0.0f, diff.length(), 0.0f), 1.0f));
 	}
 
-	//ユニット配置の更新
-	updateUnitPlacement();
+	//プレイヤーなら実行
+	if (m_pSelectedUnit->getTeamID() == 0)
+	{
+		//ユニット配置の更新
+		updateUnitPlacement();
+	}
 
 	//配置予測表示中でないなら選択中のユニットを強調表示
 	if (!input.isMouseButton(1))

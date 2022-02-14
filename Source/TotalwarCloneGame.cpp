@@ -82,5 +82,4 @@ void TotalwarCloneGame::onUpdate()
 
 void TotalwarCloneGame::onShutdown()
 {
-	GameDevice::getModelManager().endLoading();
 }

@@ -108,7 +108,7 @@ void UnitObject::init(Unit* pUnit, ValueMap* pValueMap, EffectRenderHelper* pEff
 	m_pCollider->setTrigger(false);
 	m_pCollider->setRadius(pUnitStats->m_ObjectSize.x);
 	m_pCollider->setBodyType(b2BodyType::b2_dynamicBody);
-	m_pCollider->setGroupIndex(0);
+	m_pCollider->setGroupIndex(-2);
 
 	//トリガー用コライダー
 	m_pTrigger = getUser().addComponent<CircleColliderB2>();

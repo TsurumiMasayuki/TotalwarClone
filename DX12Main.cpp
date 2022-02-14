@@ -76,6 +76,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//I—¹ˆ—
 	game.shutdown();
+	GameDevice::getModelManager().endLoading();
 	UnregisterClass(wndClass.lpszClassName, wndClass.hInstance);
 
 	return 0;

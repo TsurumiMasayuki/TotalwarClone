@@ -53,7 +53,7 @@ void Player::init(int teamNum, IPlayer* pOpponentPlayer, ValueMap* pValueMap)
 	m_pEnergyText->setFontWeight(DWRITE_FONT_WEIGHT::DWRITE_FONT_WEIGHT_MEDIUM);
 	m_pEnergyText->setFontStretch(DWRITE_FONT_STRETCH::DWRITE_FONT_STRETCH_NORMAL);
 	m_pEnergyText->setFontStyle(DWRITE_FONT_STYLE::DWRITE_FONT_STYLE_NORMAL);
-	m_pEnergyText->setColor(Color(0.0f, 0.0f, 0.0f, 1.0f));
+	m_pEnergyText->setColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 	m_pEnergyText->setTextAlignment(DWRITE_TEXT_ALIGNMENT::DWRITE_TEXT_ALIGNMENT_CENTER);
 	m_pEnergyText->setParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT::DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 

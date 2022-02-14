@@ -1,6 +1,6 @@
 {
     "StageName" : "Stage 2",
-    "PlayerEnergy" : 6000,
+    "PlayerEnergy" : 7000,
     "AvailableUnits" : [
         "NormalCorvette",
         "NormalCruiser"
@@ -25,7 +25,7 @@
             "Width" : 25
         },
         {
-            "EnemyName" : "SniperCruiser",
+            "EnemyName" : "NormalCruiser",
             "Position" : [0.0, 0.0, 550.0],
             "Angle" : 180.0,
             "Width" : 3

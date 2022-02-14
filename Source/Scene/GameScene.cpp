@@ -1,4 +1,5 @@
 #include "GameScene.h"
+#include <thread>
 
 #include "Component\Graphics\PostEffectRenderer.h"
 #include "Component\Graphics\InstancedRenderer.h"
@@ -211,6 +212,7 @@ void GameScene::start()
 	auto pSphereModel = GameDevice::getModelManager().getModel("Sphere");
 
 	{
+		//頂点
 		DX12Mesh::MeshVertex baseVertices[8] =
 		{
 			{ { 0.0f, 1.0f, 1.0f }, {  0.0f,  0.0f, 1.0f }, { 0.0f, 0.0f } },
@@ -223,6 +225,7 @@ void GameScene::start()
 			{ { 1.0f, 0.0f, 0.0f }, {  0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f } }
 		};
 
+		//法線
 		DirectX::XMFLOAT3 normals[6] =
 		{
 			{  0.0f,  1.0f,  0.0f },
@@ -233,6 +236,7 @@ void GameScene::start()
 			{  0.0f, -1.0f,  0.0f }
 		};
 
+		//インデックス
 		int baseIndices[36] =
 		{
 			0, 4, 6, 6, 2, 0,	//上
@@ -258,12 +262,6 @@ void GameScene::start()
 		m_pBBCube->init(DX12GraphicsCore::g_pDevice.Get(), vertices, indices, "BoxFill");
 	}
 
-	GameDevice::getTextureManager().load("Hoge", L"Resources/Hoge.png");
-	m_BBModelLoader.load("Resources/Hoge.json", "Hoge", "Hoge");
-
-	GameDevice::getTextureManager().load("HogeHoge", L"Resources/HogeHoge.png");
-	m_BBModelLoader.load("Resources/HogeHoge.json", "HogeHoge", "HogeHoge");
-
 	//Blockbenchモデル読み込み
 	{
 		GameDevice::getTextureManager().load("Corvette", L"Resources/BBModel/Corvette.png");
@@ -277,6 +275,9 @@ void GameScene::start()
 
 		GameDevice::getTextureManager().load("NormalBattleship", L"Resources/BBModel/NormalBattleship.png");
 		m_BBModelLoader.load("Resources/BBModel/NormalBattleship.json", "NormalBattleship", "NormalBattleship");
+
+		GameDevice::getTextureManager().load("SuperBattleship", L"Resources/BBModel/SuperBattleship.png");
+		m_BBModelLoader.load("Resources/BBModel/SuperBattleship.json", "SuperBattleship", "SuperBattleship");
 	}
 
 	//ユニット描画用オブジェクト生成
@@ -339,7 +340,7 @@ void GameScene::start()
 	//レイキャスト判定用平面オブジェクト
 	{
 		auto pPlaneObj = new GameObject(this);
-		pPlaneObj->getTransform().setLocalScale(Vec3(3000.0f, 0.1f, 3000.0f));
+		pPlaneObj->getTransform().setLocalScale(Vec3(10000.0f, 0.1f, 10000.0f));
 		auto pCollider = pPlaneObj->addComponent<BoxColiiderBt>();
 		pCollider->setMass(0.0f);
 	}
@@ -389,7 +390,12 @@ void GameScene::start()
 void GameScene::update()
 {
 	//SEManagerの更新
-	SEManager::getInstance().update();
+	std::thread seThread(
+		[]()
+		{
+			SEManager::getInstance().update();
+		}
+	);
 
 	//CombatPhaseBeginを1フレームで終わらせる
 	if (Game::g_GameState == Game::GameState::CombatPhaseBegin)
@@ -432,7 +438,7 @@ void GameScene::update()
 	float mouseWheelMove = mousePos.z;
 
 	//移動量
-	float moveValue = 30.0f;
+	float moveValue = 150.0f;
 
 	Vec3 move;
 	if (input.isKey(DIK_W)) move.z += moveValue;
@@ -444,8 +450,11 @@ void GameScene::update()
 
 	DirectX::XMMATRIX rotMat = DirectX::XMMatrixRotationRollPitchYaw(0.0f, MathUtility::toRadian(cameraTr.getLocalAngles().y), 0.0f);
 
+	//カメラ移動
 	move = move.multMatrix(rotMat);
-	cameraTr.setLocalPosition(cameraTr.getLocalPosition() + move * GameDevice::getGameTime().getDeltaTime());
+	Vec3 newPosition = cameraTr.getLocalPosition() + move * GameDevice::getGameTime().getDeltaTime();
+	newPosition.y = std::fmaxf(newPosition.y, 3.0f);	//高さの制限
+	cameraTr.setLocalPosition(newPosition);
 
 	//シーン終了演出
 	if (GameDevice::getInput().isKeyDown(DIK_2) &&
@@ -480,6 +489,9 @@ void GameScene::update()
 			);
 		}
 	}
+
+	//スレッドの終了待ち
+	seThread.join();
 
 	if (!m_IsSceneChangeBegin) return;
 
@@ -520,17 +532,22 @@ void GameScene::draw()
 
 void GameScene::lateUpdate()
 {
+	std::thread unitRenderThread([&]()
+		{
+			//InstancedRendererに一斉転送
+			for (auto& pair : m_UnitRenderHelpers)
+			{
+				pair.second->sendInstanceInfo();
+			}
+		});
+
 	//情報マップをクリア
 	m_ValueMap1.clearAll();
 	m_ValueMap2.clearAll();
 
-	//InstancedRendererに一斉転送
-	for (auto& pair : m_UnitRenderHelpers)
-	{
-		pair.second->sendInstanceInfo();
-	}
-
 	m_pEffectRenderHelper->sendInstanceInfo();
+
+	unitRenderThread.join();
 }
 
 void GameScene::setStage(const std::string& stageName)
