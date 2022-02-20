@@ -18,8 +18,8 @@ struct AttackInfo
 {
 	AttackInfo(const std::string& attackName, const Vec3& position);
 
-	const std::string m_AttackName;
-	const Vec3 m_Position;
+	std::string m_AttackName;
+	Vec3 m_Position;
 };
 
 struct UnitStats
@@ -30,46 +30,46 @@ public:
 	const std::vector<AttackInfo>& getMainAttacks() const;
 
 	//管理名
-	const std::string m_Name;
+	std::string m_Name;
 
 	//表示名
-	const std::string m_DisplayName;
+	std::string m_DisplayName;
 
 	//モデル名
-	const std::string m_ModelName;
+	std::string m_ModelName;
 
 	//オブジェクト数
-	const int m_ObjectCount;
+	int m_ObjectCount;
 
 	//オブジェクトの大きさ
-	const Vec3 m_ObjectSize;
+	Vec3 m_ObjectSize;
 
 	//モデルの大きさ
-	const Vec3 m_ModelSize;
+	Vec3 m_ModelSize;
 
 	//オブジェクト毎の間隔
-	const float m_SpacePerObject;
+	float m_SpacePerObject;
 
 	//オブジェクトごとのHPの最大値
-	const float m_MaxHealthPerObject;
+	float m_MaxHealthPerObject;
 
 	//オブジェクトごとのシールドの最大値
-	const float m_MaxShieldPerObject;
+	float m_MaxShieldPerObject;
 
 	//スピード
-	const float m_Speed;
+	float m_Speed;
 
 	//回転スピード
-	const float m_RotationSpeed;
+	float m_RotationSpeed;
 
 	//デバッグ用色
-	const Color m_DebugColor;
+	Color m_DebugColor;
 
 	//デフォルトの整列幅
-	const int m_DefaultWidth;
+	int m_DefaultWidth;
 
 	//ユニットのコスト
-	const int m_EnergyCost;
+	int m_EnergyCost;
 
 private:
 	//攻撃のリスト

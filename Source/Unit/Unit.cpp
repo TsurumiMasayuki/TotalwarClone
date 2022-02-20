@@ -11,6 +11,7 @@
 #include "Unit\UnitObject.h"
 #include "Unit\UnitRenderHelper.h"
 #include "Utility\JsonFileManager.h"
+#include "UI\UIUnitBanner.h"
 #include "Player\IPlayer.h"
 
 void Unit::onStart()
@@ -114,6 +115,10 @@ void Unit::init(IPlayer* pPlayer, const UnitStats* pUnitStats, ValueMap* pValueM
 	}
 	
 	m_MainAttackRange = JsonFileManager<AttackStats>::getInstance().get(m_pUnitStats->getMainAttacks().at(0).m_AttackName).m_AttackRange;
+
+	//ユニットの目印用の旗
+	auto pUnitBanner = getUser().addComponent<UIUnitBanner>();
+	pUnitBanner->init(this);
 }
 
 void Unit::setPosition(const Vec3& position, float angle, int unitWidth)

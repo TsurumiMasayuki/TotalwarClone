@@ -332,11 +332,6 @@ void GameScene::start()
 		m_pAIPlayer->addUnit(pUnit);
 	}
 
-	//情報マップ描画の生成
-	//auto pValueMapRendererObj = new GameObject(this);
-	//auto pValueMapRenderer = pValueMapRendererObj->addComponent<ValueMapRenderer<UnitStatsValues::Health>>();
-	//pValueMapRenderer->setUnit(&m_ValueMap2, m_pValueMapMaterial, Color(DirectX::Colors::LightGreen));
-
 	//レイキャスト判定用平面オブジェクト
 	{
 		auto pPlaneObj = new GameObject(this);

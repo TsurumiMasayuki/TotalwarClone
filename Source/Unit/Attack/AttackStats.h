@@ -20,19 +20,19 @@ public:
 
 public:
 	//UŒ‚—Í
-	const float m_Damage;
+	float m_Damage;
 	//UŒ‚ŠÔŠu
-	const float m_AttackInterval;
+	float m_AttackInterval;
 	//Ë’ö
-	const float m_AttackRange;
+	float m_AttackRange;
 	//’Ç]‘¬“x(‰ñ“]‘¬“x)
-	const float m_TrackSpeed;
+	float m_TrackSpeed;
 	//’Ç]‚·‚é‚©‚Ç‚¤‚©(ŒÅ’è–C‚Ég‚¤)
-	const bool m_IsTrackTarget;
+	bool m_IsTrackTarget;
 	//UŒ‚‰Â”\‰ñ”
-	const int m_MaxAttackCount;
+	int m_MaxAttackCount;
 	//UŒ‚‰Â”\‰ñ”‚ª–³ŒÀ‚©‚Ç‚¤‚©
-	const bool m_IsInfiniteAttack;
+	bool m_IsInfiniteAttack;
 	//UŒ‚ƒGƒtƒFƒNƒg(‰¼)
-	const IEffect* m_pAttackEffect;
+	IEffect* m_pAttackEffect;
 };

@@ -6,9 +6,11 @@
 #include "Component\Utility\Action\ActionManager.h"
 #include "Component\Utility\Action\EasingActions.h"
 #include "Device\GameDevice.h"
+#include "Def\Screen.h"
 #include "Utility\ModelGameObjectHelper.h"
 
-#include "Def/Screen.h"
+#include "Unit\UnitStats.h"
+#include "Utility\JsonFileManager.h"
 
 std::string TitleScene::nextScene()
 {
@@ -79,6 +81,12 @@ void TitleScene::start()
 
 void TitleScene::update()
 {
+	//Rキーを押したらホットリロード
+	if (GameDevice::getInput().isKeyDown(DIK_R))
+	{
+		JsonFileManager<UnitStats>::getInstance().reloadAll();
+	}
+
 	if (GameDevice::getInput().isKeyDown(DIK_SPACE) &&
 		!m_IsSceneChangeBegin)
 	{

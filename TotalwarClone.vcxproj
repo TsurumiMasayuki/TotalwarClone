@@ -178,6 +178,7 @@
     <ClCompile Include="Source\UI\UICombatStatus.cpp" />
     <ClCompile Include="Source\UI\UIStageCard.cpp" />
     <ClCompile Include="Source\UI\UIStageList.cpp" />
+    <ClCompile Include="Source\UI\UIUnitBanner.cpp" />
     <ClCompile Include="Source\UI\UIUnitInfo.cpp" />
     <ClCompile Include="Source\Unit\UnitSelector.cpp" />
     <ClCompile Include="Source\Graphics\Material\BBModelMaterial.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="Source\UI\UICombatStatus.h" />
     <ClInclude Include="Source\UI\UIStageCard.h" />
     <ClInclude Include="Source\UI\UIStageList.h" />
+    <ClInclude Include="Source\UI\UIUnitBanner.h" />
     <ClInclude Include="Source\UI\UIUnitInfo.h" />
     <ClInclude Include="Source\Unit\UnitSelector.h" />
     <ClInclude Include="Source\GameState.h" />
